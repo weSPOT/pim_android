@@ -1,0 +1,115 @@
+<!--
+  Copyright 2012 The Android Open Source Project
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView android:id="@+id/profile_title"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@string/profile_title"
+              style="@style/CustomTheme.TextView.Title1"
+            />
+
+    <RelativeLayout
+            android:layout_below="@id/profile_title"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent" android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:background="@color/app.base.white"
+            android:layout_margin="10dp">
+
+        <ImageView
+                android:layout_width="182dp"
+                android:layout_height="180dp"
+                android:id="@+id/imageView"
+                android:layout_gravity="center_horizontal"
+                android:contentDescription="@string/profile_picture_description"
+                android:src="@drawable/ic_profile_placeholder"
+                android:layout_marginTop="33dp"
+                android:layout_alignParentTop="true" android:layout_centerHorizontal="true"/>
+
+        <!--Name -->
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text="@string/profile_name"
+                android:ems="10"
+                android:id="@+id/profile_name"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="40dp"
+                android:textSize="15dp"
+                android:textColor="@color/app.base.blue"
+                android:layout_alignRight="@+id/imageView"/>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:inputType="textPersonName"
+                  android:text="Name"
+                  android:ems="10"
+                  android:id="@+id/profile_name_value"
+                  android:textSize="15dp"
+                  android:layout_below="@id/profile_name"
+                  android:layout_alignLeft="@+id/profile_name"/>
+
+        <!-- email -->
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text="@string/profile_email"
+                android:ems="10"
+                android:id="@+id/profile_email"
+                android:textSize="15dp"
+                android:textColor="@color/app.base.blue"
+                android:layout_marginTop="23dp" android:layout_below="@id/profile_name_value"
+                android:layout_alignLeft="@id/profile_name_value"/>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:inputType="textPersonName"
+                  android:text="Name"
+                  android:ems="10"
+                  android:id="@+id/profile_email_value"
+                  android:textSize="15dp"
+                  android:layout_below="@id/profile_email"
+                  android:layout_alignLeft="@id/profile_email"/>
+
+        <!-- local id -->
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text="@string/profile_localid"
+                android:ems="10"
+                android:id="@+id/profile_localid"
+                android:textSize="15dp"
+                android:textColor="@color/app.base.blue"
+                android:layout_marginTop="23dp" android:layout_below="@id/profile_email_value"
+                android:layout_alignLeft="@id/profile_email_value"/>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:inputType="textPersonName"
+                  android:text="Name"
+                  android:ems="10"
+                  android:id="@+id/profile_localid_value"
+                  android:textSize="15dp"
+                  android:layout_below="@id/profile_localid"
+                  android:layout_alignLeft="@id/profile_localid"/>
+    </RelativeLayout>
+
+</RelativeLayout>

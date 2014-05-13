@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="spb_default_reversed">false</bool>
+    <bool name="spb_default_mirror_mode">false</bool>
+
+    <bool name="default_circle_indicator_centered">true</bool>
+    <bool name="default_title_indicator_selected_bold">true</bool>
+
+    <integer name="default_title_indicator_footer_indicator_style">2</integer>
+
+    <integer name="default_title_indicator_line_position">0</integer>
+    <bool name="default_underline_indicator_fades">true</bool>
+    <integer name="default_underline_indicator_fade_delay">300</integer>
+    <integer name="default_underline_indicator_fade_length">400</integer>
+    <bool name="default_line_indicator_centered">true</bool>
+    <integer name="default_circle_indicator_orientation">0</integer>
+    <bool name="default_circle_indicator_snap">false</bool>
+</resources>
