@@ -28,7 +28,7 @@
         <EditText android:id="@+id/wonder_moment_time" android:layout_width="match_parent"
                   android:layout_height="wrap_content" android:autoText="false"
                   android:hint="@string/wonder_moment_time_placeholder" android:inputType="time"
-                  android:layout_weight="6"/>
+                  android:layout_weight="1"/>
     </LinearLayout>
     <EditText android:id="@+id/wonder_moment_content" android:layout_width="match_parent"
               android:layout_height="match_parent" android:layout_below="@+id/layout_date" android:gravity="top"

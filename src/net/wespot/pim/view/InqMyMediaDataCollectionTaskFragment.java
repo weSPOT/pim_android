@@ -22,6 +22,7 @@ package net.wespot.pim.view;
  */
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -91,7 +92,9 @@ public class InqMyMediaDataCollectionTaskFragment extends _ActBar_FragmentActivi
             datAdapter.setOnListItemClickCallback(this);
             data_collection_tasks_items.setAdapter(datAdapter);
 
-            getActionBar().setTitle(getResources().getString(R.string.actionbar_list_data_collection_task));
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
+                getActionBar().setTitle(getResources().getString(R.string.actionbar_list_data_collection_task));
+            }
         }
     }
 

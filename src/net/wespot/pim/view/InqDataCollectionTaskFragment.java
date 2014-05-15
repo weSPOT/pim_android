@@ -29,11 +29,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import daoBase.DaoConfiguration;
-import de.greenrobot.dao.query.Query;
-import de.greenrobot.dao.query.QueryBuilder;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.ResponsesLazyListAdapter;
 import net.wespot.pim.controller.ImageDetailActivity;
@@ -42,13 +40,10 @@ import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.dataCollection.DataCollectionManager;
 import org.celstec.arlearn2.android.dataCollection.PictureManager;
 import org.celstec.arlearn2.android.dataCollection.VideoManager;
-import org.celstec.arlearn2.android.delegators.ARL;
-import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.InquiryLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
-import org.celstec.dao.gen.ResponseLocalObjectDao;
 
 import java.io.File;
 
@@ -59,6 +54,8 @@ public class InqDataCollectionTaskFragment extends _ActBar_FragmentActivity impl
 
     private static final String TAG = "InqDataCollectionTaskFragment";
     private ListView data_collection_tasks_items;
+    private TextView data_collection_tasks_description;
+    private TextView data_collection_tasks_title;
     private InquiryLocalObject inquiry;
     private long generalItemId;
 
@@ -90,6 +87,12 @@ public class InqDataCollectionTaskFragment extends _ActBar_FragmentActivity impl
 
             genObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(generalItemId);
             genObject.getResponses();
+
+            data_collection_tasks_description = (TextView) findViewById(R.id.data_collection_tasks_description_list);
+            data_collection_tasks_title = (TextView) findViewById(R.id.data_collection_tasks_title_list);
+
+            data_collection_tasks_title.setText(genObject.getTitle());
+            data_collection_tasks_description.setText(genObject.getDescription());
 
             data_collection_tasks_items = (ListView) findViewById(R.id.data_collection_tasks_items);
             datAdapter =  new ResponsesLazyListAdapter(this, generalItemId);

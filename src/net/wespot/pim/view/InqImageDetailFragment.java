@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.ImageDetailActivity;
 import net.wespot.pim.controller.VideoFullScreenView;
@@ -43,6 +44,7 @@ public class InqImageDetailFragment extends Fragment {
     private String mImageUrl;
     private ImageView mImageView;
     private ImageFetcher mImageFetcher;
+    private ProgressBar progressBar;
     private ImageView mPlayButtonView;
     private String TAG = "InqImageDetailFragment";
 
@@ -88,6 +90,7 @@ public class InqImageDetailFragment extends Fragment {
         final View v = inflater.inflate(R.layout.fragment_detail_image, container, false);
         mImageView = (ImageView) v.findViewById(R.id.imageView);
         mPlayButtonView = (ImageView) v.findViewById(R.id.VideoPreviewPlayButton);
+        progressBar = (ProgressBar) v.findViewById(R.id.detail_fragment_progress_bar);
         return v;
     }
 
@@ -99,6 +102,7 @@ public class InqImageDetailFragment extends Fragment {
 
             if(!mImageUrl.contains(".jpg")){
             mPlayButtonView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
             mImageView.setOnClickListener(new View.OnClickListener() {
 
                 @Override

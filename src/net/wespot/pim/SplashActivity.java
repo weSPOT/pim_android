@@ -1,12 +1,15 @@
 package net.wespot.pim;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Toast;
 import net.wespot.pim.controller.Adapters.InitialPagerAdapter;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.layout.CirclePageIndicator;
@@ -36,9 +39,9 @@ import org.celstec.arlearn2.android.delegators.ARL;
  */
 public class SplashActivity extends FragmentActivity {
 
-    private Button login_wespot;
-    private Button login_google;
-    private Button login_facebook;
+    private ImageView login_wespot;
+    private ImageView login_google;
+    private ImageView login_facebook;
 
     InitialPagerAdapter mAdapter;
     ViewPager mPager;
@@ -52,43 +55,43 @@ public class SplashActivity extends FragmentActivity {
 
         setContentView(R.layout.activity_splash);
 
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
+            getActionBar().hide();
+        }
+
         mAdapter = new InitialPagerAdapter(getSupportFragmentManager());
 
-        login_wespot = (Button) findViewById(R.id.login_wespot);
+        login_wespot = (ImageView) findViewById(R.id.login_wespot);
 
         login_wespot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.putExtra(Constants.URL_LOGIN_NAME, INQ.config.getProperty("wespot_login_url"));
-                intent.putExtra(Constants.TYPE_LOGIN, Constants.WESPOT);
-                startActivity(intent);
+                String url = INQ.config.getProperty("wespot_login_url");
+                callLoginScreen(url, Constants.WESPOT);
             }
         });
 
-        login_google = (Button) findViewById(R.id.loginGoogle);
-
+        login_google = (ImageView) findViewById(R.id.loginGoogle);
         login_google.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent2 = new Intent(getApplicationContext(), LoginActivity.class);
-                String url = getGoogleLoginRedirectURL(INQ.config.getProperty("google_login_url"), INQ.config.getProperty("google_login_client_apikey"));
-                intent2.putExtra(Constants.URL_LOGIN_NAME, url);
-                intent2.putExtra(Constants.TYPE_LOGIN, Constants.GOOGLE);
-                startActivity(intent2);
+                String url = getGoogleLoginRedirectURL(
+                        INQ.config.getProperty("google_login_url"),
+                        INQ.config.getProperty("google_login_client_apikey")
+                );
+                callLoginScreen(url, Constants.GOOGLE);
             }
         });
 
-        login_facebook = (Button) findViewById(R.id.loginFacebook);
-
+        login_facebook = (ImageView) findViewById(R.id.loginFacebook);
         login_facebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent2 = new Intent(getApplicationContext(), LoginActivity.class);
-                String url = getFbRedirectURL(INQ.config.getProperty("facebook_login_url"), INQ.config.getProperty("facebook_login_client_apikey"));
-                intent2.putExtra(Constants.URL_LOGIN_NAME, url);
-                intent2.putExtra(Constants.TYPE_LOGIN, Constants.FACEBOOK);
-                startActivity(intent2);
+                String url = getFbRedirectURL(
+                        INQ.config.getProperty("facebook_login_url"),
+                        INQ.config.getProperty("facebook_login_client_apikey")
+                );
+                callLoginScreen(url, Constants.FACEBOOK);
             }
         });
 
@@ -99,20 +102,26 @@ public class SplashActivity extends FragmentActivity {
         mIndicator = indicator;
         indicator.setViewPager(mPager);
         indicator.setSnap(true);
+    }
 
+    private void callLoginScreen(String url, int type){
+        if (INQ.isOnline()){
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.putExtra(Constants.URL_LOGIN_NAME, url);
+            intent.putExtra(Constants.TYPE_LOGIN, type);
+            startActivity(intent);
+        }else{
+            Toast.makeText(this, R.string.network_connection, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         if (INQ.accounts.isAuthenticated()){
-//            login_google.setVisibility(View.INVISIBLE);
-//            login_facebook.setVisibility(View.INVISIBLE);
-
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             ARL.accounts.syncMyAccountDetails();
-
         }
     }
 

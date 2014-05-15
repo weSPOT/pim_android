@@ -66,6 +66,12 @@ public class MainActivity extends MainActionBarFragmentActivity implements ViewI
     }
 
     @Override
+    public void onBackPressed() {
+        // Avoid re-login
+        // super.onBackPressed();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 

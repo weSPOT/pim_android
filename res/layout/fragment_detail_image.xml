@@ -21,6 +21,7 @@
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/detail_fragment_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
@@ -37,5 +38,4 @@
             android:layout_gravity="center"
             android:visibility="gone"
             android:src="@drawable/play_overlay_large" />
-
 </FrameLayout>

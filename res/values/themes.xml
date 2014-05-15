@@ -37,6 +37,13 @@
         <item name="android:padding">@dimen/inquiry.fragments.titles.padding</item>
     </style>
 
+
+    <style name="CustomTheme.TextView.Title4" parent="CustomTheme.TextView">
+        <item name="android:textSize">@dimen/inquiry.fragments.description</item>
+        <item name="android:padding">@dimen/inquiry.fragments.titles.padding</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
     <style name="CustomTheme.ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:titleTextStyle">@style/CustomTheme.ActionBar.TitleTextStyle</item>
         <item name="android:subtitleTextStyle">@style/CustomTheme.ActionBar.Subtitle</item>

@@ -21,6 +21,7 @@ package net.wespot.pim.controller;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.MediaController;
@@ -36,7 +37,9 @@ public class VideoFullScreenView extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.video_fullscreen_view);
 
-        getActionBar().hide();
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
+            getActionBar().hide();
+        }
 
         vidDisplay = (VideoView) findViewById(R.id.videoView);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);

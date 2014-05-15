@@ -48,6 +48,10 @@ public class NoticeDialogFragment extends DialogFragment {
     private EditText dialog_title;
     private EditText dialog_description;
 
+    private String title;
+    private String description;
+
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -71,6 +75,10 @@ public class NoticeDialogFragment extends DialogFragment {
                         Intent a = getActivity().getIntent();
                         a.putExtra(TITLE, dialog_title.getText());
                         a.putExtra(DESCRIPTION, dialog_description.getText());
+
+                        setTitle(dialog_title.getText().toString());
+                        setDescription(dialog_description.getText().toString());
+
                         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, a);
                     }
                 }
@@ -84,7 +92,21 @@ public class NoticeDialogFragment extends DialogFragment {
     }
 
 
+    public String getTitle() {
+        return title;
+    }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
     //    public void onAttach(Activity activity) {
 //        super.onAttach(activity);
 //        // Verify that the host activity implements the callback interface

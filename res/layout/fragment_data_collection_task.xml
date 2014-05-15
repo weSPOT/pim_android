@@ -12,11 +12,17 @@
               android:text="@string/data_collection_task_responses"
               style="@style/CustomTheme.TextView.Title1"
             />
+    <TextView android:id="@+id/data_collection_tasks_description_list"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_below="@+id/data_collection_tasks_title_list"
+              style="@style/CustomTheme.TextView.Title4"
+            />
     <ListView android:id="@+id/data_collection_tasks_items"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:dividerHeight="1dp"
-              android:layout_below="@id/data_collection_tasks_title_list"
+              android:layout_below="@+id/data_collection_tasks_description_list"
               />
 
 </RelativeLayout>

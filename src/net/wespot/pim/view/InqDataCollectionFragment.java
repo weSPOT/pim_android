@@ -56,6 +56,7 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
     private TextView text_default;
     private TextView data_collection_tasks_title_list;
     private InquiryLocalObject inquiry;
+    private NoticeDialogFragment dialog;
 
     private DataCollectionLazyListAdapter datAdapter;
 
@@ -189,8 +190,10 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
         }
         ft.addToBackStack(null);
 
-        DialogFragment dialog = new NoticeDialogFragment();
+        dialog = new NoticeDialogFragment();
+
         dialog.setTargetFragment(this, DIALOG_FRAGMENT);
+
         dialog.show(getFragmentManager().beginTransaction(), "dialog");
     }
 
@@ -203,28 +206,10 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
                     // After Ok code.
                     Log.e(TAG, "ok code");
 
-                    Bundle extras = data.getExtras();
-//
-
-
-//                    String title;
-//                    Iterator a = data.getExtras().keySet().iterator();
-//
-//
-//
-//                    while (a.hasNext()){
-//                        if (NoticeDialogFragment.TITLE.equals(a.next())) {
-//                            title =
-//                        }
-//                        String p = (String) a.next();
-//                    }
-
-
-
                     INQ.dataCollection.createDataCollectionTask(
                             INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject().getId(),
-                            extras.getString(NoticeDialogFragment.TITLE),
-                            extras.getString(NoticeDialogFragment.DESCRIPTION)
+                            dialog.getTitle(),
+                            dialog.getDescription()
                     );
 
                     Toast.makeText(getActivity(), getResources().getString(R.string.data_collection_dialog_creating), Toast.LENGTH_SHORT).show();

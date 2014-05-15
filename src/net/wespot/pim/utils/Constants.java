@@ -63,7 +63,7 @@ public class Constants {
 
     public static final List<Integer> INQUIRY_ICON_PHASES_LIST = Arrays.asList(
             R.drawable.ic_description,
-            R.drawable.ic_placeholder,
+            R.drawable.ic_task_explore,
             R.drawable.ic_data,
             R.drawable.ic_hypothesis,
             R.drawable.ic_plan,
