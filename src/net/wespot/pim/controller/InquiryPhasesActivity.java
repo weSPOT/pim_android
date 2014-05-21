@@ -105,7 +105,7 @@ public class InquiryPhasesActivity extends _ActBar_FragmentActivity implements V
         ButtonDelegator buttonDelegator =  ButtonDelegator.getInstance(this);
         LinearLayout layout = buttonDelegator.layoutGenerator(R.dimen.mainscreen_margintop_zero);
 
-        for (int i=0; i < Constants.INQUIRY_ID_PHASES_LIST.size(); i++){
+            for (int i=0; i < Constants.INQUIRY_ID_PHASES_LIST.size(); i++){
             switch (i){
                 case Constants.ID_DATA:
                     createDataCollectionButton(buttonDelegator, layout, i);

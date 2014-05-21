@@ -55,7 +55,7 @@ public class ButtonDelegator{
     }
 
     public ButtonEntry buttonGenerator(LinearLayout layout, int id, String title, String notificiation, int drawable) {
-        Log.e(TAG,  layout+" | "+id+" | "+title+" | "+notificiation+" | "+drawable);
+        Log.e(TAG, " | "+id+" | "+title+" | "+notificiation+" | "+drawable);
         ButtonEntry button = new ButtonEntry(id, title,String.valueOf(notificiation),drawable);
         act.getSupportFragmentManager().beginTransaction().add(layout.getId(), button, button.getId()+"").commit();
         return button;

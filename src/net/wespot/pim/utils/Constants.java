@@ -52,8 +52,8 @@ public class Constants {
 
     public static final List<Integer> INQUIRY_PHASES_LIST = Arrays.asList(
             R.string.inquiry_title_description,
-            R.string.inquiry_title_question,
             R.string.inquiry_title_data,
+            R.string.inquiry_title_question,
             R.string.inquiry_title_hypothesis,
             R.string.inquiry_title_plan,
             R.string.inquiry_title_analyse,
@@ -63,8 +63,8 @@ public class Constants {
 
     public static final List<Integer> INQUIRY_ICON_PHASES_LIST = Arrays.asList(
             R.drawable.ic_description,
-            R.drawable.ic_task_explore,
             R.drawable.ic_data,
+            R.drawable.ic_task_explore,
             R.drawable.ic_hypothesis,
             R.drawable.ic_plan,
             R.drawable.ic_analyze,
@@ -74,8 +74,8 @@ public class Constants {
 
     public static final List<Integer> INQUIRY_ID_PHASES_LIST = Arrays.asList(
             ID_DESCRIPTION,
-            ID_QUESTION,
             ID_DATA,
+            ID_QUESTION,
             ID_HYPOTHESIS,
             ID_PLAN,
             ID_ANALYSIS,

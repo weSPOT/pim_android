@@ -51,8 +51,7 @@ public class PimInquiriesFragment extends _ActBar_FragmentActivity  implements L
     private static final String TAG = "PimInquiriesFragment";
     private InquiryLazyListAdapter adapterInq;
 
-    private ListView inquiries;
-    private View new_inquiry;
+    public ListView inquiries;
     private static final int NEW_INQUIRY = 12350;
 
     @Override
@@ -163,5 +162,14 @@ public class PimInquiriesFragment extends _ActBar_FragmentActivity  implements L
 //            startActivity(intent);
 //        }
 //    }
+
+    public ListView getInquiries() {
+        return inquiries;
+    }
+
+    public void setInquiries(ListView inquiries) {
+        this.inquiries = inquiries;
+    }
+
 
 }
