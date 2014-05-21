@@ -42,7 +42,7 @@ public class PimProfileFragment extends _ActBar_FragmentActivity {
 
     private TextView name;
     private TextView email;
-    private TextView localid;
+//    private TextView localid;
     private ImageView picture;
 
     @Override
@@ -57,7 +57,7 @@ public class PimProfileFragment extends _ActBar_FragmentActivity {
 
             name = (TextView) findViewById(R.id.profile_name_value);
             email = (TextView) findViewById(R.id.profile_email_value);
-            localid = (TextView) findViewById(R.id.profile_localid_value);
+//            localid = (TextView) findViewById(R.id.profile_localid_value);
             picture = (ImageView) findViewById(R.id.imageView);
 
             if (account!=null){
@@ -73,11 +73,11 @@ public class PimProfileFragment extends _ActBar_FragmentActivity {
                     email.setText(account.getEmail());
                 }
 
-                if (account.getLocalId() == null){
-                    localid.setText("-");
-                }else{
-                    localid.setText(account.getLocalId());
-                }
+//                if (account.getLocalId() == null){
+//                    localid.setText("-");
+//                }else{
+//                    localid.setText(account.getLocalId());
+//                }
 
                 if (account.getPicture() != null){
                     BitmapWorkerTask task = new BitmapWorkerTask(picture);

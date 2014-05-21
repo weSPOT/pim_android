@@ -78,7 +78,11 @@ public class InqMyMediaFragment extends _ActBar_FragmentActivity implements List
 
     @Override
     public void onListItemClick(View v, int position, GeneralItemLocalObject object) {
-        Intent intent = new Intent(getApplicationContext(), InqMyMediaDataCollectionTaskFragment.class);
+//        Intent intent = new Intent(getApplicationContext(), InqMyMediaDataCollectionTaskFragment.class);
+//        intent.putExtra("DataCollectionTask", object.getId());
+//        startActivity(intent);
+
+        Intent intent = new Intent(getApplicationContext(), InqDataCollectionTaskFragment.class);
         intent.putExtra("DataCollectionTask", object.getId());
         startActivity(intent);
     }

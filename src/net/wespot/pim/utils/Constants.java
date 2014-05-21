@@ -36,14 +36,14 @@ public class Constants {
     public static final int WESPOT = 0;
     public static final int LINKEDIN = 2;
     public static final int FACEBOOK = 3;
-    public static final String URL_LOGIN = "http://wespot-arlearn.appspot.com/MobileLogin.html";
     public static final String ENCONDING = null;
 
+    // TODO
     // If we want to change the order of the screen this must be done here and also in the rest of lists
     // Only appear the first three
     public static final int  ID_DESCRIPTION = 0;
-    public static final int  ID_QUESTION = 1;
-    public static final int  ID_DATA = 2;
+    public static final int  ID_DATA = 1;
+    public static final int  ID_QUESTION = 2;
     public static final int  ID_HYPOTHESIS = 3;
     public static final int  ID_PLAN = 4;
     public static final int  ID_ANALYSIS = 5;

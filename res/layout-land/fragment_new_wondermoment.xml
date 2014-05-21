@@ -16,11 +16,11 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent"
                 android:layout_height="fill_parent" android:orientation="vertical" android:id="@+id/relativeLayout">
-    <EditText android:id="@+id/wonder_moment_location" android:layout_width="match_parent"
-              android:layout_height="wrap_content" android:hint="@string/wonder_moment_location_placeholder"
-              android:inputType="text"/>
+    <!--<EditText android:id="@+id/wonder_moment_location" android:layout_width="match_parent"-->
+              <!--android:layout_height="wrap_content" android:hint="@string/wonder_moment_location_placeholder"-->
+              <!--android:inputType="text"/>-->
     <LinearLayout android:id="@+id/layout_date" android:layout_width="match_parent" android:layout_height="wrap_content"
-                  android:orientation="horizontal" android:layout_below="@+id/wonder_moment_location">
+                  android:orientation="horizontal">
         <EditText android:id="@+id/wonder_moment_date" android:layout_width="match_parent"
                   android:layout_height="wrap_content" android:autoText="false"
                   android:hint="@string/wonder_moment_date_placeholder" android:inputType="date"

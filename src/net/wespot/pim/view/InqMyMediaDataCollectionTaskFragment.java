@@ -72,7 +72,9 @@ public class InqMyMediaDataCollectionTaskFragment extends _ActBar_FragmentActivi
         if (savedInstanceState != null) {
             INQ.init(this);
             INQ.accounts.syncMyAccountDetails();
-            INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(savedInstanceState.getLong("currentInquiry")));
+            INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance()
+                    .getInquiryLocalObjectDao()
+                    .load(savedInstanceState.getLong("currentInquiry")));
         }
 
         setContentView(R.layout.fragment_data_collection_task);

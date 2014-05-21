@@ -26,18 +26,11 @@
               android:hint="@string/wonder_moment_title_placeholder"
               android:inputType="none" />
 
-    <EditText android:id="@+id/wonder_moment_location"
-              android:layout_width="match_parent"
-              android:layout_below="@id/wonder_moment_title"
-              android:textColorHint="@color/app.base.grey_soft"
-              android:layout_height="wrap_content" android:hint="@string/wonder_moment_location_placeholder"
-              android:inputType="none" />
-
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/wonder_moment_membership"
-                android:orientation="vertical" android:layout_below="@+id/wonder_moment_location">
+                android:orientation="vertical" android:layout_below="@+id/wonder_moment_title">
         <RadioButton android:id="@+id/wonder_moment_membership_open"
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
@@ -86,13 +79,4 @@
             android:src="@drawable/ic_action_mic"
             android:text="Button" android:layout_alignTop="@+id/wonder_moment_content"
             android:layout_alignParentRight="true" android:clickable="true" android:focusableInTouchMode="false"/>
-
-    <ProgressBar
-            android:id="@+id/wonder_moment_progress_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignLeft="@+id/wonder_moment_clear" android:layout_alignBottom="@+id/wonder_moment_location"
-            android:layout_alignRight="@+id/wonder_moment_clear" android:layout_marginBottom="4dp" android:visibility="gone"/>
 </RelativeLayout>
