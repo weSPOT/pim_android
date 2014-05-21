@@ -83,7 +83,7 @@ public class InqCreateInquiryFragment extends Fragment{
 
     private EditText wm_date;
     private EditText wm_time;
-    private ImageView wm_clear;
+//    private ImageView wm_clear;
 //    public EditText wm_location;
     public ImageButton wm_save;
     public ImageButton wm_cancel;
@@ -115,7 +115,7 @@ public class InqCreateInquiryFragment extends Fragment{
         wm_date = (EditText) rootView.findViewById(R.id.wonder_moment_date);
         wm_time = (EditText) rootView.findViewById(R.id.wonder_moment_time);
 //        wm_location = (EditText) rootView.findViewById(R.id.wonder_moment_location);
-        wm_clear = (ImageView) rootView.findViewById(R.id.wonder_moment_clear);
+//        wm_clear = (ImageView) rootView.findViewById(R.id.wonder_moment_clear);
 //        wm_progress_bar = (ProgressBar) rootView.findViewById(R.id.wonder_moment_progress_location);
         wm_membership_open = (RadioButton) rootView.findViewById(R.id.wonder_moment_membership_open);
         wm_membership_closed = (RadioButton) rootView.findViewById(R.id.wonder_moment_membership_closed);
@@ -174,24 +174,23 @@ public class InqCreateInquiryFragment extends Fragment{
 
         setDataTime();
 
-        //TODO check voice recognition
-        wm_clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH.toString());
-                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getResources().getString(R.string.inquiry_create_voice_recognition));
-                startActivityForResult(intent, REQUEST_CODE);
-            }
-        });
+//        wm_clear.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+//                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+//                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH.toString());
+//                intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getResources().getString(R.string.inquiry_create_voice_recognition));
+//                startActivityForResult(intent, REQUEST_CODE);
+//            }
+//        });
 
         // Disable button if no recognition service is present
-        PackageManager pm = getActivity().getPackageManager();
-        List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
-        if (activities.size() == 0) {
-            Toast.makeText(getActivity(), "Recognizer Not Found", 1000).show();
-        }
+//        PackageManager pm = getActivity().getPackageManager();
+//        List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+//        if (activities.size() == 0) {
+//            Toast.makeText(getActivity(), "Recognizer Not Found", 1000).show();
+//        }
 
         // Create inquiry
         new_inquiry = new InquiryLocalObject();
@@ -219,7 +218,6 @@ public class InqCreateInquiryFragment extends Fragment{
 
     private void save_inquiry() {
         new_inquiry.setDescription(getResources().getString(R.string.wonder_moment_placeholder_description));
-//        new_inquiry.setDescription(wm_content.getText().toString());
         new_inquiry.setTitle(wm_title.getText().toString());
 
         switch ((int)wm_visibility.getSelectedItemId()){
@@ -327,13 +325,13 @@ public class InqCreateInquiryFragment extends Fragment{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-            Log.e(TAG, matches.toString());
-//                 resultList.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, matches));
-            wm_content.setText((wm_content.getText().equals(null)? matches.get(0) : wm_content.getText()+" "+matches.get(0)));
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+//            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+//            Log.e(TAG, matches.toString());
+////                 resultList.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, matches));
+//            wm_content.setText((wm_content.getText().equals(null)? matches.get(0) : wm_content.getText()+" "+matches.get(0)));
+//        }
+//        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
