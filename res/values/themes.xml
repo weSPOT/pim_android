@@ -98,6 +98,11 @@
     </style>
 
 
+    <style name="CustomTheme.ActionBar.ListItem" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="android:textColor">@color/app.base.white</item>
+    </style>
+
+
     <!--<style name="CustomActionBarTransparentTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">-->
     <!--<item name="android:actionBarStyle">@style/MyActionBar</item>-->
     <!--<item name="android:windowActionBarOverlay">true</item>-->

@@ -25,4 +25,12 @@
               android:layout_below="@+id/data_collection_tasks_description_list"
               />
 
+    <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/content_images"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/data_collection_tasks_description_list"
+            android:layout_height="match_parent" >
+
+    </RelativeLayout>
 </RelativeLayout>

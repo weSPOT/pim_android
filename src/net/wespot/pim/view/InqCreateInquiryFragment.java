@@ -63,8 +63,7 @@ import java.util.*;
  * Create a new inquiry
  */
 @SuppressLint("NewApi")
-public class InqCreateInquiryFragment extends Fragment implements LocationListener, GooglePlayServicesClient.ConnectionCallbacks,
-        GooglePlayServicesClient.OnConnectionFailedListener{
+public class InqCreateInquiryFragment extends Fragment{
 
     public static final String INQUIRY_ID = "object";
 
@@ -85,7 +84,7 @@ public class InqCreateInquiryFragment extends Fragment implements LocationListen
     private EditText wm_date;
     private EditText wm_time;
     private ImageView wm_clear;
-    public EditText wm_location;
+//    public EditText wm_location;
     public ImageButton wm_save;
     public ImageButton wm_cancel;
     public Spinner wm_visibility;
@@ -93,14 +92,14 @@ public class InqCreateInquiryFragment extends Fragment implements LocationListen
     public RadioButton wm_membership_open;
     public RadioButton wm_membership_closed;
     // A request to connect to Location Services
-    private LocationRequest mLocationRequest;
+//    private LocationRequest mLocationRequest;
 
     // Stores the current instantiation of the location client in this object
-    private LocationClient mLocationClient;
+//    private LocationClient mLocationClient;
     // Note if updates have been turned on. Starts out as "false"; is set to "true" in the
     // method handleRequestSuccess of LocationUpdateReceiver.
     boolean mUpdatesRequested = false;
-    public ProgressBar wm_progress_bar;
+//    public ProgressBar wm_progress_bar;
 
     private class CreateInquiryObject {
         public InquiryLocalObject inquiry;
@@ -115,9 +114,9 @@ public class InqCreateInquiryFragment extends Fragment implements LocationListen
 
         wm_date = (EditText) rootView.findViewById(R.id.wonder_moment_date);
         wm_time = (EditText) rootView.findViewById(R.id.wonder_moment_time);
-        wm_location = (EditText) rootView.findViewById(R.id.wonder_moment_location);
+//        wm_location = (EditText) rootView.findViewById(R.id.wonder_moment_location);
         wm_clear = (ImageView) rootView.findViewById(R.id.wonder_moment_clear);
-        wm_progress_bar = (ProgressBar) rootView.findViewById(R.id.wonder_moment_progress_location);
+//        wm_progress_bar = (ProgressBar) rootView.findViewById(R.id.wonder_moment_progress_location);
         wm_membership_open = (RadioButton) rootView.findViewById(R.id.wonder_moment_membership_open);
         wm_membership_closed = (RadioButton) rootView.findViewById(R.id.wonder_moment_membership_closed);
 //        wm_visibility = (Spinner) rootView.findViewById(R.id.wonder_moment_visibility);
@@ -192,12 +191,6 @@ public class InqCreateInquiryFragment extends Fragment implements LocationListen
         List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
         if (activities.size() == 0) {
             Toast.makeText(getActivity(), "Recognizer Not Found", 1000).show();
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-
-           setManagerLocation();
-
         }
 
         // Create inquiry
@@ -279,44 +272,6 @@ public class InqCreateInquiryFragment extends Fragment implements LocationListen
         ARL.eventBus.unregister(this);
     }
 
-    private void setManagerLocation() {
-        wm_location.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction())
-                {
-                    case MotionEvent.ACTION_DOWN:
-                        Log.d(TAG, "Click to start to find location");
-                        startFindingLocation();
-                        break;
-                }
-                return false;
-            }
-        });
-
-        /* Retrieving location */
-
-        // Create a new global location parameters object
-        mLocationRequest = LocationRequest.create();
-
-        /*
-         * Set the update interval
-         */
-        mLocationRequest.setInterval(LocationUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
-
-        // Use high accuracy
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        // Set the interval ceiling to one minute
-        mLocationRequest.setFastestInterval(LocationUtils.FAST_INTERVAL_CEILING_IN_MILLISECONDS);
-
-        // Note that location updates are off until the user turns them on
-        mUpdatesRequested = false;
-
-        mLocationClient = new LocationClient(getActivity(), this, this);
-
-        Log.e(TAG, "Start to find location");
-    }
 
     private void setDataTime() {
         Calendar cal = Calendar.getInstance();
@@ -360,28 +315,6 @@ public class InqCreateInquiryFragment extends Fragment implements LocationListen
         });
     }
 
-    public void startFindingLocation() {
-
-        // In Gingerbread and later, use Geocoder.isPresent() to see if a geocoder is available.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD && !Geocoder.isPresent()) {
-            // No geocoder is present. Issue an error message
-            Toast.makeText(getActivity(), R.string.wonder_moment_no_geocoder_available, Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        if (servicesConnected()) {
-
-            // Get the current location
-            Location currentLocation = mLocationClient.getLastLocation();
-
-            // Turn the indefinite activity indicator on
-            wm_progress_bar.setVisibility(View.VISIBLE);
-
-            // Start the background task
-            (new GetAddressTask(getActivity())).execute(currentLocation);
-        }
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_inquiry, menu);
@@ -401,89 +334,6 @@ public class InqCreateInquiryFragment extends Fragment implements LocationListen
             wm_content.setText((wm_content.getText().equals(null)? matches.get(0) : wm_content.getText()+" "+matches.get(0)));
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        // Report to the UI that the location was updated
-//            mConnectionStatus.setText(R.string.location_updated);
-
-        // In the UI, set the latitude and longitude to the value received
-//            wm_location.setText(LocationUtils.getLatLng(getActivity(), location));
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-            /*
-            * Connect the client. Don't re-start any requests here;
-            * instead, wait for onResume()
-            */
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            mLocationClient.connect();
-        }
-    }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        if (mUpdatesRequested) {
-            startPeriodicUpdates();
-        }
-    }
-
-    private void startPeriodicUpdates() {
-        mLocationClient.requestLocationUpdates(mLocationRequest, (com.google.android.gms.location.LocationListener) getActivity());
-    }
-
-    @Override
-    public void onDisconnected() {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
-
-    private boolean servicesConnected() {
-
-        // Check that Google Play services is available
-        int resultCode =
-                GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
-
-        // If Google Play services is available
-        if (ConnectionResult.SUCCESS == resultCode) {
-            // In debug mode, log the status
-            Log.d(LocationUtils.APPTAG, getString(R.string.wonder_moment_play_services_available));
-
-            // Continue
-            return true;
-            // Google Play services was not available for some reason
-        } else {
-            // Display an error dialog
-            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(), 0);
-//                if (dialog != null) {
-//                    ErrorDialogFragment errorFragment = new ErrorDialogFragment();
-//                    errorFragment.setDialog(dialog);
-//                    errorFragment.show(getSupportFragmentManager(), LocationUtils.APPTAG);
-//                }
-            return false;
-        }
     }
 
     public class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
@@ -535,124 +385,272 @@ public class InqCreateInquiryFragment extends Fragment implements LocationListen
         }
 
     }
-    protected class GetAddressTask extends AsyncTask<Location, Void, String> {
+
+    //    private void setManagerLocation() {
+//        wm_location.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                switch (motionEvent.getAction())
+//                {
+//                    case MotionEvent.ACTION_DOWN:
+//                        Log.d(TAG, "Click to start to find location");
+//                        startFindingLocation();
+//                        break;
+//                }
+//                return false;
+//            }
+//        });
+//
+//        /* Retrieving location */
+//
+//        // Create a new global location parameters object
+//        mLocationRequest = LocationRequest.create();
+//
+//        /*
+//         * Set the update interval
+//         */
+//        mLocationRequest.setInterval(LocationUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
+//
+//        // Use high accuracy
+//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//
+//        // Set the interval ceiling to one minute
+//        mLocationRequest.setFastestInterval(LocationUtils.FAST_INTERVAL_CEILING_IN_MILLISECONDS);
+//
+//        // Note that location updates are off until the user turns them on
+//        mUpdatesRequested = false;
+//
+//        mLocationClient = new LocationClient(getActivity(), this, this);
+//
+//        Log.e(TAG, "Start to find location");
+//    }
 
 
-        // Store the context passed to the AsyncTask when the system instantiates it.
-        Context localContext;
+//    public void startFindingLocation() {
+//
+//        // In Gingerbread and later, use Geocoder.isPresent() to see if a geocoder is available.
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD && !Geocoder.isPresent()) {
+//            // No geocoder is present. Issue an error message
+//            Toast.makeText(getActivity(), R.string.wonder_moment_no_geocoder_available, Toast.LENGTH_LONG).show();
+//            return;
+//        }
+//
+//        if (servicesConnected()) {
+//
+//            // Get the current location
+//            Location currentLocation = mLocationClient.getLastLocation();
+//
+//            // Turn the indefinite activity indicator on
+//            wm_progress_bar.setVisibility(View.VISIBLE);
+//
+//            // Start the background task
+//            (new GetAddressTask(getActivity())).execute(currentLocation);
+//        }
+//    }
 
-        // Constructor called by the system to instantiate the task
-        public GetAddressTask(Context context) {
 
-            // Required by the semantics of AsyncTask
-            super();
+//    @Override
+//    public void onLocationChanged(Location location) {
+//        // Report to the UI that the location was updated
+////            mConnectionStatus.setText(R.string.location_updated);
+//
+//        // In the UI, set the latitude and longitude to the value received
+////            wm_location.setText(LocationUtils.getLatLng(getActivity(), location));
+//    }
 
-            // Set a Context for the background task
-            localContext = context;
-        }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//            /*
+//            * Connect the client. Don't re-start any requests here;
+//            * instead, wait for onResume()
+//            */
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+//            mLocationClient.connect();
+//        }
+//    }
 
-        /**
-         * Get a geocoding service instance, pass latitude and longitude to it, format the returned
-         * address, and return the address to the UI thread.
-         */
-        @Override
-        protected String doInBackground(Location... params) {
-            /*
-             * Get a new geocoding service instance, set for localized addresses. This example uses
-             * android.location.Geocoder, but other geocoders that conform to address standards
-             * can also be used.
-             */
-            Geocoder geocoder = new Geocoder(localContext, Locale.getDefault());
+//    @Override
+//    public void onStatusChanged(String s, int i, Bundle bundle) {
+//
+//    }
+//
+//    @Override
+//    public void onProviderEnabled(String s) {
+//
+//    }
+//
+//    @Override
+//    public void onProviderDisabled(String s) {
+//
+//    }
+//
+//    @Override
+//    public void onConnected(Bundle bundle) {
+//        if (mUpdatesRequested) {
+//            startPeriodicUpdates();
+//        }
+//    }
 
-            // Get the current location from the input parameter list
-            Location location = params[0];
+//    private void startPeriodicUpdates() {
+//        mLocationClient.requestLocationUpdates(mLocationRequest, (com.google.android.gms.location.LocationListener) getActivity());
+//    }
 
-            // Create a list to contain the result address
-            List <Address> addresses = null;
+//    @Override
+//    public void onDisconnected() {
+//
+//    }
+//
+//    @Override
+//    public void onConnectionFailed(ConnectionResult connectionResult) {
+//
+//    }
 
-            // Try to get an address for the current location. Catch IO or network problems.
-            try {
+//    private boolean servicesConnected() {
+//
+//        // Check that Google Play services is available
+//        int resultCode =
+//                GooglePlayServicesUtil.isGooglePlayServicesAvailable(getActivity());
+//
+//        // If Google Play services is available
+//        if (ConnectionResult.SUCCESS == resultCode) {
+//            // In debug mode, log the status
+//            Log.d(LocationUtils.APPTAG, getString(R.string.wonder_moment_play_services_available));
+//
+//            // Continue
+//            return true;
+//            // Google Play services was not available for some reason
+//        } else {
+//            // Display an error dialog
+//            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(), 0);
+////                if (dialog != null) {
+////                    ErrorDialogFragment errorFragment = new ErrorDialogFragment();
+////                    errorFragment.setDialog(dialog);
+////                    errorFragment.show(getSupportFragmentManager(), LocationUtils.APPTAG);
+////                }
+//            return false;
+//        }
+//    }
 
-                /*
-                 * Call the synchronous getFromLocation() method with the latitude and
-                 * longitude of the current location. Return at most 1 address.
-                 */
-                addresses = geocoder.getFromLocation(location.getLatitude(),
-                        location.getLongitude(), 1
-                );
 
-                // Catch network or other I/O problems.
-            } catch (IOException exception1) {
-
-                // Log an error and return an error message
-                Log.e(LocationUtils.APPTAG, String.valueOf(R.string.wonder_moment_IO_Exception_getFromLocation));
-
-                // print the stack trace
-                exception1.printStackTrace();
-
-                // Return an error message
-                return String.valueOf((R.string.wonder_moment_IO_Exception_getFromLocation));
-
-                // Catch incorrect latitude or longitude values
-            } catch (IllegalArgumentException exception2) {
-
-                // Construct a message containing the invalid arguments
-                String errorString = localContext.getString(
-                        R.string.wonder_moment_illegal_argument_exception,
-                        location.getLatitude(),
-                        location.getLongitude()
-                );
-                // Log the error and print the stack trace
-                Log.e(LocationUtils.APPTAG, errorString);
-                exception2.printStackTrace();
-
-                //
-                return errorString;
-            }
-            // If the reverse geocode returned an address
-            if (addresses != null && addresses.size() > 0) {
-
-                // Get the first address
-                Address address = addresses.get(0);
-
-                // Format the first line of address
-                String addressText = localContext.getString(R.string.wonder_moment_address_output_string,
-
-                        // If there's a street address, add it
-                        address.getMaxAddressLineIndex() > 0 ?
-                                address.getAddressLine(0) : "",
-
-                        // Locality is usually a city
-                        address.getLocality(),
-
-                        // The country of the address
-                        address.getCountryName()
-                );
-
-                // Return the text
-                return addressText;
-
-                // If there aren't any addresses, post a message
-            } else {
-                return localContext.getString(R.string.wonder_moment_no_address_found);
-            }
-        }
-
-        /**
-         * A method that's called once doInBackground() completes. Set the text of the
-         * UI element that displays the address. This method runs on the UI thread.
-         */
-        @Override
-        protected void onPostExecute(String address) {
-
-            // Turn off the progress bar
-            wm_progress_bar.setVisibility(View.GONE);
-
-            // Set the address in the UI
-            wm_location.setText(address);
-        }
-
-    }
+//    protected class GetAddressTask extends AsyncTask<Location, Void, String> {
+//
+//
+//        // Store the context passed to the AsyncTask when the system instantiates it.
+//        Context localContext;
+//
+//        // Constructor called by the system to instantiate the task
+//        public GetAddressTask(Context context) {
+//
+//            // Required by the semantics of AsyncTask
+//            super();
+//
+//            // Set a Context for the background task
+//            localContext = context;
+//        }
+//
+//        /**
+//         * Get a geocoding service instance, pass latitude and longitude to it, format the returned
+//         * address, and return the address to the UI thread.
+//         */
+//        @Override
+//        protected String doInBackground(Location... params) {
+//            /*
+//             * Get a new geocoding service instance, set for localized addresses. This example uses
+//             * android.location.Geocoder, but other geocoders that conform to address standards
+//             * can also be used.
+//             */
+//            Geocoder geocoder = new Geocoder(localContext, Locale.getDefault());
+//
+//            // Get the current location from the input parameter list
+//            Location location = params[0];
+//
+//            // Create a list to contain the result address
+//            List <Address> addresses = null;
+//
+//            // Try to get an address for the current location. Catch IO or network problems.
+//            try {
+//
+//                /*
+//                 * Call the synchronous getFromLocation() method with the latitude and
+//                 * longitude of the current location. Return at most 1 address.
+//                 */
+//                addresses = geocoder.getFromLocation(location.getLatitude(),
+//                        location.getLongitude(), 1
+//                );
+//
+//                // Catch network or other I/O problems.
+//            } catch (IOException exception1) {
+//
+//                // Log an error and return an error message
+//                Log.e(LocationUtils.APPTAG, String.valueOf(R.string.wonder_moment_IO_Exception_getFromLocation));
+//
+//                // print the stack trace
+//                exception1.printStackTrace();
+//
+//                // Return an error message
+//                return String.valueOf((R.string.wonder_moment_IO_Exception_getFromLocation));
+//
+//                // Catch incorrect latitude or longitude values
+//            } catch (IllegalArgumentException exception2) {
+//
+//                // Construct a message containing the invalid arguments
+//                String errorString = localContext.getString(
+//                        R.string.wonder_moment_illegal_argument_exception,
+//                        location.getLatitude(),
+//                        location.getLongitude()
+//                );
+//                // Log the error and print the stack trace
+//                Log.e(LocationUtils.APPTAG, errorString);
+//                exception2.printStackTrace();
+//
+//                //
+//                return errorString;
+//            }
+//            // If the reverse geocode returned an address
+//            if (addresses != null && addresses.size() > 0) {
+//
+//                // Get the first address
+//                Address address = addresses.get(0);
+//
+//                // Format the first line of address
+//                String addressText = localContext.getString(R.string.wonder_moment_address_output_string,
+//
+//                        // If there's a street address, add it
+//                        address.getMaxAddressLineIndex() > 0 ?
+//                                address.getAddressLine(0) : "",
+//
+//                        // Locality is usually a city
+//                        address.getLocality(),
+//
+//                        // The country of the address
+//                        address.getCountryName()
+//                );
+//
+//                // Return the text
+//                return addressText;
+//
+//                // If there aren't any addresses, post a message
+//            } else {
+//                return localContext.getString(R.string.wonder_moment_no_address_found);
+//            }
+//        }
+//
+//        /**
+//         * A method that's called once doInBackground() completes. Set the text of the
+//         * UI element that displays the address. This method runs on the UI thread.
+//         */
+//        @Override
+//        protected void onPostExecute(String address) {
+//
+//            // Turn off the progress bar
+//            wm_progress_bar.setVisibility(View.GONE);
+//
+//            // Set the address in the UI
+//            wm_location.setText(address);
+//        }
+//
+//    }
 
 }
 

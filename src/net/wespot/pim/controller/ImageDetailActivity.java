@@ -41,12 +41,7 @@ import net.wespot.pim.utils.images.Utils;
 import net.wespot.pim.view.InqImageDetailFragment;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.dao.gen.ResponseLocalObject;
-//import com.example.android.bitmapfun.BuildConfig;
-//import com.example.android.bitmapfun.R;
-//import com.example.android.bitmapfun.provider.Images;
-//import com.example.android.bitmapfun.util.ImageCache;
-//import com.example.android.bitmapfun.util.ImageFetcher;
-//import com.example.android.bitmapfun.util.Utils;
+
 
 public class ImageDetailActivity extends FragmentActivity implements OnClickListener {
     private static final String IMAGE_CACHE_DIR = "images";
@@ -73,7 +68,10 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
         if (savedInstanceState != null) {
             INQ.init(this);
             INQ.accounts.syncMyAccountDetails();
-            INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(savedInstanceState.getLong("currentInquiry")));
+            INQ.inquiry.setCurrentInquiry(
+                    DaoConfiguration.getInstance().
+                            getInquiryLocalObjectDao().
+                            load(savedInstanceState.getLong("currentInquiry")));
         }
 
         super.onCreate(savedInstanceState);

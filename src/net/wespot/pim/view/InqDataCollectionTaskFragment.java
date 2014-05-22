@@ -24,6 +24,7 @@ package net.wespot.pim.view;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +36,7 @@ import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.ResponsesLazyListAdapter;
 import net.wespot.pim.controller.ImageDetailActivity;
+import net.wespot.pim.controller.ImageGridFragment;
 import net.wespot.pim.utils.layout._ActBar_FragmentActivity;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.dataCollection.DataCollectionManager;
@@ -94,19 +96,30 @@ public class InqDataCollectionTaskFragment extends _ActBar_FragmentActivity impl
             data_collection_tasks_title.setText(genObject.getTitle());
             data_collection_tasks_description.setText(genObject.getDescription());
 
-            data_collection_tasks_items = (ListView) findViewById(R.id.data_collection_tasks_items);
-            datAdapter =  new ResponsesLazyListAdapter(this, generalItemId);
+//            data_collection_tasks_items = (ListView) findViewById(R.id.data_collection_tasks_items);
+//            datAdapter =  new ResponsesLazyListAdapter(this, generalItemId);
+//
+//            datAdapter.setOnListItemClickCallback(this);
+//            data_collection_tasks_items.setAdapter(datAdapter);
 
-            datAdapter.setOnListItemClickCallback(this);
-            data_collection_tasks_items.setAdapter(datAdapter);
+            if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
+                final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+                Bundle data = new Bundle();
+                data.putLong("generalItemId", generalItemId);
+
+                ImageGridFragment frag = new ImageGridFragment();
+                frag.setArguments(data);
+
+                ft.add(R.id.content_images, frag, TAG);
+                ft.commit();
+            }
 
             if (!(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1)) {
                 if (!(Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH)){
                     getActionBar().setTitle(getResources().getString(R.string.actionbar_list_data_collection_task));
                 }
             }
-
-
         }
     }
 
@@ -132,13 +145,11 @@ public class InqDataCollectionTaskFragment extends _ActBar_FragmentActivity impl
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_data_collection_image:
-//                Toast.makeText(this, "Display options for capture data", Toast.LENGTH_SHORT).show();
                 man_pic.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
                 man_pic.setGeneralItem(genObject);
                 man_pic.takeDataSample();
                 break;
             case R.id.menu_data_collection_video:
-//                Toast.makeText(this, "Display options for capture data", Toast.LENGTH_SHORT).show();
                 man_vid.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
                 man_vid.setGeneralItem(genObject);
                 man_vid.takeDataSample();
@@ -160,17 +171,6 @@ public class InqDataCollectionTaskFragment extends _ActBar_FragmentActivity impl
     public boolean setOnLongClickListener(View v, int position, ResponseLocalObject object) {
         return false;
     }
-
-//    private class onListDataCollectionTasksClick implements android.widget.AdapterView.OnItemClickListener {
-//        @Override
-//        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//            Intent intent = new Intent(getApplicationContext(), ImageDetailActivity.class);
-//            intent.putExtra("DataCollectionTask", datAdapter.getItem(i).getId());
-//            intent.putExtra("DataCollectionTaskGeneralItemId", generalItemId);
-//            intent.putExtra(ImageDetailActivity.EXTRA_IMAGE, i);
-//            startActivity(intent);
-//        }
-//    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 

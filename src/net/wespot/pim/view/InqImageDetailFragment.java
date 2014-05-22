@@ -63,8 +63,6 @@ public class InqImageDetailFragment extends Fragment {
         args.putString(IMAGE_DATA_EXTRA, res.getUriAsString());
         f.setArguments(args);
 
-
-
         return f;
     }
 

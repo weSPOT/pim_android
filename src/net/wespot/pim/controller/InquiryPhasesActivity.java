@@ -119,12 +119,14 @@ public class InquiryPhasesActivity extends _ActBar_FragmentActivity implements V
                     ).setOnListItemClickCallback(this);
                     break;
                 case Constants.ID_QUESTION:
-                    buttonDelegator.buttonGenerator(layout,
-                            Constants.INQUIRY_ID_PHASES_LIST.get(i),
-                            getResources().getString(Constants.INQUIRY_PHASES_LIST.get(i)),
-                            String.valueOf(""),
-                            Constants.INQUIRY_ICON_PHASES_LIST.get(i)
-                    ).setOnListItemClickCallback(this);
+                    if (INQ.config.getProperty("question_phase").equals("true")){
+                        buttonDelegator.buttonGenerator(layout,
+                                Constants.INQUIRY_ID_PHASES_LIST.get(i),
+                                getResources().getString(Constants.INQUIRY_PHASES_LIST.get(i)),
+                                String.valueOf(""),
+                                Constants.INQUIRY_ICON_PHASES_LIST.get(i)
+                        ).setOnListItemClickCallback(this);
+                    }
                     break;
                 default:
                     break;

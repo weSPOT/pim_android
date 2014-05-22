@@ -52,6 +52,9 @@
     <string name="menu_logout">Logout</string>
     <string name="menu_data_collection_collect_data_image">Image</string>
     <string name="menu_data_collection_collect_data_video">Video</string>
+    <string name="menu_data_collection_collect_data_audio">Audio</string>
+    <string name="menu_data_collection_collect_data_text">Text</string>
+    <string name="menu_data_collection_collect_data_numeric">Numeric data</string>
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

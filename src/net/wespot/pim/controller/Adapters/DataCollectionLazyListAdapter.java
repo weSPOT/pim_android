@@ -54,6 +54,8 @@ public class DataCollectionLazyListAdapter extends AbstractGeneralItemsLazyListA
     public void bindView(View view, Context context,  GeneralItemLocalObject item) {
         TextView firstLineView =(TextView) view.findViewById(R.id.name_entry_data_colletion_list);
         firstLineView.setText(item.getTitle());
+        TextView secondlineView =(TextView) view.findViewById(R.id.inquiry_entry_data_colletion_list);
+        secondlineView.setText(item.getGameLocalObject().getTitle());
         ImageView icon = (ImageView) view.findViewById(R.id.inquiry_entry_data_collection_icon);
         icon.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_task_explore));
     }

@@ -27,6 +27,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.view.*;
+import org.celstec.arlearn.delegators.INQ;
 
 /**
  * A {@link android.support.v4.app.FragmentStatePagerAdapter} that returns a fragment
@@ -54,8 +55,10 @@ public class InquiryPagerAdapter extends FragmentPagerAdapter {
                 frag = new InqDataCollectionFragment();
                 return frag;
             case Constants.ID_QUESTION:
-                frag = new InqQuestionFragment();
-                return frag;
+                if (INQ.config.getProperty("question_phase").equals("true")){
+                    frag = new InqQuestionFragment();
+                    return frag;
+                }
             default:
                 // The other sections of the app are dummy placeholders.
                 frag = new DemoObjectFragment();
@@ -69,6 +72,6 @@ public class InquiryPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         // For this contrived example, we have a 100-object collection.
 //        return 6;
-        return 3;
+        return Integer.parseInt(INQ.config.getProperty("number_phases"));
     }
 }
