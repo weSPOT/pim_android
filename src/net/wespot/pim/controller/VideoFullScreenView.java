@@ -61,4 +61,6 @@ public class VideoFullScreenView extends Activity {
         vidDisplay.getHolder().getSurface().release();
         super.onDestroy();
     }
+
+
 }
