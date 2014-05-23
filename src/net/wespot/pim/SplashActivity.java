@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -39,6 +40,7 @@ import org.celstec.arlearn2.android.delegators.ARL;
  */
 public class SplashActivity extends FragmentActivity {
 
+    private static final String TAG = "SplashActivity";
     private ImageView login_wespot;
     private ImageView login_google;
     private ImageView login_facebook;
@@ -54,6 +56,12 @@ public class SplashActivity extends FragmentActivity {
         INQ.init(this);
 
         setContentView(R.layout.activity_splash);
+
+        if (!INQ.accounts.isAuthenticated()){
+            Log.e(TAG, "OUT");
+        }else{
+            Log.e(TAG, "IN");
+        }
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
             getActionBar().hide();
