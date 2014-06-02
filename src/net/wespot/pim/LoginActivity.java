@@ -6,11 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -18,10 +14,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.Toast;
 import daoBase.DaoConfiguration;
-import net.wespot.pim.controller.Adapters.InitialPagerAdapter;
 import net.wespot.pim.utils.Constants;
-import net.wespot.pim.utils.layout.CirclePageIndicator;
-import net.wespot.pim.utils.layout.PageIndicator;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 
@@ -112,7 +105,6 @@ public class LoginActivity extends FragmentActivity {
 
                             // Remove all inquiries and sync the new ones.
                             DaoConfiguration.getInstance().getInquiryLocalObjectDao().deleteAll();
-                            INQ.inquiry.syncInquiries();
 
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);

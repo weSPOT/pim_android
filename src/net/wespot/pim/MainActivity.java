@@ -16,6 +16,7 @@ import net.wespot.pim.utils.layout.ViewItemClickInterface;
 import net.wespot.pim.view.*;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
+import org.celstec.arlearn2.android.events.MyAccount;
 import org.celstec.events.InquiryEvent;
 
 
@@ -42,7 +43,6 @@ public class MainActivity extends MainActionBarFragmentActivity implements ViewI
 
         ARL.eventBus.register(this);
 
-        INQ.inquiry.syncInquiries();
         number_inquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
 
         LinearLayout listMainMenu = (LinearLayout) findViewById(R.id.content);
@@ -82,6 +82,10 @@ public class MainActivity extends MainActionBarFragmentActivity implements ViewI
 
     private void onEventBackgroundThread(InquiryEvent inquiryObject){
         number_inquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
+    }
+
+    private void onEventBackgroundThread(MyAccount myAccount){
+        INQ.inquiry.syncInquiries();
     }
 
     @Override
