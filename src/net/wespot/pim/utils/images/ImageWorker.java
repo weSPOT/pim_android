@@ -324,6 +324,8 @@ public abstract class ImageWorker {
             }
         }
 
+
+
         @Override
         protected void onCancelled(BitmapDrawable value) {
             super.onCancelled(value);

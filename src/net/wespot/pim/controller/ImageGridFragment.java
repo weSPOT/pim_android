@@ -35,7 +35,12 @@ import net.wespot.pim.utils.images.ImageCache.ImageCacheParams;
 import net.wespot.pim.utils.images.ImageFetcher;
 import net.wespot.pim.utils.images.Utils;
 import net.wespot.pim.utils.layout.RecyclingImageView;
+import org.celstec.arlearn.delegators.INQ;
+import org.celstec.arlearn2.android.delegators.ARL;
+import org.celstec.arlearn2.android.events.FileDownloadStatus;
+import org.celstec.dao.gen.GameLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
+import org.celstec.events.InquiryEvent;
 
 /**
  * The main fragment that powers the ImageGridActivity screen. Fairly straight forward GridView
@@ -44,7 +49,7 @@ import org.celstec.dao.gen.ResponseLocalObject;
  * cache is retained over configuration changes like orientation change so the images are populated
  * quickly if, for example, the user rotates the device.
  */
-public class ImageGridFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class    ImageGridFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static final String TAG = "ImageGridFragment";
     private static final String IMAGE_CACHE_DIR = "thumbs";
 
@@ -53,6 +58,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
     private ImageAdapter mAdapter;
     private ImageFetcher mImageFetcher;
     private long generalItemId;
+//    private View v = null;
 
     /**
      * Empty constructor as per the Fragment documentation
@@ -65,6 +71,8 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        ARL.eventBus.register(this);
 
         Bundle extras = getArguments();
         generalItemId = extras.getLong("generalItemId");
@@ -82,6 +90,22 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         mImageFetcher = new ImageFetcher(getActivity(), mImageThumbSize);
         mImageFetcher.setLoadingImage(R.drawable.empty_photo);
         mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
+    }
+
+
+    private void onEventAsync(final FileDownloadStatus fileDownloadStatus){
+        Log.e(TAG, fileDownloadStatus.getFileName()+" "
+                +fileDownloadStatus.getBytesDownloaded()+"/"+fileDownloadStatus.getAmountOfBytes());
+        if (fileDownloadStatus.getStatus() == FileDownloadStatus.FINISHED){
+            // Run code on UIThread
+//            getActivity().runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Log.e(TAG, fileDownloadStatus.getFileName()+" - downloaded");
+//                    mAdapter.notifyDataSetChanged();
+//                }
+//            });
+        }
     }
 
     @Override
@@ -164,6 +188,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
     @Override
     public void onDestroy() {
         super.onDestroy();
+        ARL.eventBus.unregister(this);
         mImageFetcher.closeCache();
     }
 
@@ -227,6 +252,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 //            }
         }
 
+
         @Override
         public int getCount() {
             // If columns have yet to be determined, return no items
@@ -247,7 +273,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
             return position < mNumColumns ?
                     null : DaoConfiguration.getInstance()
                     .getResponseLocalObjectDao()
-                    ._queryGeneralItemLocalObject_Responses(generalItemId).get(position - mNumColumns).getUriAsString();
+                    ._queryGeneralItemLocalObject_Responses(generalItemId).get(position - mNumColumns).getThumbnailUriAsString();
         }
 
         @Override
@@ -287,10 +313,13 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
             // Now handle the main ImageView thumbnails
             ImageView imageView;
             if (convertView == null) { // if it's not recycled, instantiate and initialize
+//                Log.e(TAG, "Convert view null");
+
                 imageView = new RecyclingImageView(mContext);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setLayoutParams(mImageViewLayoutParams);
             } else { // Otherwise re-use the converted view
+//                Log.e(TAG, "Convert view no null");
                 imageView = (ImageView) convertView;
             }
 
@@ -299,14 +328,22 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
                 imageView.setLayoutParams(mImageViewLayoutParams);
             }
 
+
             // Finally load the image asynchronously into the ImageView, this also takes care of
             // setting a placeholder image while the background thread runs
+//            Log.e(TAG, "Current grid element: "+DaoConfiguration.getInstance()
+//                    .getResponseLocalObjectDao()
+//                    ._queryGeneralItemLocalObject_Responses(generalItemId)
+//                    .get(position - mNumColumns).getThumbnailUriAsString());
             mImageFetcher.loadImage(DaoConfiguration.getInstance()
                     .getResponseLocalObjectDao()
                     ._queryGeneralItemLocalObject_Responses(generalItemId)
-                    .get(position - mNumColumns).getUriAsString(), imageView);
+                    .get(position - mNumColumns).getThumbnailUriAsString(), imageView);
+
             return imageView;
         }
+
+
 
         /**
          * Sets the item height. Useful for when we know the column width so the height can be set
@@ -333,4 +370,6 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
             return mNumColumns;
         }
     }
+
+
 }

@@ -55,6 +55,8 @@ public class SplashActivity extends FragmentActivity {
 
         INQ.init(this);
 
+        ARL.accounts.syncMyAccountDetails();
+
         setContentView(R.layout.activity_splash);
 
         if (!INQ.accounts.isAuthenticated()){

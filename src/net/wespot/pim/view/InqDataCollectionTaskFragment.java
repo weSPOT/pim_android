@@ -83,7 +83,7 @@ public class InqDataCollectionTaskFragment extends _ActBar_FragmentActivity impl
 
         Bundle extras = getIntent().getExtras();
         if (extras != null){
-            Log.e(TAG,extras.getLong("DataCollectionTask")+" testing");
+            Log.d(TAG,"Entering in data collection number: "+extras.getLong("DataCollectionTask")+"");
 
             generalItemId = extras.getLong("DataCollectionTask");
 
@@ -95,12 +95,6 @@ public class InqDataCollectionTaskFragment extends _ActBar_FragmentActivity impl
 
             data_collection_tasks_title.setText(genObject.getTitle());
             data_collection_tasks_description.setText(genObject.getDescription());
-
-//            data_collection_tasks_items = (ListView) findViewById(R.id.data_collection_tasks_items);
-//            datAdapter =  new ResponsesLazyListAdapter(this, generalItemId);
-//
-//            datAdapter.setOnListItemClickCallback(this);
-//            data_collection_tasks_items.setAdapter(datAdapter);
 
             if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
                 final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

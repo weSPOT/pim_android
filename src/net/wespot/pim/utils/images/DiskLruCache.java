@@ -309,7 +309,12 @@ public final class DiskLruCache implements Closeable {
     }
 
     private void readJournal() throws IOException {
-        InputStream in = new BufferedInputStream(new FileInputStream(journalFile), IO_BUFFER_SIZE);
+        InputStream in = null;
+        FileInputStream fis = null;
+//        BufferedInputStream bis = null;
+
+        fis = new FileInputStream(journalFile);
+        in = new BufferedInputStream(fis, IO_BUFFER_SIZE);
         try {
             String magic = readAsciiLine(in);
             String version = readAsciiLine(in);
@@ -333,6 +338,7 @@ public final class DiskLruCache implements Closeable {
                 }
             }
         } finally {
+            closeQuietly(fis);
             closeQuietly(in);
         }
     }
@@ -784,12 +790,35 @@ public final class DiskLruCache implements Closeable {
          * IOExceptions.
          */
         public OutputStream newOutputStream(int index) throws IOException {
-            synchronized (DiskLruCache.this) {
-                if (entry.currentEditor != this) {
-                    throw new IllegalStateException();
+
+            FileOutputStream fos = null;
+            OutputStream os = null;
+
+            try {
+                synchronized (DiskLruCache.this) {
+                    if (entry.currentEditor != this) {
+                        throw new IllegalStateException();
+                    }
+
+                    fos = new FileOutputStream(entry.getDirtyFile(index));
+
+                    os = new FaultHidingOutputStream(fos);
+
+                    return os;
                 }
-                return new FaultHidingOutputStream(new FileOutputStream(entry.getDirtyFile(index)));
+            }finally {
+                closeQuietly(os);
+                closeQuietly(fos);
             }
+
+//            synchronized (DiskLruCache.this) {
+//                if (entry.currentEditor != this) {
+//                    throw new IllegalStateException();
+//                }
+//                return new FaultHidingOutputStream(new FileOutputStream(entry.getDirtyFile(index)));
+//            }
+
+
         }
 
         /**
@@ -797,10 +826,13 @@ public final class DiskLruCache implements Closeable {
          */
         public void set(int index, String value) throws IOException {
             Writer writer = null;
+            OutputStream ops = null;
             try {
-                writer = new OutputStreamWriter(newOutputStream(index), UTF_8);
+                ops = newOutputStream(index);
+                writer = new OutputStreamWriter(ops, UTF_8);
                 writer.write(value);
             } finally {
+                closeQuietly(ops);
                 closeQuietly(writer);
             }
         }

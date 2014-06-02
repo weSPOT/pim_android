@@ -254,8 +254,8 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
         private MyListener() {
             int real_number_elements = mAdapter.getCount();
 
-            Log.e(TAG, "Current element: "+1);
-            Log.e(TAG, "Number elements: "+real_number_elements);
+            Log.d(TAG, "Current element: "+1);
+            Log.d(TAG, "Number elements: "+real_number_elements);
 
             current_info.setText(1+" of "+real_number_elements);
 
@@ -271,8 +271,8 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
             int real_position = i+1;
             int real_number_elements = mAdapter.getCount();
 
-            Log.e(TAG, "Current element: "+real_position);
-            Log.e(TAG, "Number elements: " + real_number_elements);
+            Log.d(TAG, "Current element: "+real_position);
+            Log.d(TAG, "Number elements: " + real_number_elements);
             current_info.setText(real_position+" of "+real_number_elements);
         }
 

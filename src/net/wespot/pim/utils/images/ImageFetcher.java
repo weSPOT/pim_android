@@ -312,7 +312,7 @@ public class ImageFetcher extends ImageResizer {
             } while(bis.read(buf) != -1);
             return true;
         } catch (IOException e) {
-
+            Log.e(TAG, "Error in downloadUriToStream - " + e);
         } finally {
             try {
                 if (bis != null) bis.close();

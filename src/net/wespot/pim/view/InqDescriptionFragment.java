@@ -39,7 +39,6 @@ import org.celstec.dao.gen.InquiryLocalObject;
  */
 public class InqDescriptionFragment extends Fragment {
 
-
     private InquiryLocalObject inquiry;
 
     public InqDescriptionFragment() {

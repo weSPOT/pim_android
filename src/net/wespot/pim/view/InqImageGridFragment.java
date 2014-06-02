@@ -284,6 +284,9 @@ public class InqImageGridFragment extends Fragment implements AdapterView.OnItem
                 imageView.setLayoutParams(mImageViewLayoutParams);
             }
 
+            Log.e(TAG, "Load async: "+INQ.inquiry.getCurrentInquiry().
+                    getRunLocalObject().getResponses().get(position - mNumColumns));
+
             // Finally load the image asynchronously into the ImageView, this also takes care of
             // setting a placeholder image while the background thread runs
             mImageFetcher.loadImage(INQ.inquiry.getCurrentInquiry().

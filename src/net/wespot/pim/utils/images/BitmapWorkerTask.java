@@ -2,6 +2,7 @@ package net.wespot.pim.utils.images;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
@@ -28,6 +29,7 @@ import java.lang.ref.WeakReference;
 */
 public class BitmapWorkerTask extends android.os.AsyncTask<byte[], Void, Bitmap> {
 
+    private static final String TAG = "BitmapWorkerTask";
     private final WeakReference<ImageView> imageViewWeakReference;
     private byte[] resId;
 

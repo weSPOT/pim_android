@@ -96,7 +96,7 @@ public class InqImageDetailFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Log.e(TAG, "Current element: "+mImageUrl+" " + response.getUri()+" "+response.getUriAsString()+" "+response.isAudio()+" "+response.getType());
+        Log.d(TAG, "Current element: "+mImageUrl);
 
             if(!mImageUrl.contains(".jpg")){
             mPlayButtonView.setVisibility(View.VISIBLE);
