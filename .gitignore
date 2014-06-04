@@ -20,3 +20,4 @@ build/*
 assets/config.properties
 ./project.properties
 arlearn.pim.iml
+./arlearn.pim.iml
