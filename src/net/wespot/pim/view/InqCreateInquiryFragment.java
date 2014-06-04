@@ -51,6 +51,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationRequest;
 import org.celstec.arlearn.delegators.INQ;
+import org.celstec.arlearn2.android.db.PropertiesAdapter;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.client.InquiryClient;
 import org.celstec.dao.gen.InquiryLocalObject;
@@ -258,11 +259,17 @@ public class InqCreateInquiryFragment extends Fragment{
         // * int $vis (Visibility: 0 -> Inquiry members only, 1 -> logged in users, 2 -> Public)
         // int $membership (Membership: 0 -> Closed, 2 -> Open)
         // public void createInquiry(InquiryLocalObject inquiry, AccountLocalObject account, int visibility, int membership)
+        PropertiesAdapter pa = PropertiesAdapter.getInstance();
+        if (pa != null) {
+            String token = pa.getAuthToken();
+            if (token != null && ARL.isOnline()) {
+                InquiryClient.getInquiryClient().createInquiry(token, inquiryObject.inquiry, INQ.accounts.getLoggedInAccount(), TEMP_VISIBILITY, TEMP_MEMBERSHIP, true);
+                INQ.inquiry.syncInquiries();
+                getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+                getActivity().finish();
+            }
+        }
 
-        InquiryClient.getInquiryClient().createInquiry(inquiryObject.inquiry, INQ.accounts.getLoggedInAccount(), TEMP_VISIBILITY, TEMP_MEMBERSHIP, true);
-        INQ.inquiry.syncInquiries();
-        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-        getActivity().finish();
     }
 
     public void onDestroy(){
