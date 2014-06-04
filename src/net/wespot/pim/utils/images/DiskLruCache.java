@@ -791,32 +791,34 @@ public final class DiskLruCache implements Closeable {
          */
         public OutputStream newOutputStream(int index) throws IOException {
 
-            FileOutputStream fos = null;
-            OutputStream os = null;
-
-            try {
-                synchronized (DiskLruCache.this) {
-                    if (entry.currentEditor != this) {
-                        throw new IllegalStateException();
-                    }
-
-                    fos = new FileOutputStream(entry.getDirtyFile(index));
-
-                    os = new FaultHidingOutputStream(fos);
-
-                    return os;
-                }
-            }finally {
-                closeQuietly(os);
-                closeQuietly(fos);
-            }
-
-//            synchronized (DiskLruCache.this) {
-//                if (entry.currentEditor != this) {
-//                    throw new IllegalStateException();
+//            FileOutputStream fos = null;
+//            OutputStream os = null;
+//
+//            try {
+//                synchronized (DiskLruCache.this) {
+//                    if (entry.currentEditor != this) {
+//                        throw new IllegalStateException();
+//                    }
+//
+//                    fos = new FileOutputStream(entry.getDirtyFile(index));
+//
+//                    os = new FaultHidingOutputStream(fos);
+//
+//                    return os;
 //                }
-//                return new FaultHidingOutputStream(new FileOutputStream(entry.getDirtyFile(index)));
+//            }finally {
+//                closeQuietly(os);
+//                closeQuietly(fos);
 //            }
+//
+
+
+            synchronized (DiskLruCache.this) {
+                if (entry.currentEditor != this) {
+                    throw new IllegalStateException();
+                }
+                return new FaultHidingOutputStream(new FileOutputStream(entry.getDirtyFile(index)));
+            }
 
 
         }
