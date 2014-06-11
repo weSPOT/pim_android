@@ -25,40 +25,23 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.speech.RecognizerIntent;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import net.wespot.pim.R;
-import net.wespot.pim.utils.LocationUtils;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationRequest;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.db.PropertiesAdapter;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.client.InquiryClient;
 import org.celstec.dao.gen.InquiryLocalObject;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
 
 /**
  * Create a new inquiry
@@ -265,6 +248,7 @@ public class InqCreateInquiryFragment extends Fragment{
             if (token != null && ARL.isOnline()) {
                 InquiryClient.getInquiryClient().createInquiry(token, inquiryObject.inquiry, INQ.accounts.getLoggedInAccount(), TEMP_VISIBILITY, TEMP_MEMBERSHIP, true);
                 INQ.inquiry.syncInquiries();
+//                INQ.inquiry.syncDataCollectionTasks();
                 getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
                 getActivity().finish();
             }

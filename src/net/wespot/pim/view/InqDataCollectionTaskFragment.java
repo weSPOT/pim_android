@@ -21,6 +21,7 @@ package net.wespot.pim.view;
  * ****************************************************************************
  */
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -69,6 +70,7 @@ public class InqDataCollectionTaskFragment extends _ActBar_FragmentActivity impl
 
     ResponseLocalObject response;
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
