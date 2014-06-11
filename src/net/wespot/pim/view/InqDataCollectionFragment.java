@@ -31,7 +31,6 @@ import android.view.*;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.DataCollectionLazyListAdapter;
 import net.wespot.pim.utils.layout.NoticeDialogFragment;
@@ -82,8 +81,6 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
     @Override
     public void onResume() {
         super.onResume();
-        INQ.inquiry.syncDataCollectionTasks();
-
         addContentValidation();
     }
 
@@ -91,23 +88,24 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-
         View rootView = inflater.inflate(R.layout.fragment_data_collection, container, false);
         data_collection_tasks = (ListView) rootView.findViewById(R.id.data_collection_tasks);
         text_default = (TextView) rootView.findViewById(R.id.text_default);
         data_collection_tasks_title_list = (TextView) rootView.findViewById(R.id.data_collection_tasks_title_list);
         data_collection_tasks = (ListView) rootView.findViewById(R.id.data_collection_tasks);
 
-//        addContentValidation();
-
         return rootView;
     }
 
     private void addContentValidation() {
+
+        INQ.inquiry.syncDataCollectionTasks();
+
         if(INQ.inquiry.getCurrentInquiry().getRunLocalObject()!=null){
-            if (INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject()!=null){
-                GameLocalObject gameLocalObject = DaoConfiguration.getInstance().getGameLocalObjectDao().load(
-                        INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject().getId());
+
+            GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
+
+            if (gameLocalObject != null){
 
                 if (gameLocalObject.getGeneralItems().size() != 0){
                     INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
@@ -116,18 +114,18 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
                     data_collection_tasks.setAdapter(datAdapter);
                 }else{
                     Log.e(TAG, "There are no data collection tasks for this inquiry");
-                    data_collection_tasks_title_list.setVisibility(View.INVISIBLE);
-                    text_default.setVisibility(View.VISIBLE);
-                    text_default.setText(R.string.data_collection_task_no_created);
+//                    data_collection_tasks_title_list.setVisibility(View.INVISIBLE);
+//                    text_default.setVisibility(View.VISIBLE);
+//                    text_default.setText(R.string.data_collection_task_no_created);
                 }
             }else{
                 Log.e(TAG, "There is no game for this run.");
             }
         }else{
             Log.e(TAG, "Data collection task are not enabled on this inquiry");
-            data_collection_tasks_title_list.setVisibility(View.INVISIBLE);
-            text_default.setVisibility(View.VISIBLE);
-            text_default.setText(R.string.data_collection_task_no_enabled_created);
+//            data_collection_tasks_title_list.setVisibility(View.INVISIBLE);
+//            text_default.setVisibility(View.VISIBLE);
+//            text_default.setText(R.string.data_collection_task_no_enabled_created);
         }
     }
 
@@ -156,8 +154,6 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
                 create_new_data_collection();
                 break;
             case R.id.menu_refresh_data_collection:
-                INQ.inquiry.syncDataCollectionTasks();
-                INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
                 addContentValidation();
                 break;
         }

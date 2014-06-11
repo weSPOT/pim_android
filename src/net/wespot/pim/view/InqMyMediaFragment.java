@@ -23,26 +23,14 @@ package net.wespot.pim.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
-import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.DataCollectionLazyListAdapter;
-import net.wespot.pim.controller.Adapters.ResponsesLazyListAdapter;
-import net.wespot.pim.controller.ImageDetailActivity;
 import net.wespot.pim.utils.layout._ActBar_FragmentActivity;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
-import org.celstec.dao.gen.BadgeLocalObject;
-import org.celstec.dao.gen.GameLocalObject;
 import org.celstec.dao.gen.GeneralItemLocalObject;
-import org.celstec.dao.gen.InquiryLocalObject;
 
 /**
  * Fragment to display responses from a Data Collection Task (General Item)
@@ -51,8 +39,6 @@ public class InqMyMediaFragment extends _ActBar_FragmentActivity implements List
 
     private static final String TAG = "InqDataCollectionTaskFragment";
     private ListView data_collection_tasks;
-    private InquiryLocalObject inquiry;
-    private long generalItemId;
 
     private DataCollectionLazyListAdapter datAdapter;
 

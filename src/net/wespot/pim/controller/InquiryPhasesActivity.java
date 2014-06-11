@@ -160,7 +160,6 @@ public class InquiryPhasesActivity extends _ActBar_FragmentActivity implements V
                 "", R.drawable.ic_invite_friend
         ).setOnListItemClickCallback(new ClickInviteFriend());
 
-
         linkAddFriends.addView(layoutAddFriends);
     }
 
