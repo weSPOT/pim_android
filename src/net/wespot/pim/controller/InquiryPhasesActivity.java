@@ -32,6 +32,7 @@ import net.wespot.pim.utils.layout.ButtonDelegator;
 import net.wespot.pim.utils.layout.ViewItemClickInterface;
 import net.wespot.pim.utils.layout._ActBar_FragmentActivity;
 import org.celstec.arlearn.delegators.INQ;
+import org.celstec.dao.gen.GameLocalObject;
 
 public class InquiryPhasesActivity extends _ActBar_FragmentActivity implements ViewItemClickInterface {
 
@@ -151,8 +152,9 @@ public class InquiryPhasesActivity extends _ActBar_FragmentActivity implements V
 
     private void createDataCollectionButton(ButtonDelegator buttonDelegator, LinearLayout layout, int i) {
         if (INQ.inquiry.getCurrentInquiry().getRunLocalObject()!=null){
-            if (INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject()!=null){
-                int numberDataCollectionTasks = DaoConfiguration.getInstance().getGameLocalObjectDao().load(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject().getId()).getGeneralItems().size();
+            GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
+            if (gameLocalObject!=null){
+                int numberDataCollectionTasks = gameLocalObject.getGeneralItems().size();
                 buttonDelegator.buttonGenerator(layout,
                         Constants.INQUIRY_ID_PHASES_LIST.get(i),
                         getResources().getString(Constants.INQUIRY_PHASES_LIST.get(i)),
