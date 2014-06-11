@@ -68,7 +68,7 @@ public class ResponsesLazyListAdapter extends AbstractResponsesLazyListAdapter {
 
         if (item.isAudio()){
             icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_task_record));
-        }else if (item.isVideo()){
+        } else if (item.isVideo()){
             icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_task_video));
         }else if (item.isPicture()){
             icon.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_taks_photo));
