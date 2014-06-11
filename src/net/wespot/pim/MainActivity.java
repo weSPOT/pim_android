@@ -32,6 +32,25 @@ public class MainActivity extends MainActionBarFragmentActivity implements ViewI
 
 //    private ButtonDelegator man;
 
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.e(TAG, "Recover in MainActivity > onRestart");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.e(TAG, "Recover in MainActivity > onRestoreInstanceState");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.e(TAG, "Recover in MainActivity > onSaveInstanceState");
+    }
+
     /**
      * Called when the activity is first created.
      */
@@ -61,6 +80,7 @@ public class MainActivity extends MainActionBarFragmentActivity implements ViewI
         buttonDelegator.buttonGenerator(layout, FRIENDS, getResources().getString(R.string.wrapper_friends),
                 String.valueOf(""), R.drawable.ic_friends).setOnListItemClickCallback(new ClickInviteFriend());
 
+//        listMainMenu.removeAllViews();
         listMainMenu.addView(layout);
 
     }

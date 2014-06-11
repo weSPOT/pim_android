@@ -24,7 +24,6 @@ package net.wespot.pim.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -39,8 +38,8 @@ import net.wespot.pim.utils.layout.NoticeDialogFragment;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.GeneralItemEvent;
+import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
-import org.celstec.arlearn2.beans.generalItem.GeneralItem;
 import org.celstec.dao.gen.GameLocalObject;
 import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.InquiryLocalObject;
@@ -69,6 +68,7 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
         outState.putLong("currentInquiry", INQ.inquiry.getCurrentInquiry().getId());
         if(INQ.inquiry.getCurrentInquiry().getRunLocalObject()!=null){
             outState.putLong("currentInquiryRunLocalObject", INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
+            Log.e(TAG, "Recover in InqDataCollectionFragment > onSaveInstanceState & current inq = null");
         }
     }
 
@@ -144,13 +144,17 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_new_data_collection:
-                showDialog();
+                create_new_data_collection();
+                break;
+            case R.id.menu_refresh_data_collection:
+                INQ.inquiry.syncDataCollectionTasks();
+                INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void showDialog() {
+    private void create_new_data_collection() {
 
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
@@ -193,22 +197,19 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
     private void onEventBackgroundThread(GeneralItemEvent generalItem){
         Log.e(TAG, "Creation data collection task done ");
 
-
-
         // Run code on UIThread
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-
-                GameLocalObject gameLocalObject = DaoConfiguration.getInstance().getGameLocalObjectDao().load(
-                        INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject().getId());
-
-                INQ.generalItems.syncGeneralItems(gameLocalObject);
-                INQ.inquiry.syncDataCollectionTasks();
-
-                gameLocalObject.getGeneralItems().size();
+                addContentValidation();
+                getActivity().findViewById(R.id.text_default).setVisibility(View.GONE);
             }
         });
+
+    }
+
+    private void onEventBackgroundThread(ResponseEvent responseEvent){
+        Log.e(TAG, "Responses synchronized");
 
     }
 

@@ -105,6 +105,7 @@ public class LoginActivity extends FragmentActivity {
 
                             // Remove all inquiries and sync the new ones.
                             DaoConfiguration.getInstance().getInquiryLocalObjectDao().deleteAll();
+                            DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().deleteAll();
 
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);

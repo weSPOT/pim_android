@@ -2,13 +2,11 @@ package net.wespot.pim.utils.layout;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import net.wespot.pim.R;
-import net.wespot.pim.SplashActivity;
 import org.celstec.arlearn.delegators.INQ;
 
 /**
@@ -36,6 +34,23 @@ public class MainActionBarFragmentActivity extends FragmentActivity {
     private static final String TAG = "_ActBar_FragmentActivity";
     private ActionBarHelper mActionBarHelper;
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.e(TAG, "Recover in MainActionBarFragmentActivity > onSaveInstanceState");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.e(TAG, "Recover in MainActionBarFragmentActivity > onRestart");
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.e(TAG, "Recover in MainActionBarFragmentActivity > onRestoreInstanceState");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

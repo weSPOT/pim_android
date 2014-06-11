@@ -16,30 +16,25 @@
 
 package net.wespot.pim.controller;
 
+import android.annotation.TargetApi;
 import android.app.ActionBar;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.FragmentTransaction;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import daoBase.DaoConfiguration;
-import net.wespot.pim.MainActivity;
 import net.wespot.pim.R;
-import net.wespot.pim.SplashActivity;
 import net.wespot.pim.controller.Adapters.InquiryPagerAdapter;
 import net.wespot.pim.controller.Adapters.NewInquiryPagerAdapter;
 import net.wespot.pim.utils.layout._ActBar_FragmentActivity;
 import net.wespot.pim.view.InqCreateInquiryFragment;
 import org.celstec.arlearn.delegators.INQ;
-import org.celstec.arlearn.delegators.InquiryDelegator;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class InquiryActivity extends _ActBar_FragmentActivity implements ActionBar.TabListener{
 
     private static final String TAG = "InquiryActivity";
@@ -87,14 +82,6 @@ public class InquiryActivity extends _ActBar_FragmentActivity implements ActionB
                 outState.putLong("currentInquiryRunLocalObject", INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
             }
         }
-
-//        final InquiryDelegator inquiry = INQ.inquiry;
-//
-//
-//        if (inquiry.in){
-//            outState.putLong("currentInquiry", INQ.inquiry.getCurrentInquiry().getId());
-//        }
-
     }
 
     public void onCreate(Bundle savedInstanceState) {
@@ -194,26 +181,7 @@ public class InquiryActivity extends _ActBar_FragmentActivity implements ActionB
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // This is called when the Home (Up) button is pressed in the action bar.
-                // Create a simple intent that starts the hierarchical parent activity and
-                // use NavUtils in the Support Package to ensure proper handling of Up.
-//                Intent upIntent = new Intent(this, MainActivity.class);
-//                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
-//                    // This activity is not part of the application's task, so create a new task
-//                    // with a synthesized back stack.
-//                    TaskStackBuilder.from(this)
-//                            // If there are ancestor activities, they should be added here.
-//                            .addNextIntent(upIntent)
-//                            .startActivities();
-//                    finish();
-//                } else {
-//                    // This activity is part of the application's task, so simply
-//                    // navigate up to the hierarchical parent activity.
-//                    NavUtils.navigateUpTo(this, upIntent);
-//                }
-
                 onBackPressed();
-
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -233,32 +201,4 @@ public class InquiryActivity extends _ActBar_FragmentActivity implements ActionB
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 
     }
-
-//    void showCreateInquiryDialogFragment() {
-//        DialogFragment dialog = new CreateInquiryDialogFragment();
-//        dialog.show(getSupportFragmentManager(), "NoticeDialogFragment");
-//
-//
-//    }
-//
-//    public class CreateInquiryDialogFragment extends DialogFragment {
-//        @Override
-//        public Dialog onCreateDialog(Bundle savedInstanceState) {
-//            // Use the Builder class for convenient dialog construction
-//            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//            builder.setMessage(R.string.inquiry_create_title)
-//                    .setPositiveButton(R.string.inquiry_create_yes, new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            // FIRE ZE MISSILES!
-//                        }
-//                    })
-//                    .setNegativeButton(R.string.inquiry_create_no, new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int id) {
-//                            // User cancelled the dialog
-//                        }
-//                    });
-//            // Create the AlertDialog object and return it
-//            return builder.create();
-//        }
-//    }
 }

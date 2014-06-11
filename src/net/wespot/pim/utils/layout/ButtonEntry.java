@@ -3,11 +3,11 @@ package net.wespot.pim.utils.layout;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import net.wespot.pim.R;
 
@@ -34,6 +34,7 @@ import net.wespot.pim.R;
 
 public class ButtonEntry extends Fragment {
 
+    private static final String TAG = "ButtonEntry";
     private ViewItemClickInterface callback;
     private String name;
     private String notification;
@@ -79,6 +80,7 @@ public class ButtonEntry extends Fragment {
 //
 //        return container;
 
+        Log.e(TAG, " | " + id + " | " + name + " | " + notification);
 
         View view = inflater.inflate(R.layout.entry_main_list, container, false);
         ((TextView) view.findViewById(R.id.name_entry_list)).setText(name);

@@ -1,5 +1,6 @@
 package net.wespot.pim;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -7,8 +8,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import net.wespot.pim.controller.Adapters.InitialPagerAdapter;
@@ -49,6 +48,7 @@ public class SplashActivity extends FragmentActivity {
     ViewPager mPager;
     PageIndicator mIndicator;
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
