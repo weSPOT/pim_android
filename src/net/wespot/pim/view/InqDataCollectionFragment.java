@@ -78,9 +78,18 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
         ARL.eventBus.register(this);
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        INQ.inquiry.syncDataCollectionTasks();
+
+        addContentValidation();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater,container,savedInstanceState);
+        super.onCreateView(inflater, container, savedInstanceState);
 
 
         View rootView = inflater.inflate(R.layout.fragment_data_collection, container, false);
@@ -89,7 +98,7 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
         data_collection_tasks_title_list = (TextView) rootView.findViewById(R.id.data_collection_tasks_title_list);
         data_collection_tasks = (ListView) rootView.findViewById(R.id.data_collection_tasks);
 
-        addContentValidation();
+//        addContentValidation();
 
         return rootView;
     }
@@ -149,6 +158,7 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
             case R.id.menu_refresh_data_collection:
                 INQ.inquiry.syncDataCollectionTasks();
                 INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
+                addContentValidation();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -169,6 +179,8 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
 
         dialog.show(getFragmentManager().beginTransaction(), "dialog");
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -205,18 +217,10 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
                 getActivity().findViewById(R.id.text_default).setVisibility(View.GONE);
             }
         });
-
     }
 
     private void onEventBackgroundThread(ResponseEvent responseEvent){
         Log.e(TAG, "Responses synchronized");
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        INQ.inquiry.syncDataCollectionTasks();
 
     }
 

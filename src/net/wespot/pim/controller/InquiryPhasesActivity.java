@@ -16,6 +16,7 @@
 
 package net.wespot.pim.controller;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -23,7 +24,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import net.wespot.pim.utils.Constants;
@@ -49,6 +53,7 @@ public class InquiryPhasesActivity extends _ActBar_FragmentActivity implements V
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -99,6 +104,12 @@ public class InquiryPhasesActivity extends _ActBar_FragmentActivity implements V
 
         inquiry_description_title.setText(INQ.inquiry.getCurrentInquiry().getTitle());
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         LinearLayout listPhasesContainer = (LinearLayout) findViewById(R.id.list_phases);
 
         listPhasesContainer.removeAllViews();
@@ -106,10 +117,15 @@ public class InquiryPhasesActivity extends _ActBar_FragmentActivity implements V
         ButtonDelegator buttonDelegator =  ButtonDelegator.getInstance(this);
         LinearLayout layout = buttonDelegator.layoutGenerator(R.dimen.mainscreen_margintop_zero);
 
-            for (int i=0; i < Constants.INQUIRY_ID_PHASES_LIST.size(); i++){
+        for (int i=0; i < Constants.INQUIRY_ID_PHASES_LIST.size(); i++){
             switch (i){
                 case Constants.ID_DATA:
-                    createDataCollectionButton(buttonDelegator, layout, i);
+                    buttonDelegator.buttonGenerator(layout,
+                            Constants.INQUIRY_ID_PHASES_LIST.get(i),
+                            getResources().getString(Constants.INQUIRY_PHASES_LIST.get(i)),
+                            String.valueOf(""),
+                            Constants.INQUIRY_ICON_PHASES_LIST.get(i)
+                    ).setOnListItemClickCallback(this);
                     break;
                 case Constants.ID_DESCRIPTION:
                     buttonDelegator.buttonGenerator(layout,
@@ -140,8 +156,6 @@ public class InquiryPhasesActivity extends _ActBar_FragmentActivity implements V
         ButtonDelegator buttonDelegatorAddFriends =  ButtonDelegator.getInstance(this);
         LinearLayout layoutAddFriends = buttonDelegatorAddFriends.layoutGenerator(R.dimen.mainscreen_margintop_first);
 
-
-
         buttonDelegator.buttonGenerator(layoutAddFriends, 10, getResources().getString(R.string.phases_invite_new_friend),
                 "", R.drawable.ic_invite_friend
         ).setOnListItemClickCallback(new ClickInviteFriend());
@@ -150,82 +164,31 @@ public class InquiryPhasesActivity extends _ActBar_FragmentActivity implements V
         linkAddFriends.addView(layoutAddFriends);
     }
 
-    private void createDataCollectionButton(ButtonDelegator buttonDelegator, LinearLayout layout, int i) {
-        if (INQ.inquiry.getCurrentInquiry().getRunLocalObject()!=null){
-            GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
-            if (gameLocalObject!=null){
-                int numberDataCollectionTasks = gameLocalObject.getGeneralItems().size();
-                buttonDelegator.buttonGenerator(layout,
-                        Constants.INQUIRY_ID_PHASES_LIST.get(i),
-                        getResources().getString(Constants.INQUIRY_PHASES_LIST.get(i)),
-                        String.valueOf(numberDataCollectionTasks),
-                        Constants.INQUIRY_ICON_PHASES_LIST.get(i)
-                ).setOnListItemClickCallback(this);
-            }else{
-                buttonDelegator.buttonGenerator(layout,
-                        Constants.INQUIRY_ID_PHASES_LIST.get(i),
-                        getResources().getString(Constants.INQUIRY_PHASES_LIST.get(i)),
-                        String.valueOf(""),
-                        Constants.INQUIRY_ICON_PHASES_LIST.get(i)
-                ).setOnListItemClickCallback(new NoDataCollection());
-            }
-        }else{
-            buttonDelegator.buttonGenerator(layout,
-                    Constants.INQUIRY_ID_PHASES_LIST.get(i),
-                    getResources().getString(Constants.INQUIRY_PHASES_LIST.get(i)),
-                    String.valueOf(""),
-                    Constants.INQUIRY_ICON_PHASES_LIST.get(i)
-            ).setOnListItemClickCallback(new ClickNoGame());
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
     @Override
     public void onListItemClick(View v, int id) {
-
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
-            Intent intent = new Intent(getApplicationContext(), InquiryActivityBack.class);
-            intent.putExtra(InquiryActivity.PHASE, id);
-            startActivity(intent);
+        if (INQ.inquiry.getCurrentInquiry().getRunLocalObject()!=null) {
+            GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
+            if (gameLocalObject != null) {
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
+                    Intent intent = new Intent(getApplicationContext(), InquiryActivityBack.class);
+                    intent.putExtra(InquiryActivity.PHASE, id);
+                    startActivity(intent);
+                }else{
+                    Intent intent = new Intent(getApplicationContext(), InquiryActivity.class);
+                    intent.putExtra(InquiryActivity.PHASE, id);
+                    startActivity(intent);
+                }
+            }else{
+                Toast.makeText(getApplicationContext(), "Add data collection task on IWE", 10).show();
+            }
         }else{
-            Intent intent = new Intent(getApplicationContext(), InquiryActivity.class);
-            intent.putExtra(InquiryActivity.PHASE, id);
-            startActivity(intent);
+            Toast.makeText(getApplicationContext(), "Game is not sync yet", 10).show();
         }
-
     }
 
     @Override
     public boolean setOnLongClickListener(View v) {
         return false;
-    }
-
-    private class ClickNoGame implements ViewItemClickInterface {
-        @Override
-        public void onListItemClick(View v, int id) {
-            Toast.makeText(getApplicationContext(), "Game is not sync yet", 10).show();
-        }
-
-        @Override
-        public boolean setOnLongClickListener(View v) {
-            return false;
-        }
-    }
-
-    private class NoDataCollection implements ViewItemClickInterface {
-        @Override
-        public void onListItemClick(View v, int id) {
-            Toast.makeText(getApplicationContext(), "Add data collection task on IWE", 10).show();
-        }
-
-        @Override
-        public boolean setOnLongClickListener(View v) {
-            return false;
-        }
     }
 
     private class ClickInviteFriend implements ViewItemClickInterface {
