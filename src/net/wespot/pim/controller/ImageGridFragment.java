@@ -39,6 +39,7 @@ import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.FileDownloadStatus;
 import org.celstec.dao.gen.GameLocalObject;
+import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
 import org.celstec.events.InquiryEvent;
 
@@ -57,7 +58,9 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
     private int mImageThumbSpacing;
     private ImageAdapter mAdapter;
     private ImageFetcher mImageFetcher;
-    private long generalItemId;
+
+    private GeneralItemLocalObject giLocalObject;
+
 //    private View v = null;
 
     /**
@@ -75,8 +78,8 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
         ARL.eventBus.register(this);
 
         Bundle extras = getArguments();
-        generalItemId = extras.getLong("generalItemId");
 
+        giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(extras.getLong("generalItemId"));
         mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
         mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
 
@@ -198,7 +201,7 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
         final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
 
 //        intent.putExtra("DataCollectionTask", object.getId());
-        intent.putExtra("DataCollectionTaskGeneralItemId", generalItemId);
+        intent.putExtra("DataCollectionTaskGeneralItemId", giLocalObject.getId());
         intent.putExtra(ImageDetailActivity.EXTRA_IMAGE, (int) id);
 
 
@@ -259,21 +262,19 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
             if (getNumColumns() == 0) {
                 return 0;
             }
-
+            ;
             // Size + number of columns for top empty row
-            return DaoConfiguration.getInstance()
-                    .getResponseLocalObjectDao()
-                    ._queryGeneralItemLocalObject_Responses(generalItemId).size() + mNumColumns;
+            return giLocalObject.getResponses().size() + mNumColumns;
         }
 
         @Override
         public Object getItem(int position) {
 //            return position < mNumColumns ?
 //                    null : Images.imageThumbUrls[position - mNumColumns];
+
+
             return position < mNumColumns ?
-                    null : DaoConfiguration.getInstance()
-                    .getResponseLocalObjectDao()
-                    ._queryGeneralItemLocalObject_Responses(generalItemId).get(position - mNumColumns).getThumbnailUriAsString();
+                    null : giLocalObject.getResponses().get(position - mNumColumns).getThumbnailUriAsString();
         }
 
         @Override
@@ -335,10 +336,8 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
 //                    .getResponseLocalObjectDao()
 //                    ._queryGeneralItemLocalObject_Responses(generalItemId)
 //                    .get(position - mNumColumns).getThumbnailUriAsString());
-            mImageFetcher.loadImage(DaoConfiguration.getInstance()
-                    .getResponseLocalObjectDao()
-                    ._queryGeneralItemLocalObject_Responses(generalItemId)
-                    .get(position - mNumColumns).getThumbnailUriAsString(), imageView);
+
+            mImageFetcher.loadImage(giLocalObject.getResponses().get(position-mNumColumns).getThumbnailUriAsString(), imageView);
 
             return imageView;
         }
