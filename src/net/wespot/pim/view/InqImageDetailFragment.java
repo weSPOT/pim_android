@@ -29,7 +29,6 @@ import android.widget.ProgressBar;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.ImageDetailActivity;
 import net.wespot.pim.controller.VideoFullScreenView;
-import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.images.ImageFetcher;
 import net.wespot.pim.utils.images.ImageWorker;
 import net.wespot.pim.utils.images.Utils;
@@ -55,6 +54,7 @@ public class InqImageDetailFragment extends Fragment {
      * @return A new instance of InqImageDetailFragment with imageNum extras
      */
     public static InqImageDetailFragment newInstance(ResponseLocalObject res) {
+
         final InqImageDetailFragment f = new InqImageDetailFragment();
 
         response = res;

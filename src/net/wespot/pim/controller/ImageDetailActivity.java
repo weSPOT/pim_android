@@ -17,7 +17,6 @@
 package net.wespot.pim.controller;
 
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.v4.app.*;
@@ -34,12 +33,12 @@ import android.widget.TextView;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.BuildConfig;
 import net.wespot.pim.R;
-import net.wespot.pim.SplashActivity;
 import net.wespot.pim.utils.images.ImageCache;
 import net.wespot.pim.utils.images.ImageFetcher;
 import net.wespot.pim.utils.images.Utils;
 import net.wespot.pim.view.InqImageDetailFragment;
 import org.celstec.arlearn.delegators.INQ;
+import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
 
 
@@ -57,6 +56,9 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
     private TextView info_image;
     private ImageView prev_item;
     private ImageView next_item;
+
+    private GeneralItemLocalObject giLocalObject;
+
 
     @TargetApi(VERSION_CODES.HONEYCOMB)
     @Override
@@ -83,10 +85,14 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
         info_image = (TextView) findViewById(R.id.info_image);
 
         Bundle extras = getIntent().getExtras();
+
+        giLocalObject = null;
+
         if (extras != null){
             Log.e(TAG, extras.getLong("DataCollectionTaskGeneralItemId") + " testing");
 
-            generalItemId = extras.getLong("DataCollectionTaskGeneralItemId");
+            giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(extras.getLong("DataCollectionTaskGeneralItemId"));
+
         }
 
         // Fetch screen height and width, to use as our max size when loading images as this
@@ -120,7 +126,8 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
         }
         // Set up ViewPager and backing adapter
 //        mAdapter = new ImagePagerAdapter(getSupportFragmentManager(), DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(generalItemId).getResponses().size());
-        mAdapter = new ImagePagerAdapter(getSupportFragmentManager(), DaoConfiguration.getInstance().getResponseLocalObjectDao()._queryGeneralItemLocalObject_Responses(generalItemId).size());
+//        mAdapter = new ImagePagerAdapter(getSupportFragmentManager(), DaoConfiguration.getInstance().getResponseLocalObjectDao()._queryGeneralItemLocalObject_Responses(generalItemId).size());
+        mAdapter = new ImagePagerAdapter(getSupportFragmentManager(), giLocalObject.getResponses().size());
 //        mAdapter = new ImagePagerAdapter(getSupportFragmentManager(), DaoConfiguration.getInstance().getResponseLocalObjectDao().loadAll().size());
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
@@ -228,7 +235,9 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 //            return null;
 //            return InqImageDetailFragment.newInstance(String.valueOf(DaoConfiguration.getInstance().getResponseLocalObjectDao().loadAll().get(position).getUriAsString()));
 //            return InqImageDetailFragment.newInstance(String.valueOf(DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(generalItemId).getResponses().get(position).getUriAsString()));
-            ResponseLocalObject res = DaoConfiguration.getInstance().getResponseLocalObjectDao()._queryGeneralItemLocalObject_Responses(generalItemId).get(position);
+//            ResponseLocalObject res = DaoConfiguration.getInstance().getResponseLocalObjectDao()._queryGeneralItemLocalObject_Responses(generalItemId).get(position);
+            ResponseLocalObject res = giLocalObject.getResponses().get(position);
+
             info_image.setText(res.getTimeStamp().toString());
             return InqImageDetailFragment.newInstance(res);
         }

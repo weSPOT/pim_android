@@ -35,6 +35,7 @@ import net.wespot.pim.utils.images.ImageFetcher;
 import net.wespot.pim.utils.images.Utils;
 import net.wespot.pim.utils.layout.RecyclingImageView;
 import org.celstec.arlearn.delegators.INQ;
+import org.celstec.dao.gen.RunLocalObject;
 
 /**
  * The main fragment that powers the ImageGridActivity screen. Fairly straight forward GridView
@@ -51,6 +52,8 @@ public class InqImageGridFragment extends Fragment implements AdapterView.OnItem
     private int mImageThumbSpacing;
     private ImageAdapter mAdapter;
     private ImageFetcher mImageFetcher;
+    private RunLocalObject runLocalObject;
+
 
     /**
      * Empty constructor as per the Fragment documentation
@@ -61,6 +64,8 @@ public class InqImageGridFragment extends Fragment implements AdapterView.OnItem
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        runLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject();
 
         mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.data_collect_thumbnail_image_size);
         mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.data_collect_thumbnail_image_spacing);
@@ -224,15 +229,13 @@ public class InqImageGridFragment extends Fragment implements AdapterView.OnItem
             }
 
             // Size + number of columns for top empty row
-            return INQ.inquiry.getCurrentInquiry().getRunLocalObject().getResponses().size()+ mNumColumns;
+            return runLocalObject.getResponses().size()+ mNumColumns;
         }
 
         @Override
         public Object getItem(int position) {
             return position < mNumColumns ?
-                    null : INQ.inquiry.getCurrentInquiry()
-                    .getRunLocalObject()
-                    .getResponses().get(position - mNumColumns);
+                    null : runLocalObject.getResponses().get(position - mNumColumns);
         }
 
         @Override
@@ -284,13 +287,11 @@ public class InqImageGridFragment extends Fragment implements AdapterView.OnItem
                 imageView.setLayoutParams(mImageViewLayoutParams);
             }
 
-            Log.e(TAG, "Load async: "+INQ.inquiry.getCurrentInquiry().
-                    getRunLocalObject().getResponses().get(position - mNumColumns));
+            Log.e(TAG, "Load async: "+runLocalObject.getResponses().get(position - mNumColumns));
 
             // Finally load the image asynchronously into the ImageView, this also takes care of
             // setting a placeholder image while the background thread runs
-            mImageFetcher.loadImage(INQ.inquiry.getCurrentInquiry().
-                    getRunLocalObject().getResponses().get(position - mNumColumns), imageView);
+            mImageFetcher.loadImage(runLocalObject.getResponses().get(position - mNumColumns), imageView);
             return imageView;
         }
 

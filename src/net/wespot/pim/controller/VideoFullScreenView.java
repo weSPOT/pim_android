@@ -18,6 +18,7 @@
  ******************************************************************************/
 package net.wespot.pim.controller;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -32,6 +33,7 @@ public class VideoFullScreenView extends Activity {
 
     private VideoView vidDisplay;
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +58,7 @@ public class VideoFullScreenView extends Activity {
 
     }
 
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     protected void onDestroy() {
         vidDisplay.getHolder().getSurface().release();

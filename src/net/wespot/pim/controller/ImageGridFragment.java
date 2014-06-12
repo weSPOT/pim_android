@@ -24,7 +24,6 @@ import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.*;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
@@ -35,13 +34,9 @@ import net.wespot.pim.utils.images.ImageCache.ImageCacheParams;
 import net.wespot.pim.utils.images.ImageFetcher;
 import net.wespot.pim.utils.images.Utils;
 import net.wespot.pim.utils.layout.RecyclingImageView;
-import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.FileDownloadStatus;
-import org.celstec.dao.gen.GameLocalObject;
 import org.celstec.dao.gen.GeneralItemLocalObject;
-import org.celstec.dao.gen.ResponseLocalObject;
-import org.celstec.events.InquiryEvent;
 
 /**
  * The main fragment that powers the ImageGridActivity screen. Fairly straight forward GridView
@@ -60,8 +55,6 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
     private ImageFetcher mImageFetcher;
 
     private GeneralItemLocalObject giLocalObject;
-
-//    private View v = null;
 
     /**
      * Empty constructor as per the Fragment documentation
@@ -97,9 +90,9 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
 
 
     private void onEventAsync(final FileDownloadStatus fileDownloadStatus){
-        Log.e(TAG, fileDownloadStatus.getFileName()+" "
-                +fileDownloadStatus.getBytesDownloaded()+"/"+fileDownloadStatus.getAmountOfBytes());
-        if (fileDownloadStatus.getStatus() == FileDownloadStatus.FINISHED){
+//        Log.e(TAG, fileDownloadStatus.getFileName()+" "
+//                +fileDownloadStatus.getBytesDownloaded()+"/"+fileDownloadStatus.getAmountOfBytes());
+//        if (fileDownloadStatus.getStatus() == FileDownloadStatus.FINISHED){
             // Run code on UIThread
 //            getActivity().runOnUiThread(new Runnable() {
 //                @Override
@@ -108,7 +101,7 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
 //                    mAdapter.notifyDataSetChanged();
 //                }
 //            });
-        }
+//        }
     }
 
     @Override
@@ -200,12 +193,9 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
 
-//        intent.putExtra("DataCollectionTask", object.getId());
         intent.putExtra("DataCollectionTaskGeneralItemId", giLocalObject.getId());
         intent.putExtra(ImageDetailActivity.EXTRA_IMAGE, (int) id);
 
-
-//        intent.putExtra(ImageDetailActivity.EXTRA_IMAGE, (int) id);
         if (Utils.hasJellyBean()) {
             // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
             // show plus the thumbnail image in GridView is cropped. so using
@@ -246,13 +236,6 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
             mContext = context;
             mImageViewLayoutParams = new GridView.LayoutParams(
                     LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-            // Calculate ActionBar height
-//            TypedValue tv = new TypedValue();
-//            if (context.getTheme().resolveAttribute(
-//                    android.R.attr.actionBarSize, tv, true)) {
-//                mActionBarHeight = TypedValue.complexToDimensionPixelSize(
-//                        tv.data, context.getResources().getDisplayMetrics());
-//            }
         }
 
 
@@ -262,17 +245,13 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
             if (getNumColumns() == 0) {
                 return 0;
             }
-            ;
+
             // Size + number of columns for top empty row
             return giLocalObject.getResponses().size() + mNumColumns;
         }
 
         @Override
         public Object getItem(int position) {
-//            return position < mNumColumns ?
-//                    null : Images.imageThumbUrls[position - mNumColumns];
-
-
             return position < mNumColumns ?
                     null : giLocalObject.getResponses().get(position - mNumColumns).getThumbnailUriAsString();
         }
