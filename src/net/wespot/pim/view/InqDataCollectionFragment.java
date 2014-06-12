@@ -215,10 +215,7 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
         });
     }
 
-    private void onEventBackgroundThread(ResponseEvent responseEvent){
-        Log.e(TAG, "Responses synchronized");
 
-    }
 
     @Override
     public void onListItemClick(View v, int position, GeneralItemLocalObject object) {

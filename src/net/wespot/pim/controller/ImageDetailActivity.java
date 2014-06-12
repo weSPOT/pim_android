@@ -45,6 +45,7 @@ import org.celstec.dao.gen.ResponseLocalObject;
 public class ImageDetailActivity extends FragmentActivity implements OnClickListener {
     private static final String IMAGE_CACHE_DIR = "images";
     public static final String EXTRA_IMAGE = "extra_image";
+    public static final String GENERAL_ITEM_ID = "DataCollectionTaskGeneralItemId";
     private static final String TAG = "ImageDetailActivity";
     private long generalItemId;
 
@@ -91,7 +92,7 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
         if (extras != null){
             Log.e(TAG, extras.getLong("DataCollectionTaskGeneralItemId") + " testing");
 
-            giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(extras.getLong("DataCollectionTaskGeneralItemId"));
+            giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(extras.getLong(ImageDetailActivity.GENERAL_ITEM_ID));
 
         }
 

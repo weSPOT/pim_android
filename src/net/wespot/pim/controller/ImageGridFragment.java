@@ -36,7 +36,11 @@ import net.wespot.pim.utils.images.Utils;
 import net.wespot.pim.utils.layout.RecyclingImageView;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.FileDownloadStatus;
+import org.celstec.arlearn2.android.events.ResponseEvent;
+import org.celstec.arlearn2.android.listadapter.AbstractResponsesLazyListAdapter;
+import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GeneralItemLocalObject;
+import org.celstec.dao.gen.ResponseLocalObject;
 
 /**
  * The main fragment that powers the ImageGridActivity screen. Fairly straight forward GridView
@@ -45,7 +49,7 @@ import org.celstec.dao.gen.GeneralItemLocalObject;
  * cache is retained over configuration changes like orientation change so the images are populated
  * quickly if, for example, the user rotates the device.
  */
-public class    ImageGridFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class    ImageGridFragment extends Fragment implements AdapterView.OnItemClickListener, ListItemClickInterface<ResponseLocalObject> {
     private static final String TAG = "ImageGridFragment";
     private static final String IMAGE_CACHE_DIR = "thumbs";
 
@@ -76,7 +80,8 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
         mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
         mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
 
-        mAdapter = new ImageAdapter(getActivity());
+        mAdapter = new ImageAdapter(getActivity(), extras.getLong("generalItemId"));
+        mAdapter.setOnListItemClickCallback(this);
 
         ImageCacheParams cacheParams = new ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
 
@@ -218,12 +223,42 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
         return super.onOptionsItemSelected(item);
     }
 
+    private void onMainThread(ResponseEvent responseEvent){
+        Log.e(TAG, "Responses synchronized");
+        mAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onListItemClick(View v, int position, ResponseLocalObject item) {
+        final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
+
+        intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, item.getGeneralItemLocalObject().getId());
+        intent.putExtra(ImageDetailActivity.EXTRA_IMAGE, item.getId());
+
+        if (Utils.hasJellyBean()) {
+            // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
+            // show plus the thumbnail image in GridView is cropped. so using
+            // makeScaleUpAnimation() instead.
+            ActivityOptions options =
+                    ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
+            getActivity().startActivity(intent, options.toBundle());
+        } else {
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public boolean setOnLongClickListener(View v, int position, ResponseLocalObject object) {
+        return false;
+    }
+
     /**
      * The main adapter that backs the GridView. This is fairly standard except the number of
      * columns in the GridView is used to create a fake top row of empty views as we use a
      * transparent ActionBar and don't want the real top row of images to start off covered by it.
      */
-    private class ImageAdapter extends BaseAdapter {
+    private class ImageAdapter extends AbstractResponsesLazyListAdapter {
 
         private final Context mContext;
         private int mItemHeight = 0;
@@ -231,34 +266,43 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
         private int mActionBarHeight = 0;
         private GridView.LayoutParams mImageViewLayoutParams;
 
-        public ImageAdapter(Context context) {
-            super();
+        public ImageAdapter(Context context, long id) {
+            super(context, id);
             mContext = context;
             mImageViewLayoutParams = new GridView.LayoutParams(
                     LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         }
 
 
-        @Override
-        public int getCount() {
-            // If columns have yet to be determined, return no items
-            if (getNumColumns() == 0) {
-                return 0;
-            }
 
-            // Size + number of columns for top empty row
-            return giLocalObject.getResponses().size() + mNumColumns;
-        }
+
+//        @Override
+//        public int getCount() {
+//            // If columns have yet to be determined, return no items
+//            if (getNumColumns() == 0) {
+//                return 0;
+//            }
+//
+//            // Size + number of columns for top empty row
+//            return giLocalObject.getResponses().size() + mNumColumns;
+//        }
+
+
+
+//        @Override
+//        public Object getItem(int position) {
+//            return position < mNumColumns ?
+//                    null : giLocalObject.getResponses().get(position - mNumColumns).getThumbnailUriAsString();
+//        }
+//
+//        @Override
+//        public long getItemId(int position) {
+//            return position < mNumColumns ? 0 : position - mNumColumns;
+//        }
 
         @Override
-        public Object getItem(int position) {
-            return position < mNumColumns ?
-                    null : giLocalObject.getResponses().get(position - mNumColumns).getThumbnailUriAsString();
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position < mNumColumns ? 0 : position - mNumColumns;
+        public long getItemId(int i) {
+            return 0;
         }
 
         @Override
@@ -277,31 +321,34 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
             return true;
         }
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup container) {
+        public  View newView(Context context, ResponseLocalObject item, ViewGroup parent) {
+
+//        }
+//        @Override
+//        public View getView(int position, View convertView, ViewGroup container) {
             // First check if this is the top row
-            if (position < mNumColumns) {
-                if (convertView == null) {
-                    convertView = new View(mContext);
-                }
-                // Set empty view with height of ActionBar
-                convertView.setLayoutParams(new AbsListView.LayoutParams(
-                        LayoutParams.MATCH_PARENT, mActionBarHeight));
-                return convertView;
-            }
+//            if (position < mNumColumns) {
+//                if (convertView == null) {
+//                    convertView = new View(mContext);
+//                }
+//                // Set empty view with height of ActionBar
+//                convertView.setLayoutParams(new AbsListView.LayoutParams(
+//                        LayoutParams.MATCH_PARENT, mActionBarHeight));
+//                return convertView;
+//            }
 
             // Now handle the main ImageView thumbnails
             ImageView imageView;
-            if (convertView == null) { // if it's not recycled, instantiate and initialize
-//                Log.e(TAG, "Convert view null");
+//            if (convertView == null) { // if it's not recycled, instantiate and initialize
+////                Log.e(TAG, "Convert view null");
 
                 imageView = new RecyclingImageView(mContext);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setLayoutParams(mImageViewLayoutParams);
-            } else { // Otherwise re-use the converted view
-//                Log.e(TAG, "Convert view no null");
-                imageView = (ImageView) convertView;
-            }
+//            } else { // Otherwise re-use the converted view
+////                Log.e(TAG, "Convert view no null");
+//                imageView = (ImageView) convertView;
+//            }
 
             // Check the height matches our calculated column width
             if (imageView.getLayoutParams().height != mItemHeight) {
@@ -316,9 +363,14 @@ public class    ImageGridFragment extends Fragment implements AdapterView.OnItem
 //                    ._queryGeneralItemLocalObject_Responses(generalItemId)
 //                    .get(position - mNumColumns).getThumbnailUriAsString());
 
-            mImageFetcher.loadImage(giLocalObject.getResponses().get(position-mNumColumns).getThumbnailUriAsString(), imageView);
 
             return imageView;
+        }
+
+        @Override
+        public void bindView(View imageView, Context context, ResponseLocalObject item) {
+            mImageFetcher.loadImage(item.getThumbnailUriAsString(), ((ImageView)imageView));
+
         }
 
 
