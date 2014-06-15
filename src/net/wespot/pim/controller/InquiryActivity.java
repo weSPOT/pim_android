@@ -30,25 +30,17 @@ import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.InquiryPagerAdapter;
 import net.wespot.pim.controller.Adapters.NewInquiryPagerAdapter;
-import net.wespot.pim.utils.layout._ActBar_FragmentActivity;
+import net.wespot.pim.utils.layout.BaseFragmentActivity;
 import net.wespot.pim.view.InqCreateInquiryFragment;
 import org.celstec.arlearn.delegators.INQ;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class InquiryActivity extends _ActBar_FragmentActivity implements ActionBar.TabListener{
+public class InquiryActivity extends BaseFragmentActivity implements ActionBar.TabListener{
 
     private static final String TAG = "InquiryActivity";
     public static final String PHASE = "num_phase";
     private int mStackLevel = 0;
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide fragments representing
-     * each object in a collection. We use a {@link android.support.v4.app.FragmentStatePagerAdapter}
-     * derivative, which will destroy and re-create fragments as needed, saving and restoring their
-     * state in the process. This is important to conserve memory and is a best practice when
-     * allowing navigation between objects in a potentially large collection.
-     */
-    private InquiryPagerAdapter mInquiryPagerAdapter;
     private NewInquiryPagerAdapter mNewInquiryPagerAdapter;
 
     /**
@@ -134,7 +126,14 @@ public class InquiryActivity extends _ActBar_FragmentActivity implements ActionB
             // the collection.
             // ViewPager and its adapters use support library fragments, so we must use
             // getSupportFragmentManager.
-            mInquiryPagerAdapter = new InquiryPagerAdapter(getSupportFragmentManager());
+            /*
+      The {@link android.support.v4.view.PagerAdapter} that will provide fragments representing
+      each object in a collection. We use a {@link android.support.v4.app.FragmentStatePagerAdapter}
+      derivative, which will destroy and re-create fragments as needed, saving and restoring their
+      state in the process. This is important to conserve memory and is a best practice when
+      allowing navigation between objects in a potentially large collection.
+     */
+            InquiryPagerAdapter mInquiryPagerAdapter = new InquiryPagerAdapter(getSupportFragmentManager());
             getmActionBarHelper().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
             // Set up the ViewPager, attaching the adapter.

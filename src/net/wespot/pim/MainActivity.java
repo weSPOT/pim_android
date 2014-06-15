@@ -1,34 +1,45 @@
 package net.wespot.pim;
 
 import android.annotation.TargetApi;
-
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-
 import android.util.Log;
-import android.view.*;
-import android.widget.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 import daoBase.DaoConfiguration;
-import net.wespot.pim.utils.layout.ButtonDelegator;
+import net.wespot.pim.utils.Constants;
+import net.wespot.pim.utils.layout.ButtonManager;
 import net.wespot.pim.utils.layout.MainActionBarFragmentActivity;
 import net.wespot.pim.utils.layout.ViewItemClickInterface;
-import net.wespot.pim.view.*;
+import net.wespot.pim.view.InqMyMediaFragment;
+import net.wespot.pim.view.PimBadgesFragment;
+import net.wespot.pim.view.PimInquiriesFragment;
+import net.wespot.pim.view.PimProfileFragment;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.MyAccount;
+import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.events.InquiryEvent;
 
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class MainActivity extends MainActionBarFragmentActivity implements ViewItemClickInterface{
+public class MainActivity extends MainActionBarFragmentActivity implements ListItemClickInterface<View> {
     private static final String TAG = "MainActivity";
-    private static final int MY_INQUIRIES = 12345;
-    private static final int MY_MEDIA = 12346;
-    private static final int PROFILE = 12347;
-    private static final int BADGES = 12348;
-    private static final int FRIENDS = 12349;
-    private int number_inquiries;
+//    private static final int MY_INQUIRIES = 12345;
+//    private static final int MY_MEDIA = 12346;
+//    private static final int PROFILE = 12347;
+//    private static final int BADGES = 12348;
+//    private static final int FRIENDS = 12349;
+    private static int number_inquiries;
+
+    private ViewItemClickInterface callback;
+
+
 
 //    private ButtonDelegator man;
 
@@ -64,25 +75,63 @@ public class MainActivity extends MainActionBarFragmentActivity implements ViewI
 
         number_inquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
 
-        LinearLayout listMainMenu = (LinearLayout) findViewById(R.id.content);
+        setContentView(R.layout.main_main);
 
-        ButtonDelegator buttonDelegator =  ButtonDelegator.getInstance(this);
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.content_main_screen);
 
-        LinearLayout layout = buttonDelegator.layoutGenerator(R.dimen.mainscreen_margintop_first);
-        buttonDelegator.buttonGenerator(layout, MY_INQUIRIES, getResources().getString(R.string.wrapper_myinquiry),
-                String.valueOf(number_inquiries + ""), R.drawable.ic_inquiries).setOnListItemClickCallback(this);
-        buttonDelegator.buttonGenerator(layout, MY_MEDIA, getResources().getString(R.string.wrapper_mymedia),
-                String.valueOf(""), R.drawable.ic_mymedia).setOnListItemClickCallback(this);
-        buttonDelegator.buttonGenerator(layout, PROFILE, getResources().getString(R.string.wrapper_profile),
-                String.valueOf(""), R.drawable.ic_profile).setOnListItemClickCallback(this);
-        buttonDelegator.buttonGenerator(layout, BADGES, getResources().getString(R.string.wrapper_badges),
-                String.valueOf(""), R.drawable.ic_badges).setOnListItemClickCallback(this);
-        buttonDelegator.buttonGenerator(layout, FRIENDS, getResources().getString(R.string.wrapper_friends),
-                String.valueOf(""), R.drawable.ic_friends).setOnListItemClickCallback(new ClickInviteFriend());
+        // Instantiation of the buttonManager
+        ButtonManager buttonManager = new ButtonManager(this);
+        buttonManager.setOnListItemClickCallback(this);
 
-//        listMainMenu.removeAllViews();
-        listMainMenu.addView(layout);
+        // Creation of layout params
+        LinearLayout.LayoutParams thirdLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_second);
+        LinearLayout.LayoutParams secondLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_zero);
+        LinearLayout.LayoutParams firstLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_first);
 
+        // My Inquiries button
+        buttonManager.generateButton(linearLayout, firstLayoutParams, Constants.ID_MYINQUIRIES,
+                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MYINQUIRIES), Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MYINQUIRIES), "");
+
+        // My media button
+        buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_MYMEDIA,
+                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MYMEDIA), Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MYMEDIA), "");
+
+        // Profile button
+        buttonManager.generateButton(linearLayout, secondLayoutParams, Constants.ID_PROFILE,
+                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_PROFILE), Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_PROFILE), "");
+
+        // Badges button
+        buttonManager.generateButton(linearLayout, secondLayoutParams, Constants.ID_BADGES,
+                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_BADGES), Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_BADGES), "");
+
+        // Friends button
+        buttonManager.generateButton(linearLayout, secondLayoutParams, Constants.ID_MAIN_FRIENDS,
+                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS), Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS), "");
+    }
+
+    @Override
+    public void onListItemClick(View v, int id, View object) {
+        switch (id){
+            case Constants.ID_MYINQUIRIES:
+                Intent intent_inquiries = new Intent(getApplicationContext(), PimInquiriesFragment.class);
+                startActivity(intent_inquiries);
+                break;
+            case Constants.ID_MYMEDIA:
+                Intent intent_media = new Intent(getApplicationContext(), InqMyMediaFragment.class);
+                startActivity(intent_media);
+                break;
+            case Constants.ID_PROFILE:
+                Intent intent_profile = new Intent(getApplicationContext(), PimProfileFragment.class);
+                startActivity(intent_profile);
+                break;
+            case Constants.ID_BADGES:
+                Intent intent_badges = new Intent(getApplicationContext(), PimBadgesFragment.class);
+                startActivity(intent_badges);
+                break;
+            case Constants.ID_MAIN_FRIENDS:
+                Toast.makeText(getApplicationContext(), "Not implemented yet.", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     @Override
@@ -95,7 +144,7 @@ public class MainActivity extends MainActionBarFragmentActivity implements ViewI
     protected void onResume() {
         super.onResume();
 
-        Log.e(TAG, "on resume Main activity");
+        Log.e(TAG, "on resume Main activity. Number of inquiries: "+number_inquiries);
 
         number_inquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
     }
@@ -140,7 +189,7 @@ public class MainActivity extends MainActionBarFragmentActivity implements ViewI
 
                 Log.d(TAG, "After logout: "+INQ.accounts.isAuthenticated());
 
-                Toast.makeText(this,R.string.menu_logout,Toast.LENGTH_SHORT);
+                Toast.makeText(this,R.string.menu_logout,Toast.LENGTH_SHORT).show();
 
                 break;
         }
@@ -148,45 +197,7 @@ public class MainActivity extends MainActionBarFragmentActivity implements ViewI
     }
 
     @Override
-    public void onListItemClick(View v, int id) {
-        switch (id){
-            case MY_INQUIRIES:
-                Intent intent_inquiries = new Intent(getApplicationContext(), PimInquiriesFragment.class);
-                startActivity(intent_inquiries);
-                break;
-            case MY_MEDIA:
-                Intent intent_media = new Intent(getApplicationContext(), InqMyMediaFragment.class);
-                startActivity(intent_media);
-                break;
-            case PROFILE:
-                Intent intent_profile = new Intent(getApplicationContext(), PimProfileFragment.class);
-                startActivity(intent_profile);
-                break;
-            case BADGES:
-                Intent intent_badges = new Intent(getApplicationContext(), PimBadgesFragment.class);
-                startActivity(intent_badges);
-                break;
-            case FRIENDS:
-                Intent intent_friends = new Intent(getApplicationContext(), PimFriendsFragment.class);
-                startActivity(intent_friends);
-                break;
-        }
-    }
-
-    @Override
-    public boolean setOnLongClickListener(View v) {
+    public boolean setOnLongClickListener(View v, int position, View object) {
         return false;
-    }
-
-    private class ClickInviteFriend implements ViewItemClickInterface {
-        @Override
-        public void onListItemClick(View v, int id) {
-            Toast.makeText(getApplicationContext(), "Not implemented yet.", 10).show();
-        }
-
-        @Override
-        public boolean setOnLongClickListener(View v) {
-            return false;
-        }
     }
 }

@@ -50,17 +50,14 @@ public class InqImageDetailFragment extends Fragment {
     /**
      * Factory method to generate a new instance of the fragment given an image number.
      *
-     * @param res The response
-     * @return A new instance of InqImageDetailFragment with imageNum extras
+     * @param imageUrl The image url to load
+     * @return A new instance of ImageDetailFragment with imageNum extras
      */
-    public static InqImageDetailFragment newInstance(ResponseLocalObject res) {
-
+    public static InqImageDetailFragment newInstance(String imageUrl) {
         final InqImageDetailFragment f = new InqImageDetailFragment();
 
-        response = res;
-
         final Bundle args = new Bundle();
-        args.putString(IMAGE_DATA_EXTRA, res.getUriAsString());
+        args.putString(IMAGE_DATA_EXTRA, imageUrl);
         f.setArguments(args);
 
         return f;
@@ -69,11 +66,11 @@ public class InqImageDetailFragment extends Fragment {
     /**
      * Empty constructor as per the Fragment documentation
      */
-    public InqImageDetailFragment() {}
+    private InqImageDetailFragment() {}
 
     /**
      * Populate image using a url from extras, use the convenience factory method
-     * {@link InqImageDetailFragment#newInstance(org.celstec.dao.gen.ResponseLocalObject)} to create this fragment.
+     * {@link InqImageDetailFragment#newInstance(String)} to create this fragment.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,7 +93,7 @@ public class InqImageDetailFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Log.d(TAG, "Current element: "+mImageUrl);
+        Log.e(TAG, "Current element: " + mImageUrl);
 
             if(!mImageUrl.contains(".jpg")){
             mPlayButtonView.setVisibility(View.VISIBLE);
@@ -126,7 +123,6 @@ public class InqImageDetailFragment extends Fragment {
                 mImageView.setOnClickListener((OnClickListener) getActivity());
             }
         }
-
 
     }
 

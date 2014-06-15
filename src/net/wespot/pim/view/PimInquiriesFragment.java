@@ -21,10 +21,15 @@ package net.wespot.pim.view;
  * ****************************************************************************
  */
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -33,10 +38,9 @@ import net.wespot.pim.controller.Adapters.InquiryLazyListAdapter;
 import net.wespot.pim.controller.InquiryActivity;
 import net.wespot.pim.controller.InquiryActivityBack;
 import net.wespot.pim.controller.InquiryPhasesActivity;
-import net.wespot.pim.utils.layout.ButtonDelegator;
-import net.wespot.pim.utils.layout.ButtonEntry;
-import net.wespot.pim.utils.layout.ViewItemClickInterface;
-import net.wespot.pim.utils.layout._ActBar_FragmentActivity;
+import net.wespot.pim.utils.Constants;
+import net.wespot.pim.utils.layout.BaseFragmentActivity;
+import net.wespot.pim.utils.layout.ButtonManager;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
@@ -46,12 +50,12 @@ import org.celstec.events.InquiryEvent;
 /**
  * A fragment that launches other parts of the demo application.
  */
-public class PimInquiriesFragment extends _ActBar_FragmentActivity  implements ListItemClickInterface<InquiryLocalObject>, ViewItemClickInterface {
+public class PimInquiriesFragment extends BaseFragmentActivity implements ListItemClickInterface<InquiryLocalObject> {
 
     private static final String TAG = "PimInquiriesFragment";
     private InquiryLazyListAdapter adapterInq;
 
-    public ListView inquiries;
+    private static final int DIALOG_FRAGMENT = 0;
     private static final int NEW_INQUIRY = 12350;
 
     @Override
@@ -67,18 +71,36 @@ public class PimInquiriesFragment extends _ActBar_FragmentActivity  implements L
 
         setContentView(R.layout.fragment_inquiries);
 
-        inquiries = (ListView) findViewById(R.id.list_inquiries);
+        ListView inquiries = (ListView) findViewById(R.id.list_inquiries);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.inquiries_new_inquiry);
 
         adapterInq =  new InquiryLazyListAdapter(this);
         inquiries.setAdapter(adapterInq);
         adapterInq.setOnListItemClickCallback(this);
 
-        LinearLayout new_inquiry = (LinearLayout) findViewById(R.id.inquiries_new_inquiry);
-        ButtonDelegator buttonDelegator =  ButtonDelegator.getInstance(this);
 
-        LinearLayout layout = buttonDelegator.layoutGenerator(R.dimen.mainscreen_margintop_zero);
-        buttonDelegator.buttonGenerator(layout, NEW_INQUIRY, getResources().getString(R.string.inquiry_title_new), String.valueOf(""), R.drawable.ic_add_inquiry).setOnListItemClickCallback(this);
-        new_inquiry.addView(layout);
+        // Instantiation of the buttonManager
+        ButtonManager buttonManager = new ButtonManager(this);
+
+        // Creation of layout params
+        LinearLayout.LayoutParams secondLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_zero);
+
+        // My Inquiries button
+        buttonManager.generateButton(linearLayout, secondLayoutParams, Constants.ID_NEW_INQUIRY,
+                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_NEW_INQUIRY), Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_NEW_INQUIRY), "")
+                .setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                INQ.inquiry.setCurrentInquiry(null);
+                Intent intent;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                    intent = new Intent(getApplicationContext(), InquiryActivity.class);
+                } else {
+                    intent = new Intent(getApplicationContext(), InquiryActivityBack.class);
+                }
+                startActivity(intent);
+            }
+        });
 
         setTitle(R.string.common_title);
     }
@@ -94,8 +116,6 @@ public class PimInquiriesFragment extends _ActBar_FragmentActivity  implements L
         super.onDestroy();
     }
 
-
-
     @Override
     public void onListItemClick(View v, int position, InquiryLocalObject object) {
         Intent intent = new Intent(getApplicationContext(), InquiryPhasesActivity.class);
@@ -104,7 +124,26 @@ public class PimInquiriesFragment extends _ActBar_FragmentActivity  implements L
     }
 
     @Override
-    public boolean setOnLongClickListener(View v, int position, InquiryLocalObject object) {
+    public boolean setOnLongClickListener(View v, int position, final InquiryLocalObject object) {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        //Do your Yes progress
+                        //TODO add delete functionality
+                        object.delete();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //Do your No progress
+                        break;
+                }
+            }
+        };
+        AlertDialog.Builder ab = new AlertDialog.Builder(this);
+        ab.setMessage("Are you sure to delete?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
         return false;
     }
 
@@ -130,46 +169,4 @@ public class PimInquiriesFragment extends _ActBar_FragmentActivity  implements L
         }
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public void onListItemClick(View v, int id) {
-        INQ.inquiry.setCurrentInquiry(null);
-        Intent intent;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            intent = new Intent(getApplicationContext(), InquiryActivity.class);
-        }else{
-            intent = new Intent(getApplicationContext(), InquiryActivityBack.class);
-        }
-        startActivity(intent);
-    }
-
-    @Override
-    public boolean setOnLongClickListener(View v) {
-        return false;
-    }
-
-//    private class OnClickNewInquiry implements View.OnClickListener {
-//        @Override
-//        public void onClick(View view) {
-//            Log.e(TAG, "New inquiry");
-//            INQ.inquiry.setCurrentInquiry(null);
-//            Intent intent;
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-//                intent = new Intent(getApplicationContext(), InquiryActivity.class);
-//            }else{
-//                intent = new Intent(getApplicationContext(), InquiryActivityBack.class);
-//            }
-//            startActivity(intent);
-//        }
-//    }
-
-    public ListView getInquiries() {
-        return inquiries;
-    }
-
-    public void setInquiries(ListView inquiries) {
-        this.inquiries = inquiries;
-    }
-
-
 }

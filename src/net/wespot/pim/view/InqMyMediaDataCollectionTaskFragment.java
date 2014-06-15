@@ -36,7 +36,7 @@ import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.ResponsesLazyListAdapter;
 import net.wespot.pim.controller.ImageDetailActivity;
-import net.wespot.pim.utils.layout._ActBar_FragmentActivity;
+import net.wespot.pim.utils.layout.BaseFragmentActivity;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.dataCollection.DataCollectionManager;
 import org.celstec.arlearn2.android.dataCollection.PictureManager;
@@ -51,15 +51,12 @@ import java.io.File;
 /**
  * Fragment to display responses from a Data Collection Task (General Item)
  */
-public class InqMyMediaDataCollectionTaskFragment extends _ActBar_FragmentActivity implements ListItemClickInterface<ResponseLocalObject> {
+public class InqMyMediaDataCollectionTaskFragment extends BaseFragmentActivity implements ListItemClickInterface<ResponseLocalObject> {
 
     private static final String TAG = "InqDataCollectionTaskFragment";
-    private ListView data_collection_tasks_items;
     private InquiryLocalObject inquiry;
     private long generalItemId;
 
-    private ResponsesLazyListAdapter datAdapter;
-    private GeneralItemLocalObject genObject;
     private PictureManager man_pic = new PictureManager(this);
     private VideoManager man_vid = new VideoManager(this);
     private File bitmapFile;
@@ -87,11 +84,11 @@ public class InqMyMediaDataCollectionTaskFragment extends _ActBar_FragmentActivi
 
             generalItemId = extras.getLong("DataCollectionTask");
 
-            genObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(generalItemId);
+            GeneralItemLocalObject genObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(generalItemId);
             genObject.getResponses();
 
-            data_collection_tasks_items = (ListView) findViewById(R.id.data_collection_tasks_items);
-            datAdapter =  new ResponsesLazyListAdapter(this, generalItemId);
+            ListView data_collection_tasks_items = (ListView) findViewById(R.id.data_collection_tasks_items);
+            ResponsesLazyListAdapter datAdapter = new ResponsesLazyListAdapter(this, generalItemId);
 
             datAdapter.setOnListItemClickCallback(this);
             data_collection_tasks_items.setAdapter(datAdapter);
@@ -138,7 +135,7 @@ public class InqMyMediaDataCollectionTaskFragment extends _ActBar_FragmentActivi
         Intent intent = new Intent(getApplicationContext(), ImageDetailActivity.class);
         intent.putExtra("DataCollectionTask", object.getId());
         intent.putExtra("DataCollectionTaskGeneralItemId", generalItemId);
-        intent.putExtra(ImageDetailActivity.EXTRA_IMAGE, position);
+        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, position);
         startActivity(intent);
     }
 
@@ -153,7 +150,7 @@ public class InqMyMediaDataCollectionTaskFragment extends _ActBar_FragmentActivi
 //            Intent intent = new Intent(getApplicationContext(), ImageDetailActivity.class);
 //            intent.putExtra("DataCollectionTask", datAdapter.getItem(i).getId());
 //            intent.putExtra("DataCollectionTaskGeneralItemId", generalItemId);
-//            intent.putExtra(ImageDetailActivity.EXTRA_IMAGE, i);
+//            intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, i);
 //            startActivity(intent);
 //        }
 //    }

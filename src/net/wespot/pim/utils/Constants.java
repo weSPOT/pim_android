@@ -2,7 +2,6 @@ package net.wespot.pim.utils;
 
 import net.wespot.pim.R;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,9 +37,6 @@ public class Constants {
     public static final int FACEBOOK = 3;
     public static final String ENCONDING = null;
 
-    // TODO
-    // If we want to change the order of the screen this must be done here and also in the rest of lists
-    // Only appear the first three
     public static final int  ID_DESCRIPTION = 0;
     public static final int  ID_DATA = 1;
     public static final int  ID_QUESTION = 2;
@@ -49,6 +45,14 @@ public class Constants {
     public static final int  ID_ANALYSIS = 5;
     public static final int  ID_DISCUSS = 6;
     public static final int  ID_COMMUNICATE = 7;
+    public static final int  ID_FRIENDS = 8;
+
+    public static final int  ID_MYINQUIRIES = 0;
+    public static final int  ID_MYMEDIA = 1;
+    public static final int  ID_PROFILE = 2;
+    public static final int  ID_BADGES = 3;
+    public static final int  ID_MAIN_FRIENDS = 4;
+    public static final int  ID_NEW_INQUIRY = 5;
 
     public static final List<Integer> INQUIRY_PHASES_LIST = Arrays.asList(
             R.string.inquiry_title_description,
@@ -61,6 +65,15 @@ public class Constants {
             R.string.inquiry_title_communicate
     );
 
+    public static final List<Integer> INQUIRY_MAIN_LIST = Arrays.asList(
+            R.string.wrapper_myinquiry,
+            R.string.wrapper_mymedia,
+            R.string.wrapper_profile,
+            R.string.wrapper_badges,
+            R.string.wrapper_friends,
+            R.string.inquiry_title_new
+    );
+
     public static final List<Integer> INQUIRY_ICON_PHASES_LIST = Arrays.asList(
             R.drawable.ic_description,
             R.drawable.ic_data,
@@ -71,6 +84,16 @@ public class Constants {
             R.drawable.ic_discuss,
             R.drawable.ic_communicate
     );
+
+    public static final List<Integer> INQUIRY_ICON_MAIN_LIST = Arrays.asList(
+            R.drawable.ic_inquiries,
+            R.drawable.ic_mymedia,
+            R.drawable.ic_profile,
+            R.drawable.ic_badges,
+            R.drawable.ic_friends,
+            R.drawable.ic_add_inquiry
+
+            );
 
     public static final List<Integer> INQUIRY_ID_PHASES_LIST = Arrays.asList(
             ID_DESCRIPTION,

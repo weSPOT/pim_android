@@ -1,9 +1,11 @@
 package net.wespot.pim.controller.Adapters;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +50,7 @@ public class BadgesLazyListAdapter extends AbstractBadgesLazyListAdapter {
         return inflater.inflate(R.layout.entry_badges_list, parent, false);
 
     }
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public void bindView(View view, Context context,  BadgeLocalObject item) {
         TextView firstLineView =(TextView) view.findViewById(R.id.text_badge_gridview);

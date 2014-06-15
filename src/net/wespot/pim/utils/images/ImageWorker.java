@@ -99,6 +99,47 @@ public abstract class ImageWorker {
     }
 
     /**
+     * Load an image specified by the data parameter into an ImageView (override
+     * {@link ImageWorker#processBitmap(Object)} to define the processing logic). A memory and
+     * disk cache will be used if an {@link ImageCache} has been added using
+     * {@link ImageWorker#addImageCache(FragmentManager, ImageCache.ImageCacheParams)}. If the
+     * image is found in the memory cache, it is set immediately, otherwise an {@link AsyncTask}
+     * will be created to asynchronously load the bitmap.
+     *
+     * @param data The URL of the image to download.
+     * @param imageView The ImageView to bind the downloaded image to.
+     */
+    public void loadDefaultImage(Drawable data, ImageView imageView) {
+        if (data == null) {
+            return;
+        }
+
+
+        imageView.setImageDrawable(data);
+
+//        BitmapDrawable value = null;
+//
+//        if (mImageCache != null) {
+//            value = mImageCache.getBitmapFromMemCache(String.valueOf(data));
+//        }
+//
+//        if (value != null) {
+//            // Bitmap found in memory cache
+//            imageView.setImageDrawable(value);
+//        } else if (cancelPotentialWork(data, imageView)) {
+//            final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
+//            final AsyncDrawable asyncDrawable =
+//                    new AsyncDrawable(mResources, mLoadingBitmap, task);
+//            imageView.setImageDrawable(asyncDrawable);
+//
+//            // NOTE: This uses a custom version of AsyncTask that has been pulled from the
+//            // framework and slightly modified. Refer to the docs at the top of the class
+//            // for more info on what was changed.
+//            task.executeOnExecutor(AsyncTask.DUAL_THREAD_EXECUTOR, data);
+//        }
+    }
+
+    /**
      * Set placeholder bitmap that shows when the the background thread is running.
      *
      * @param bitmap

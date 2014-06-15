@@ -38,7 +38,7 @@ import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.ResponsesLazyListAdapter;
 import net.wespot.pim.controller.ImageDetailActivity;
 import net.wespot.pim.controller.ImageGridFragment;
-import net.wespot.pim.utils.layout._ActBar_FragmentActivity;
+import net.wespot.pim.utils.layout.BaseFragmentActivity;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.dataCollection.DataCollectionManager;
 import org.celstec.arlearn2.android.dataCollection.PictureManager;
@@ -53,12 +53,10 @@ import java.io.File;
 /**
  * Fragment to display responses from a Data Collection Task (General Item)
  */
-public class InqDataCollectionTaskFragment extends _ActBar_FragmentActivity implements ListItemClickInterface<ResponseLocalObject> {
+public class InqDataCollectionTaskFragment extends BaseFragmentActivity implements ListItemClickInterface<ResponseLocalObject> {
 
     private static final String TAG = "InqDataCollectionTaskFragment";
     private ListView data_collection_tasks_items;
-    private TextView data_collection_tasks_description;
-    private TextView data_collection_tasks_title;
     private InquiryLocalObject inquiry;
     private long generalItemId;
 
@@ -92,8 +90,8 @@ public class InqDataCollectionTaskFragment extends _ActBar_FragmentActivity impl
             genObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(generalItemId);
             genObject.getResponses();
 
-            data_collection_tasks_description = (TextView) findViewById(R.id.data_collection_tasks_description_list);
-            data_collection_tasks_title = (TextView) findViewById(R.id.data_collection_tasks_title_list);
+            TextView data_collection_tasks_description = (TextView) findViewById(R.id.data_collection_tasks_description_list);
+            TextView data_collection_tasks_title = (TextView) findViewById(R.id.data_collection_tasks_title_list);
 
             data_collection_tasks_title.setText(genObject.getTitle());
             data_collection_tasks_description.setText(genObject.getDescription());
@@ -159,7 +157,7 @@ public class InqDataCollectionTaskFragment extends _ActBar_FragmentActivity impl
         Intent intent = new Intent(getApplicationContext(), ImageDetailActivity.class);
         intent.putExtra("DataCollectionTask", object.getId());
         intent.putExtra("DataCollectionTaskGeneralItemId", generalItemId);
-        intent.putExtra(ImageDetailActivity.EXTRA_IMAGE, position);
+        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, position);
         startActivity(intent);
     }
 

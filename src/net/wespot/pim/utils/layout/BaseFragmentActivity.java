@@ -2,17 +2,12 @@ package net.wespot.pim.utils.layout;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.actionbarsherlock.ActionBarSherlock;
 import net.wespot.pim.R;
-import net.wespot.pim.SplashActivity;
-import org.celstec.arlearn.delegators.INQ;
 
 /**
  * ****************************************************************************
@@ -34,7 +29,7 @@ import org.celstec.arlearn.delegators.INQ;
  * Contributors: Angel Suarez
  * ****************************************************************************
  */
-public class _ActBar_FragmentActivity extends FragmentActivity {
+public class BaseFragmentActivity extends FragmentActivity {
 
     private static final String TAG = "_ActBar_FragmentActivity";
     private ActionBarHelper mActionBarHelper;
@@ -119,6 +114,7 @@ public class _ActBar_FragmentActivity extends FragmentActivity {
         ActionBarHelperICS() {
 //            mActionBar = getSupportActionBar();
             mActionBar = getActionBar();
+            assert mActionBar != null;
             mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
                     mActionBar.setDisplayShowHomeEnabled(false);
             //        actionBar.setHomeButtonEnabled(false);

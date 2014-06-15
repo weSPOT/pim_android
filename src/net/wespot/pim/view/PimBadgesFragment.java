@@ -26,7 +26,7 @@ import android.view.View;
 import android.widget.ListView;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.BadgesLazyListAdapter;
-import net.wespot.pim.utils.layout._ActBar_FragmentActivity;
+import net.wespot.pim.utils.layout.BaseFragmentActivity;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.BadgeLocalObject;
@@ -34,12 +34,10 @@ import org.celstec.dao.gen.BadgeLocalObject;
 /**
  * A fragment that launches other parts of the demo application.
  */
-public class PimBadgesFragment extends _ActBar_FragmentActivity implements ListItemClickInterface<BadgeLocalObject> {
+public class PimBadgesFragment extends BaseFragmentActivity implements ListItemClickInterface<BadgeLocalObject> {
 
     private static final String TAG = "PimBadgesFragment";
     private BadgesLazyListAdapter adapterInq;
-
-    private ListView badges;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +45,7 @@ public class PimBadgesFragment extends _ActBar_FragmentActivity implements ListI
 
         setContentView(R.layout.fragment_badges);
 
-        badges = (ListView) findViewById(R.id.list_badges);
+        ListView badges = (ListView) findViewById(R.id.list_badges);
 
 //        setTitle(R.string.badges_title_list);
         setTitle(R.string.common_title);

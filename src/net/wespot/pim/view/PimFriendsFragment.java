@@ -23,22 +23,18 @@ package net.wespot.pim.view;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.InquiryLazyListAdapter;
-import net.wespot.pim.utils.layout._ActBar_FragmentActivity;
+import net.wespot.pim.utils.layout.BaseFragmentActivity;
 
 /**
  * A fragment that launches other parts of the demo application.
  */
-public class PimFriendsFragment extends _ActBar_FragmentActivity {
+public class PimFriendsFragment extends BaseFragmentActivity {
 
     private static final String TAG = "PimInquiriesFragment";
     private InquiryLazyListAdapter adapterInq;
-
-    private ListView friends;
-    private View add_friend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +63,8 @@ public class PimFriendsFragment extends _ActBar_FragmentActivity {
 //        // Creation of the links
 //        add_friend = man._button_list(R.id.friends_add_friend, getResources().getString(R.string.friends_friend_new), R.drawable.ic_invite_friend, null, false);
 
-        friends = (ListView) findViewById(R.id.list_friends);
-        add_friend = (View) findViewById(R.id.friends_add_friend);
+        ListView friends = (ListView) findViewById(R.id.list_friends);
+        View add_friend = findViewById(R.id.friends_add_friend);
 
         setTitle(R.string.common_title);
 

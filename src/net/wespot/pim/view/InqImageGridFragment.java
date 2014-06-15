@@ -116,6 +116,7 @@ public class InqImageGridFragment extends Fragment implements AdapterView.OnItem
         // of each view so we get nice square thumbnails.
         mGridView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @TargetApi(VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void onGlobalLayout() {
                         if (mAdapter.getNumColumns() == 0) {
@@ -169,7 +170,7 @@ public class InqImageGridFragment extends Fragment implements AdapterView.OnItem
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         final Intent i = new Intent(getActivity(), ImageDetailActivity.class);
-        i.putExtra(ImageDetailActivity.EXTRA_IMAGE, (int) id);
+        i.putExtra(ImageDetailActivity.RESPONSE_POSITION, (int) id);
         if (Utils.hasJellyBean()) {
             // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
             // show plus the thumbnail image in GridView is cropped. so using
@@ -189,9 +190,6 @@ public class InqImageGridFragment extends Fragment implements AdapterView.OnItem
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-        }
         return super.onOptionsItemSelected(item);
     }
 

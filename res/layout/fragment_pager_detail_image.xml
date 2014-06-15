@@ -25,7 +25,7 @@
                                        android:layout_height="fill_parent">
 
     </android.support.v4.view.ViewPager>
-    <RelativeLayout android:id="@+id/linear"
+    <RelativeLayout android:id="@+id/linear2"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_alignParentTop="true"
@@ -48,6 +48,7 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_alignParentLeft="true"
+                   android:contentDescription="Previous image"
                    android:src="@drawable/ic_nav_previous_item"/>
 
         <TextView android:id="@+id/info_current_element"
@@ -60,6 +61,7 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_alignParentRight="true"
+                   android:contentDescription="Next image"
                    android:src="@drawable/ic_nav_next_item" />
     </RelativeLayout>
 </RelativeLayout>

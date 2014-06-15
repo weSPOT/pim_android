@@ -29,14 +29,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import net.wespot.pim.R;
 import net.wespot.pim.utils.images.BitmapWorkerTask;
-import net.wespot.pim.utils.layout._ActBar_FragmentActivity;
+import net.wespot.pim.utils.layout.BaseFragmentActivity;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.dao.gen.AccountLocalObject;
 
 /**
  * A fragment that launches other parts of the demo application.
  */
-public class PimProfileFragment extends _ActBar_FragmentActivity {
+public class PimProfileFragment extends BaseFragmentActivity {
 
     private static final String TAG = "PimProfileFragment";
 

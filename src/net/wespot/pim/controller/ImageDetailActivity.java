@@ -44,7 +44,7 @@ import org.celstec.dao.gen.ResponseLocalObject;
 
 public class ImageDetailActivity extends FragmentActivity implements OnClickListener {
     private static final String IMAGE_CACHE_DIR = "images";
-    public static final String EXTRA_IMAGE = "extra_image";
+    public static final String RESPONSE_POSITION = "extra_image";
     public static final String GENERAL_ITEM_ID = "DataCollectionTaskGeneralItemId";
     private static final String TAG = "ImageDetailActivity";
     private long generalItemId;
@@ -59,9 +59,19 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
     private ImageView next_item;
 
     private GeneralItemLocalObject giLocalObject;
+    private int responsePosition;
 
+//    @Override
+//    public void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        outState.putLong("currentInquiry", INQ.inquiry.getCurrentInquiry().getId());
+//        if(INQ.inquiry.getCurrentInquiry().getRunLocalObject()!=null){
+//            outState.putLong("currentInquiryRunLocalObject", INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
+//            Log.e(TAG, "Recover in InqDataCollectionFragment > onSaveInstanceState & current inq = null");
+//        }
+//    }
 
-    @TargetApi(VERSION_CODES.HONEYCOMB)
+    @TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         if (BuildConfig.DEBUG) {
@@ -87,14 +97,10 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 
         Bundle extras = getIntent().getExtras();
 
-        giLocalObject = null;
-
-        if (extras != null){
-            Log.e(TAG, extras.getLong("DataCollectionTaskGeneralItemId") + " testing");
-
-            giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(extras.getLong(ImageDetailActivity.GENERAL_ITEM_ID));
-
-        }
+//        if (extras != null){
+        giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(extras.getLong(GENERAL_ITEM_ID));
+        responsePosition = extras.getInt(RESPONSE_POSITION);
+//        }
 
         // Fetch screen height and width, to use as our max size when loading images as this
         // activity runs full screen
@@ -119,17 +125,8 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
         mImageFetcher.addImageCache(getSupportFragmentManager(), cacheParams);
         mImageFetcher.setImageFadeIn(false);
 
-        if (INQ.inquiry.getCurrentInquiry()!=null){
-            INQ.generalItems.syncGeneralItems(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameId());
-        }
-        else{
-//            INQ
-        }
-        // Set up ViewPager and backing adapter
-//        mAdapter = new ImagePagerAdapter(getSupportFragmentManager(), DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(generalItemId).getResponses().size());
-//        mAdapter = new ImagePagerAdapter(getSupportFragmentManager(), DaoConfiguration.getInstance().getResponseLocalObjectDao()._queryGeneralItemLocalObject_Responses(generalItemId).size());
         mAdapter = new ImagePagerAdapter(getSupportFragmentManager(), giLocalObject.getResponses().size());
-//        mAdapter = new ImagePagerAdapter(getSupportFragmentManager(), DaoConfiguration.getInstance().getResponseLocalObjectDao().loadAll().size());
+
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
         mPager.setPageMargin((int) getResources().getDimension(R.dimen.data_collect_pager_image_detail_margin));
@@ -149,9 +146,8 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
         }
 
         // Set the current item based on the extra passed in to this activity
-        final int extraCurrentItem = getIntent().getIntExtra(EXTRA_IMAGE, -1);
-        if (extraCurrentItem != -1) {
-            mPager.setCurrentItem(extraCurrentItem);
+        if (responsePosition != -1) {
+            mPager.setCurrentItem(responsePosition);
         }
 
         next_item.setOnClickListener(new View.OnClickListener() {
@@ -233,14 +229,10 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 
         @Override
         public Fragment getItem(int position) {
-//            return null;
-//            return InqImageDetailFragment.newInstance(String.valueOf(DaoConfiguration.getInstance().getResponseLocalObjectDao().loadAll().get(position).getUriAsString()));
-//            return InqImageDetailFragment.newInstance(String.valueOf(DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(generalItemId).getResponses().get(position).getUriAsString()));
-//            ResponseLocalObject res = DaoConfiguration.getInstance().getResponseLocalObjectDao()._queryGeneralItemLocalObject_Responses(generalItemId).get(position);
             ResponseLocalObject res = giLocalObject.getResponses().get(position);
 
             info_image.setText(res.getTimeStamp().toString());
-            return InqImageDetailFragment.newInstance(res);
+            return InqImageDetailFragment.newInstance(giLocalObject.getResponses().get(position).getUriAsString());
         }
     }
 
@@ -248,7 +240,7 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
      * Set on the ImageView in the ViewPager children fragments, to enable/disable low profile mode
      * when the ImageView is touched.
      */
-    @TargetApi(VERSION_CODES.HONEYCOMB)
+    @TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void onClick(View v) {
         final int vis = mPager.getSystemUiVisibility();
