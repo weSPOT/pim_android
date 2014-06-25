@@ -13,17 +13,27 @@
         <item name="android:textColor">@color/app.base.blue</item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowBackground">@drawable/login_960</item>
-        <!--<item name="android:textViewStyle">@style/CustomTheme.TextView</item>-->
     </style>
 
     <style name="CustomTheme.TextView">
         <item name="android:background">@color/app.base.white.transparent</item>
     </style>
 
+    <style name="CustomTheme.TextView.Item" parent="CustomTheme.TextView">
+        <item name="android:textColor">@color/app.base.black</item>
+    </style>
+
+    <style name="CustomTheme.TextView.Item.Title" parent="CustomTheme.TextView">
+        <item name="android:textColor">@color/app.base.black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="CustomTheme.TextView.Title1" parent="CustomTheme.TextView">
         <item name="android:gravity">center</item>
         <item name="android:textSize">@dimen/inquiry.fragments.titles</item>
-        <item name="android:padding">@dimen/inquiry.fragments.titles.padding</item>
+        <item name="android:textColor">@color/app.base.white</item>
+        <item name="android:paddingTop">@dimen/inquiry.fragments.titles.paddingTop</item>
+        <item name="android:paddingBottom">@dimen/inquiry.fragments.titles.paddingBottom</item>
     </style>
 
 
@@ -34,13 +44,13 @@
     <style name="CustomTheme.TextView.Title3" parent="CustomTheme.TextView">
         <item name="android:gravity">center</item>
         <item name="android:textSize">@dimen/inquiry.fragments.titles3</item>
-        <item name="android:padding">@dimen/inquiry.fragments.titles.padding</item>
+        <item name="android:padding">@dimen/inquiry.fragments.titles.paddingBottom</item>
     </style>
 
 
     <style name="CustomTheme.TextView.Title4" parent="CustomTheme.TextView">
         <item name="android:textSize">@dimen/inquiry.fragments.description</item>
-        <item name="android:padding">@dimen/inquiry.fragments.titles.padding</item>
+        <item name="android:padding">@dimen/inquiry.fragments.titles.paddingBottom</item>
         <item name="android:textStyle">italic</item>
     </style>
 
@@ -99,19 +109,11 @@
 
 
     <style name="CustomTheme.ActionBar.ListItem" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
-        <item name="android:textColor">@color/app.base.white</item>
+        <item name="android:textColor">@color/app.base.red</item>
     </style>
 
 
-    <!--<style name="CustomActionBarTransparentTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">-->
-    <!--<item name="android:actionBarStyle">@style/MyActionBar</item>-->
-    <!--<item name="android:windowActionBarOverlay">true</item>-->
-    <!--</style>-->
 
-    <!--&lt;!&ndash; ActionBar styles &ndash;&gt;-->
-    <!--<style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">-->
-    <!--<item name="android:background">@color/app.base.blue</item>-->
-    <!--</style>-->
 
 
 </resources>

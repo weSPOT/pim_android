@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.utils.Constants;
@@ -22,20 +23,24 @@ import net.wespot.pim.view.PimInquiriesFragment;
 import net.wespot.pim.view.PimProfileFragment;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
+import org.celstec.arlearn2.android.events.GeneralItemEvent;
 import org.celstec.arlearn2.android.events.MyAccount;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
+import org.celstec.events.BadgeEvent;
 import org.celstec.events.InquiryEvent;
-
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MainActivity extends MainActionBarFragmentActivity implements ListItemClickInterface<View> {
     private static final String TAG = "MainActivity";
-//    private static final int MY_INQUIRIES = 12345;
-//    private static final int MY_MEDIA = 12346;
-//    private static final int PROFILE = 12347;
-//    private static final int BADGES = 12348;
-//    private static final int FRIENDS = 12349;
-    private static int number_inquiries;
+
+    private static int numberInquiries;
+    private static int numberResponses;
+    private static int numberDataCollections;
+    private static int numberBadges;
+    private LinearLayout linearLayout;
+    private View myInquiryView;
+    private View myMediaView;
+    private View myBadges;
 
     private ViewItemClickInterface callback;
 
@@ -73,40 +78,47 @@ public class MainActivity extends MainActionBarFragmentActivity implements ListI
 
         ARL.eventBus.register(this);
 
-        number_inquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
+        numberInquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
+        numberBadges = DaoConfiguration.getInstance().getBadgesLocalObjectDao().loadAll().size();
+        numberResponses = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().loadAll().size();
 
         setContentView(R.layout.main_main);
 
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.content_main_screen);
+        linearLayout = (LinearLayout)findViewById(R.id.content_main_screen);
 
         // Instantiation of the buttonManager
         ButtonManager buttonManager = new ButtonManager(this);
         buttonManager.setOnListItemClickCallback(this);
 
         // Creation of layout params
-        LinearLayout.LayoutParams thirdLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_second);
-        LinearLayout.LayoutParams secondLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_zero);
-        LinearLayout.LayoutParams firstLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_first);
+        LinearLayout.LayoutParams secondLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_second, (int)getResources().getDimension(R.dimen.space_between_list_items));
+        LinearLayout.LayoutParams thirdLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_zero, (int)getResources().getDimension(R.dimen.space_between_list_items));
+        LinearLayout.LayoutParams firstLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_first, (int)getResources().getDimension(R.dimen.zero_space_between_list_items));
 
-        // My Inquiries button
-        buttonManager.generateButton(linearLayout, firstLayoutParams, Constants.ID_MYINQUIRIES,
-                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MYINQUIRIES), Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MYINQUIRIES), "");
+        // My Inquiries button_old
+        myInquiryView = buttonManager.generateButton(linearLayout,firstLayoutParams, Constants.ID_MYINQUIRIES,
+                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MYINQUIRIES),
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MYINQUIRIES), String.valueOf(numberInquiries));
 
-        // My media button
-        buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_MYMEDIA,
-                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MYMEDIA), Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MYMEDIA), "");
+        // My media button_old
+        myMediaView = buttonManager.generateButton(linearLayout,secondLayoutParams, Constants.ID_MYMEDIA,
+                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MYMEDIA),
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MYMEDIA), String.valueOf(numberResponses));
 
-        // Profile button
-        buttonManager.generateButton(linearLayout, secondLayoutParams, Constants.ID_PROFILE,
-                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_PROFILE), Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_PROFILE), "");
+        // Profile button_old
+        buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_PROFILE,
+                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_PROFILE),
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_PROFILE), "");
 
-        // Badges button
-        buttonManager.generateButton(linearLayout, secondLayoutParams, Constants.ID_BADGES,
-                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_BADGES), Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_BADGES), "");
+        // Badges button_old
+        myBadges = buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_BADGES,
+                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_BADGES),
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_BADGES), String.valueOf(numberBadges));
 
-        // Friends button
-        buttonManager.generateButton(linearLayout, secondLayoutParams, Constants.ID_MAIN_FRIENDS,
-                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS), Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS), "");
+        // Friends button_old
+        buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_MAIN_FRIENDS,
+                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS),
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS), "");
     }
 
     @Override
@@ -144,17 +156,45 @@ public class MainActivity extends MainActionBarFragmentActivity implements ListI
     protected void onResume() {
         super.onResume();
 
-        Log.e(TAG, "on resume Main activity. Number of inquiries: "+number_inquiries);
+        Log.e(TAG, "on resume Main activity. Number of inquiries: "+ numberInquiries);
 
-        number_inquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
+        numberInquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
     }
 
-    private void onEventBackgroundThread(InquiryEvent inquiryObject){
-        number_inquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
+    private void onEventMainThread(GeneralItemEvent inquiryObject){
+        numberDataCollections = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().loadAll().size();
+        ((TextView)myMediaView.findViewById(R.id.notificationText)).setText(String.valueOf(numberDataCollections));
+        Log.e(TAG, "onEventMainThread. Number of general data collections: "+ numberDataCollections);
+    }
+//
+//    private void onEventMainThread(ResponseEvent responseEvent){
+//        numberResponses = DaoConfiguration.getInstance().getResponseLocalObjectDao().loadAll().size();
+//        ((TextView)myMediaView.findViewById(R.id.notificationText)).setText(String.valueOf(numberDataCollections+" - "+numberResponses));
+//        Log.e(TAG, "onEventMainThread. Number of responses: " + numberResponses);
+//    }
+
+    public void onEventMainThread(InquiryEvent event) {
+        numberInquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
+
+        ((TextView)myInquiryView.findViewById(R.id.notificationText)).setText(String.valueOf(numberInquiries));
+
+        Log.e(TAG, "onEventMainThread. Number of inquiries: " + numberInquiries);
+    }
+
+    public void onEventMainThread(BadgeEvent event) {
+        numberBadges = DaoConfiguration.getInstance().getBadgesLocalObjectDao().loadAll().size();
+
+        ((TextView)myBadges.findViewById(R.id.notificationText)).setText(String.valueOf(numberBadges));
+
+        Log.e(TAG, "onEventMainThread. Number of badges: " + numberBadges);
     }
 
     private void onEventBackgroundThread(MyAccount myAccount){
         INQ.inquiry.syncInquiries();
+        INQ.badges.syncBadges();
+        INQ.inquiry.syncDataCollectionTasks();
+        INQ.games.syncMyGames();
+        INQ.responses.syncResponses();
     }
 
     @Override
@@ -189,7 +229,7 @@ public class MainActivity extends MainActionBarFragmentActivity implements ListI
 
                 Log.d(TAG, "After logout: "+INQ.accounts.isAuthenticated());
 
-                Toast.makeText(this,R.string.menu_logout,Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this,R.string.menu_logout,Toast.LENGTH_SHORT).show();
 
                 break;
         }

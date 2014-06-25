@@ -169,7 +169,7 @@ public class InqCreateInquiryFragment extends Fragment{
 //            }
 //        });
 
-        // Disable button if no recognition service is present
+        // Disable button_old if no recognition service is present
 //        PackageManager pm = getActivity().getPackageManager();
 //        List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
 //        if (activities.size() == 0) {

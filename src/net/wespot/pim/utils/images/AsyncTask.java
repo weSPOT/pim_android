@@ -561,7 +561,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
      * <p><em>Warning:</em> Allowing multiple tasks to run in parallel from
      * a thread pool is generally <em>not</em> what one wants, because the order
      * of their operation is not defined.  For example, if these tasks are used
-     * to modify any state in common (such as writing a file due to a button click),
+     * to modify any state in common (such as writing a file due to a button_old click),
      * there are no guarantees on the order of the modifications.
      * Without careful work it is possible in rare cases for the newer version
      * of the data to be over-written by an older one, leading to obscure data

@@ -161,7 +161,7 @@ public class InquiryActivityBack extends BaseFragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // This is called when the Home (Up) button is pressed in the action bar.
+                // This is called when the Home (Up) button_old is pressed in the action bar.
                 // Create a simple intent that starts the hierarchical parent activity and
                 // use NavUtils in the Support Package to ensure proper handling of Up.
 //                Intent upIntent = new Intent(this, MainActivity.class);

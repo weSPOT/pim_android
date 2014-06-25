@@ -2,7 +2,7 @@
 <RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
                  android:layout_height="match_parent"
                  android:layout_width="match_parent"
-                 android:background="@drawable/button">
+                 android:background="@drawable/btn_background">
     <ImageView
             android:id="@+id/icon_badge_gridview"
             style="@style/CustomTheme.ListItem.ImageView.Left"
@@ -11,6 +11,7 @@
             android:id="@+id/text_badge_gridview"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="aslkdjaslkjasldkj"
+            style="@style/CustomTheme.TextView.Item"
+            android:text="badges"
             android:layout_centerVertical="true" android:layout_toRightOf="@+id/icon_badge_gridview"/>
 </RelativeLayout>

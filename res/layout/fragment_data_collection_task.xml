@@ -21,7 +21,7 @@
     <ListView android:id="@+id/data_collection_tasks_items"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:dividerHeight="1dp"
+              android:dividerHeight="0dp"
               android:layout_below="@+id/data_collection_tasks_description_list"
               />
 

@@ -16,7 +16,7 @@
     <ListView android:id="@+id/data_collection_tasks"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:dividerHeight="1dp"
+              android:dividerHeight="@dimen/space_between_list_items"
               android:layout_below="@id/data_collection_tasks_title_list"
               />
 

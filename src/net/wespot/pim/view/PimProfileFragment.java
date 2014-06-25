@@ -42,6 +42,7 @@ public class PimProfileFragment extends BaseFragmentActivity {
 
     private TextView name;
     private TextView email;
+    private TextView accountType;
 //    private TextView localid;
     private ImageView picture;
 
@@ -57,6 +58,7 @@ public class PimProfileFragment extends BaseFragmentActivity {
 
             name = (TextView) findViewById(R.id.profile_name_value);
             email = (TextView) findViewById(R.id.profile_email_value);
+            accountType = (TextView) findViewById(R.id.profile_account_type_value);
 //            localid = (TextView) findViewById(R.id.profile_localid_value);
             picture = (ImageView) findViewById(R.id.imageView);
 
@@ -71,6 +73,28 @@ public class PimProfileFragment extends BaseFragmentActivity {
                     email.setText("-");
                 }else{
                     email.setText(account.getEmail());
+                }
+
+                if (account.getAccountType() == null){
+                    accountType.setText("-");
+                }else{
+                    switch (account.getAccountType()){
+                        case 1:
+                            accountType.setText("Facebook");
+                            break;
+                        case 2:
+                            accountType.setText("Google");
+                            break;
+                        case 3:
+                            accountType.setText("LinkedId");
+                            break;
+                        case 4:
+                            accountType.setText("Twitter");
+                            break;
+                        case 5:
+                            accountType.setText("weSPOT");
+                            break;
+                    }
                 }
 
 //                if (account.getLocalId() == null){

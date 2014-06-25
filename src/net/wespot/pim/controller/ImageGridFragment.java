@@ -239,6 +239,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
     }
 
     private void onEventAsync(ResponseEvent responseEvent){
+
 //        Log.e(TAG, "Responses synchronized");
 //        getActivity().runOnUiThread(new Runnable() {
 //                @Override

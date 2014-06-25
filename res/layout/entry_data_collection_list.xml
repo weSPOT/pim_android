@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button">
+                android:background="@drawable/btn_background">
 
     <TextView
             android:id="@+id/name_entry_data_colletion_list"
@@ -11,12 +11,15 @@
             android:text="@string/texto_de_pruebas"
             android:layout_toRightOf="@+id/inquiry_entry_data_collection_icon"
             android:layout_marginTop="10dp"
+            android:width="220dp"
+            style="@style/CustomTheme.TextView.Item"
             />
         <TextView
             android:id="@+id/inquiry_entry_data_colletion_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/texto_de_pruebas"
+            style="@style/CustomTheme.TextView.Item.Title"
             android:layout_below="@+id/name_entry_data_colletion_list"
             android:layout_toRightOf="@+id/inquiry_entry_data_collection_icon"
             />
@@ -26,4 +29,7 @@
             style="@style/CustomTheme.ListItem.ImageView.Left"
             android:src="@drawable/ic_task_explore"
             android:contentDescription="@string/icon_list"/>
+
+    <TextView android:id="@+id/notificationText"
+              style="@style/CustomTheme.NotificationText" ></TextView>
 </RelativeLayout>

@@ -51,7 +51,10 @@ public class InquiryLazyListAdapter extends AbstractInquiryLazyListAdapter {
     public View newView(Context context, InquiryLocalObject item, ViewGroup parent) {
         if (item == null) return null;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        return inflater.inflate(R.layout.entry_inquiry_list, parent, false);
+
+        View view =  inflater.inflate(R.layout.entry_inquiry_list, parent, false);
+
+        return view;
     }
 
     @Override

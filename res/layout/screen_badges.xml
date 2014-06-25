@@ -15,7 +15,7 @@
     <ListView android:id="@+id/list_badges"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:dividerHeight="1dp"
+              android:dividerHeight="@dimen/space_between_list_items"
               android:layout_below="@+id/badges_title_list"
               />
 </RelativeLayout>

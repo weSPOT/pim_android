@@ -43,7 +43,7 @@ public class PimBadgesFragment extends BaseFragmentActivity implements ListItemC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.fragment_badges);
+        setContentView(R.layout.screen_badges);
 
         ListView badges = (ListView) findViewById(R.id.list_badges);
 
@@ -51,7 +51,7 @@ public class PimBadgesFragment extends BaseFragmentActivity implements ListItemC
         setTitle(R.string.common_title);
 
         INQ.init(this);
-        INQ.badges.syncBadges();
+//        INQ.badges.syncBadges();
 
         adapterInq =  new BadgesLazyListAdapter(this);
         badges.setAdapter(adapterInq);

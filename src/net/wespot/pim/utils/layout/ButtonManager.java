@@ -39,9 +39,9 @@ public class ButtonManager {
         this.context = context;
     }
 
-    public LinearLayout.LayoutParams generateLayoutParams(int marginTop) {
+    public LinearLayout.LayoutParams generateLayoutParams(int marginTop, int marginBottom) {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(0, (int) context.getResources().getDimension(marginTop), 0, 0);
+        layoutParams.setMargins(-1, (int) context.getResources().getDimension(marginTop), -2, marginBottom);
         return layoutParams;
     }
 
@@ -53,7 +53,49 @@ public class ButtonManager {
         view.setLayoutParams(firstLayoutParams);
 
         ((TextView) view.findViewById(R.id.name_entry_list)).setText(context.getResources().getString(phases_invite_new_friend));
-        ((TextView) view.findViewById(R.id.notificationText)).setText(notification);
+        if (notification.equals("")){
+            ((TextView) view.findViewById(R.id.notificationText)).setText("");
+            ((TextView) view.findViewById(R.id.notificationText)).setVisibility(View.INVISIBLE);
+        }
+        else{
+            ((TextView) view.findViewById(R.id.notificationText)).setText(notification);
+            ((TextView) view.findViewById(R.id.notificationText)).setVisibility(View.VISIBLE);
+        }
+        ((ImageView) view.findViewById(R.id.inquiry_entry_icon)).setImageDrawable(context.getResources().getDrawable(ic_invite_friend));
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (callback != null) callback.onListItemClick(v, id, null);
+            }
+        });
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick(View v) {
+                return callback != null && callback.setOnLongClickListener(v, id, null);
+            }
+        });
+
+        linearLayout.addView(view);
+        return view;
+    }
+
+    public View generateButton(LinearLayout linearLayout, final int id, int phases_invite_new_friend, int ic_invite_friend, String notification) {
+
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        View view = inflater.inflate(R.layout.entry_main_list, null);
+        assert view != null;
+
+        ((TextView) view.findViewById(R.id.name_entry_list)).setText(context.getResources().getString(phases_invite_new_friend));
+        if (notification.equals("")){
+            ((TextView) view.findViewById(R.id.notificationText)).setText("");
+            ((TextView) view.findViewById(R.id.notificationText)).setVisibility(View.INVISIBLE);
+        }
+        else{
+            ((TextView) view.findViewById(R.id.notificationText)).setText(notification);
+            ((TextView) view.findViewById(R.id.notificationText)).setVisibility(View.VISIBLE);
+        }
         ((ImageView) view.findViewById(R.id.inquiry_entry_icon)).setImageDrawable(context.getResources().getDrawable(ic_invite_friend));
 
         view.setOnClickListener(new View.OnClickListener() {
