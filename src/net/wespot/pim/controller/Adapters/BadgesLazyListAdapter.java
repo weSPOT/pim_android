@@ -63,7 +63,7 @@ public class BadgesLazyListAdapter extends AbstractBadgesLazyListAdapter {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item.getBadgeIcon());
         }
         else{
-            imageItem.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.foto_perfil_croped));
+            imageItem.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.placeholder_badge));
         }
     }
 

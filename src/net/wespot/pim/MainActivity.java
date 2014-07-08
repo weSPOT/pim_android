@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.utils.Constants;
+import net.wespot.pim.utils.RemindTask;
+import net.wespot.pim.utils.TimeEvent;
 import net.wespot.pim.utils.layout.ButtonManager;
 import net.wespot.pim.utils.layout.MainActionBarFragmentActivity;
 import net.wespot.pim.utils.layout.ViewItemClickInterface;
@@ -26,8 +28,12 @@ import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.GeneralItemEvent;
 import org.celstec.arlearn2.android.events.MyAccount;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
+import org.celstec.dao.gen.InquiryLocalObject;
 import org.celstec.events.BadgeEvent;
 import org.celstec.events.InquiryEvent;
+
+import java.util.LinkedList;
+import java.util.Timer;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MainActivity extends MainActionBarFragmentActivity implements ListItemClickInterface<View> {
@@ -41,13 +47,13 @@ public class MainActivity extends MainActionBarFragmentActivity implements ListI
     private View myInquiryView;
     private View myMediaView;
     private View myBadges;
+    private static final long INTERVAL = 10; /* seconds */
+
+    private LinkedList<InquiryLocalObject> queueInqDatCol;
 
     private ViewItemClickInterface callback;
-
-
-
-//    private ButtonDelegator man;
-
+    public static Timer timer;
+    private static boolean firstTime = true;
 
     @Override
     protected void onRestart() {
@@ -77,6 +83,9 @@ public class MainActivity extends MainActionBarFragmentActivity implements ListI
         super.onCreate(savedInstanceState);
 
         ARL.eventBus.register(this);
+        timer = new Timer(true);
+
+        queueInqDatCol = new LinkedList<InquiryLocalObject>();
 
         numberInquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
         numberBadges = DaoConfiguration.getInstance().getBadgesLocalObjectDao().loadAll().size();
@@ -161,17 +170,31 @@ public class MainActivity extends MainActionBarFragmentActivity implements ListI
         numberInquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
     }
 
-    private void onEventMainThread(GeneralItemEvent inquiryObject){
+    private void onEventMainThread(GeneralItemEvent generalItemEvent){
         numberDataCollections = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().loadAll().size();
         ((TextView)myMediaView.findViewById(R.id.notificationText)).setText(String.valueOf(numberDataCollections));
-        Log.e(TAG, "onEventMainThread. Number of general data collections: "+ numberDataCollections);
+
     }
-//
-//    private void onEventMainThread(ResponseEvent responseEvent){
-//        numberResponses = DaoConfiguration.getInstance().getResponseLocalObjectDao().loadAll().size();
-//        ((TextView)myMediaView.findViewById(R.id.notificationText)).setText(String.valueOf(numberDataCollections+" - "+numberResponses));
-//        Log.e(TAG, "onEventMainThread. Number of responses: " + numberResponses);
-//    }
+
+    private void onEventBackgroundThread(TimeEvent inquiryEvent){
+        Log.e(TAG, "time's up");
+
+        if (!queueInqDatCol.isEmpty()){
+            INQ.inquiry.syncDataCollectionTasks(queueInqDatCol.remove());
+            timer.schedule(new RemindTask(), INTERVAL * 1000);
+        }
+    }
+
+    private void onEventBackgroundThread(InquiryEvent inquiryEvent){
+
+        InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(inquiryEvent.getInquiryId());
+
+        timer.purge();
+
+        queueInqDatCol.add(inquiryLocalObject);
+
+        Log.e(TAG, "sync and reset counter 30 second more: "+inquiryLocalObject.getId());
+    }
 
     public void onEventMainThread(InquiryEvent event) {
         numberInquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
@@ -179,6 +202,8 @@ public class MainActivity extends MainActionBarFragmentActivity implements ListI
         ((TextView)myInquiryView.findViewById(R.id.notificationText)).setText(String.valueOf(numberInquiries));
 
         Log.e(TAG, "onEventMainThread. Number of inquiries: " + numberInquiries);
+
+
     }
 
     public void onEventMainThread(BadgeEvent event) {
@@ -192,10 +217,15 @@ public class MainActivity extends MainActionBarFragmentActivity implements ListI
     private void onEventBackgroundThread(MyAccount myAccount){
         INQ.inquiry.syncInquiries();
         INQ.badges.syncBadges();
-        INQ.inquiry.syncDataCollectionTasks();
-        INQ.games.syncMyGames();
-        INQ.responses.syncResponses();
+
+        timer.schedule(new RemindTask(), 30 * 1000);
+
+//        INQ.inquiry.syncDataCollectionTasks();
+//        INQ.games.syncMyGames();
+//        INQ.responses.syncResponses();
     }
+
+
 
     @Override
     protected void onDestroy() {
