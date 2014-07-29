@@ -47,11 +47,9 @@ public class PimBadgesFragment extends BaseFragmentActivity implements ListItemC
 
         ListView badges = (ListView) findViewById(R.id.list_badges);
 
-//        setTitle(R.string.badges_title_list);
         setTitle(R.string.common_title);
 
         INQ.init(this);
-//        INQ.badges.syncBadges();
 
         adapterInq =  new BadgesLazyListAdapter(this);
         badges.setAdapter(adapterInq);

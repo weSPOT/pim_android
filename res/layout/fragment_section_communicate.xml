@@ -1,18 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
                   android:orientation="vertical"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent">
-    <TextView android:id="@+id/title_communicate"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              style="@style/CustomTheme.TextView.Title2"
-            />
 
-        <WebView
-                android:id="@+id/description_communicate"
+    <!-- A vertical LinearLayout in a ScrollView. This emulates a ListView (and is lighter weight
+     than a ListView when there aren't many rows). -->
+    <ScrollView android:id="@+id/list_threads_scroll"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" android:layout_above="@+id/linearLayout">
 
+        <!-- Note that this LinearLayout has the "animateLayoutChanges" property set to true.
+             This tells the framework to automatically animate child views (in this case, rows)
+             as they are added to and removed from the LinearLayout. -->
+        <LinearLayout android:id="@+id/list_threads"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:showDividers="middle"
+                      android:animateLayoutChanges="true"
+                      android:paddingLeft="16dp"
+                      android:paddingRight="16dp" />
+    </ScrollView>
+
+    <!-- The "empty" view to show when there are no items in the "list" view defined above. -->
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal"
+                  android:layout_alignParentBottom="true"
+                  android:id="@+id/linearLayout">
+        <EditText android:id="@+id/communication_enter_message"
+                  android:layout_width="304dp"
+                  android:layout_height="wrap_content"
+                  android:hint="@string/communication_enter_message"
+                  android:textColorHint="@color/app.base.grey_soft"
+                  android:singleLine="false"/>
+        <ImageButton android:id="@+id/communication_enter_message_button"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@null"
+                  android:layout_weight="4"
+                  android:src="@drawable/ic_action_send_now_w" />
     </LinearLayout>
+    <TextView android:id="@android:id/empty"
+              style="?android:textAppearanceSmall"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center"
+              android:padding="32dp"
+              android:text="@string/communication_enter_message_default"
+              android:textColor="?android:textColorSecondary" />
+
+
+</RelativeLayout>
 

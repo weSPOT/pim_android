@@ -107,6 +107,17 @@
         <item name="android:textSize">16dp</item>
     </style>
 
+    <style name="CustomTheme.RequestFriendship">
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_margin">20dp</item>
+        <item name="android:background">@null</item>
+        <item name="android:textColor">@color/app.base.white</item>
+        <item name="android:layout_height">@dimen/listitem.imageview.left.height</item>
+        <item name="android:layout_width">@dimen/listitem.imageview.left.width</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+
 
     <style name="CustomTheme.ActionBar.ListItem" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
         <item name="android:textColor">@color/app.base.red</item>

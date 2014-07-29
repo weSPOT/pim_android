@@ -79,6 +79,7 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
         }
 
         INQ.inquiry.syncDataCollectionTasks();
+        INQ.threads.syncThreads(INQ.inquiry.getCurrentInquiry().getRunId());
 
         setContentView(R.layout.activity_phases);
 
@@ -133,6 +134,11 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
         buttonManager.generateButton(listPhasesContainer, zeroLayoutParams, Constants.ID_DATA,
                 Constants.INQUIRY_PHASES_LIST.get(Constants.ID_DATA),
                 Constants.INQUIRY_ICON_PHASES_LIST.get(Constants.ID_DATA), "");
+
+        // Messaging button
+        buttonManager.generateButton(listPhasesContainer, zeroLayoutParams, Constants.ID_COMMUNICATE,
+                Constants.INQUIRY_PHASES_LIST.get(Constants.ID_COMMUNICATE),
+                Constants.INQUIRY_ICON_PHASES_LIST.get(Constants.ID_COMMUNICATE), "");
 
         // Invite friends button_old
         buttonManager.generateButton(listPhasesContainer, separatorLayoutParams, Constants.ID_FRIENDS,

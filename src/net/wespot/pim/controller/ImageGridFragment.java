@@ -35,7 +35,6 @@ import net.wespot.pim.utils.images.ImageFetcher;
 import net.wespot.pim.utils.images.Utils;
 import net.wespot.pim.utils.layout.RecyclingImageView;
 import org.celstec.arlearn2.android.delegators.ARL;
-import org.celstec.arlearn2.android.events.FileDownloadStatus;
 import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GeneralItemLocalObject;
@@ -93,34 +92,15 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
         mAdapter = new ImageAdapter(getActivity());
 
-        giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(extras.getLong("generalItemId"));
         responseLocalObjectList = giLocalObject.getResponses();
-//        mAdapter.setOnListItemClickCallback(this);
 
         ImageCacheParams cacheParams = new ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
 
         cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
 
-        // The ImageFetcher takes care of loading images into our ImageView children asynchronously
         mImageFetcher = new ImageFetcher(getActivity(), mImageThumbSize);
-        mImageFetcher.setLoadingImage(R.drawable.empty_photo);
+//        mImageFetcher.setLoadingImage(R.drawable.empty_photo);
         mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
-    }
-
-
-    private void onEventAsync(final FileDownloadStatus fileDownloadStatus){
-//        Log.e(TAG, fileDownloadStatus.getFileName()+" "
-//                +fileDownloadStatus.getBytesDownloaded()+"/"+fileDownloadStatus.getAmountOfBytes());
-//        if (fileDownloadStatus.getStatus() == FileDownloadStatus.FINISHED){
-            // Run code on UIThread
-//            getActivity().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.e(TAG, fileDownloadStatus.getFileName()+" - downloaded");
-//                    mAdapter.notifyDataSetChanged();
-//                }
-//            });
-//        }
     }
 
     @Override
@@ -240,14 +220,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
     private void onEventAsync(ResponseEvent responseEvent){
 
-//        Log.e(TAG, "Responses synchronized");
-//        getActivity().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    mAdapter.notifyDataSetChanged();
-//                }
-//            });
-
+        // TODO Make it better it doesn't work well
         final BaseAdapter adapter = getmAdapter();
         getActivity().runOnUiThread(new Runnable() {
             public void run() {
@@ -356,16 +329,16 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
                 imageView.setLayoutParams(mImageViewLayoutParams);
             }
 
-
-//            if (responseLocalObject.getType())
-
-//            if (responseLocalObject.getUriAsString().contains(".jpg")){
-                // Finally load the image asynchronously into the ImageView, this also takes care of
-                // setting a placeholder image while the background thread runs
+            if (responseLocalObject.isAudio()){
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_mic));
+            }else if(responseLocalObject.isPicture()){
                 mImageFetcher.loadImage(responseLocalObject.getThumbnailUriAsString(), imageView);
-//            }else{
-//                mImageFetcher.loadDefaultImage(getResources().getDrawable(R.drawable.ic_task_video), imageView);
-//            }
+            }else if (responseLocalObject.isVideo()){
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_video));
+            }else{
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.empty_photo));
+            }
+
 
             return imageView;
         }
@@ -395,136 +368,4 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
             return mNumColumns;
         }
     }
-
-
-//
-//    /**
-//     * The main adapter that backs the GridView. This is fairly standard except the number of
-//     * columns in the GridView is used to create a fake top row of empty views as we use a
-//     * transparent ActionBar and don't want the real top row of images to start off covered by it.
-//     */
-//    private class ImageAdapter extends AbstractResponsesLazyListAdapter {
-//
-//        private final Context mContext;
-//        private int mItemHeight = 0;
-//        private int mNumColumns = 0;
-//        private int mActionBarHeight = 0;
-//        private GridView.LayoutParams mImageViewLayoutParams;
-//
-//        public ImageAdapter(Context context, long id) {
-//            super(context, id);
-//            mContext = context;
-//            mImageViewLayoutParams = new GridView.LayoutParams(
-//                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-//        }
-//
-//
-//
-//
-////        @Override
-////        public int getCount() {
-////            // If columns have yet to be determined, return no items
-////            if (getNumColumns() == 0) {
-////                return 0;
-////            }
-////
-////            // Size + number of columns for top empty row
-////            return giLocalObject.getResponses().size() + mNumColumns;
-////        }
-//
-//
-//
-////        @Override
-////        public Object getItem(int position) {
-////            return position < mNumColumns ?
-////                    null : giLocalObject.getResponses().get(position - mNumColumns).getThumbnailUriAsString();
-////        }
-////
-////        @Override
-////        public long getItemId(int position) {
-////            return position < mNumColumns ? 0 : position - mNumColumns;
-////        }
-//
-//        @Override
-//        public long getItemId(int i) {
-//            return 0;
-//        }
-//
-////        @Override
-////        public int getViewTypeCount() {
-////            // Two types of views, the normal ImageView and the top row of empty views
-////            return 2;
-////        }
-//
-////        @Override
-////        public int getItemViewType(int position) {
-////            return (position < mNumColumns) ? 1 : 0;
-////        }
-//
-//        @Override
-//        public boolean hasStableIds() {
-//            return true;
-//        }
-//
-//        public  View newView(Context context, ResponseLocalObject item, ViewGroup parent) {
-//
-//            ImageView imageView;
-//
-//            imageView = new ImageView(mContext);
-//            imageView.setLayoutParams(mImageViewLayoutParams);
-////            imageView.setAdjustViewBounds(true);
-//            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-////            imageView.setPadding(8, 8, 8, 8);
-//
-////            // Now handle the main ImageView thumbnails
-////            ImageView imageView;
-////
-////                imageView = new RecyclingImageView(mContext);
-////                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-////                imageView.setLayoutParams(mImageViewLayoutParams);
-////
-////
-////            // Check the height matches our calculated column width
-//            if (imageView.getLayoutParams().height != mItemHeight) {
-//                imageView.setLayoutParams(mImageViewLayoutParams);
-//            }
-//
-//            return imageView;
-//        }
-//
-//        @Override
-//        public void bindView(View convertView, Context context, ResponseLocalObject item) {
-////            setItemHeight(convertView.getHeight());
-//            mImageFetcher.loadImage(item.getThumbnailUriAsString(), ((ImageView)convertView));
-//        }
-//
-//
-//
-//        /**
-//         * Sets the item height. Useful for when we know the column width so the height can be set
-//         * to match.
-//         *
-//         * @param height
-//         */
-//        public void setItemHeight(int height) {
-//            if (height == mItemHeight) {
-//                return;
-//            }
-//            mItemHeight = height;
-//            mImageViewLayoutParams =
-//                    new GridView.LayoutParams(LayoutParams.MATCH_PARENT, mItemHeight);
-//            mImageFetcher.setImageSize(height);
-//            notifyDataSetChanged();
-//        }
-//
-//        public void setNumColumns(int numColumns) {
-//            mNumColumns = numColumns;
-//        }
-//
-//        public int getNumColumns() {
-//            return mNumColumns;
-//        }
-//    }
-
-
 }

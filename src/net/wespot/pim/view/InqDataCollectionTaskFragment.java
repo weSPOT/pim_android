@@ -33,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.ResponsesLazyListAdapter;
@@ -43,6 +44,8 @@ import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.dataCollection.DataCollectionManager;
 import org.celstec.arlearn2.android.dataCollection.PictureManager;
 import org.celstec.arlearn2.android.dataCollection.VideoManager;
+import org.celstec.arlearn2.android.delegators.ARL;
+import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.InquiryLocalObject;
@@ -72,6 +75,9 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ARL.eventBus.register(this);
+
 
         if (savedInstanceState != null) {
             INQ.init(this);
@@ -117,11 +123,12 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
         }
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ARL.eventBus.unregister(this);
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -148,6 +155,25 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
                 man_vid.setGeneralItem(genObject);
                 man_vid.takeDataSample();
                 break;
+            case R.id.menu_data_collection_audio:
+                Toast.makeText(getApplicationContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
+                // TODO add data collection audio
+                break;
+            case R.id.menu_data_collection_text:
+                Toast.makeText(getApplicationContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
+                // TODO add data collection text
+//                man_vid.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+//                man_vid.setGeneralItem(genObject);
+//                man_vid.takeDataSample();
+                break;
+            case R.id.menu_data_collection_numeric:
+                Toast.makeText(getApplicationContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
+                // TODO add data collection numeric
+//                man_vid.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+//                man_vid.setGeneralItem(genObject);
+//                man_vid.takeDataSample();
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -190,5 +216,10 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
 
         INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
     }
+
+    private void onEventBackgroundThread(ResponseEvent responseEvent){
+        Log.e(TAG, " response for "+responseEvent.getRunId());
+    }
+
 
 }

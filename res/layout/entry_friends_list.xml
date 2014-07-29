@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+                 android:layout_height="match_parent"
+                 android:layout_width="match_parent"
+                 android:background="@drawable/btn_background">
+    <ImageView
+            android:id="@+id/icon_friend_gridview"
+            style="@style/CustomTheme.ListItem.ImageView.Left"
+            android:src="@drawable/ic_friend_default"/>
+    <TextView
+            android:id="@+id/text_friend_gridview"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            style="@style/CustomTheme.TextView.Item"
+            android:text="badges"
+            android:layout_centerVertical="true" android:layout_toRightOf="@+id/icon_friend_gridview"/>
+    <ImageButton
+            android:id="@+id/remove_friend"
+            android:src="@drawable/ic_remove"
+            style="@style/CustomTheme.RequestFriendship" />
+</RelativeLayout>

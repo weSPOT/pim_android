@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView android:id="@+id/sent_request_usersite_title_list"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@string/usersite_title_list"
+              android:layout_below="@+id/list_sent_request_usersite"
+              style="@style/CustomTheme.TextView.Title1"
+            />
+    <ListView android:id="@+id/list_usersite"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:dividerHeight="@dimen/space_between_list_items"
+              android:layout_below="@+id/sent_request_usersite_title_list"
+            />
+
+    <ProgressBar android:id="@+id/loading_spinner"
+                 style="?android:progressBarStyleLarge"
+                 android:layout_centerHorizontal="true"
+                 android:layout_centerVertical="true"
+                 android:layout_centerInParent="true"
+                 android:layout_width="wrap_content"
+                 android:layout_height="match_parent"
+                 android:layout_below="@+id/usersite_title_list"
+                 />
+</RelativeLayout>

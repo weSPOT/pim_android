@@ -37,7 +37,6 @@ import net.wespot.pim.utils.layout.NoticeDialogFragment;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.GeneralItemEvent;
-import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GameLocalObject;
 import org.celstec.dao.gen.GeneralItemLocalObject;
@@ -143,6 +142,9 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
         menu.setGroupVisible(R.id.actions_general, false);
         menu.setGroupVisible(R.id.actions_wonder_moment, false);
         menu.setGroupVisible(R.id.actions_data_collection, true);
+        menu.setGroupVisible(R.id.actions_friends, false);
+        menu.setGroupVisible(R.id.actions_usersite, false);
+
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -154,6 +156,7 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
                 create_new_data_collection();
                 break;
             case R.id.menu_refresh_data_collection:
+                // TODO enhance refreshing data collection
                 addContentValidation();
                 break;
         }

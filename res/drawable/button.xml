@@ -3,7 +3,7 @@
     <item android:drawable="@drawable/border"/>
     <item android:drawable="@drawable/inner"
           android:top="@dimen/width_stroke_list_items"
-          android:right="@dimen/zero_width_stroke_list_items"
+          android:right="@dimen/width_stroke_list_items"
           android:bottom="@dimen/width_stroke_list_items"
-          android:left="@dimen/zero_width_stroke_list_items" />
+          android:left="@dimen/width_stroke_list_items" />
 </layer-list>

@@ -39,7 +39,10 @@ import net.wespot.pim.utils.images.Utils;
 import net.wespot.pim.view.InqImageDetailFragment;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.dao.gen.GeneralItemLocalObject;
-import org.celstec.dao.gen.ResponseLocalObject;
+
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class ImageDetailActivity extends FragmentActivity implements OnClickListener {
@@ -147,6 +150,9 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 
         // Set the current item based on the extra passed in to this activity
         if (responsePosition != -1) {
+            Date date = new Date(giLocalObject.getResponses().get(responsePosition).getTimeStamp());
+            Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+            info_image.setText(format.format(date));
             mPager.setCurrentItem(responsePosition);
         }
 
@@ -229,9 +235,9 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 
         @Override
         public Fragment getItem(int position) {
-            ResponseLocalObject res = giLocalObject.getResponses().get(position);
+//            ResponseLocalObject res = giLocalObject.getResponses().get(position);
 
-            info_image.setText(res.getTimeStamp().toString());
+//            info_image.setText(res.getTimeStamp().toString());
             return InqImageDetailFragment.newInstance(giLocalObject.getResponses().get(position).getUriAsString());
         }
     }
@@ -256,6 +262,7 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
         private MyListener() {
             int real_number_elements = mAdapter.getCount();
 
+
             Log.d(TAG, "Current element: "+1);
             Log.d(TAG, "Number elements: "+real_number_elements);
 
@@ -275,6 +282,10 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 
             Log.d(TAG, "Current element: "+real_position);
             Log.d(TAG, "Number elements: " + real_number_elements);
+
+            Date date = new Date(giLocalObject.getResponses().get(i).getTimeStamp());
+            Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+            info_image.setText(format.format(date));
             current_info.setText(real_position+" of "+real_number_elements);
         }
 

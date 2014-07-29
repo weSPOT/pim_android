@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.RemindTask;
@@ -19,10 +18,7 @@ import net.wespot.pim.utils.TimeEvent;
 import net.wespot.pim.utils.layout.ButtonManager;
 import net.wespot.pim.utils.layout.MainActionBarFragmentActivity;
 import net.wespot.pim.utils.layout.ViewItemClickInterface;
-import net.wespot.pim.view.InqMyMediaFragment;
-import net.wespot.pim.view.PimBadgesFragment;
-import net.wespot.pim.view.PimInquiriesFragment;
-import net.wespot.pim.view.PimProfileFragment;
+import net.wespot.pim.view.*;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.GeneralItemEvent;
@@ -30,6 +26,7 @@ import org.celstec.arlearn2.android.events.MyAccount;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.InquiryLocalObject;
 import org.celstec.events.BadgeEvent;
+import org.celstec.events.FriendEvent;
 import org.celstec.events.InquiryEvent;
 
 import java.util.LinkedList;
@@ -43,10 +40,12 @@ public class MainActivity extends MainActionBarFragmentActivity implements ListI
     private static int numberResponses;
     private static int numberDataCollections;
     private static int numberBadges;
+    private static int numberFriends;
     private LinearLayout linearLayout;
     private View myInquiryView;
     private View myMediaView;
     private View myBadges;
+    private View myFriends;
     private static final long INTERVAL = 10; /* seconds */
 
     private LinkedList<InquiryLocalObject> queueInqDatCol;
@@ -90,6 +89,7 @@ public class MainActivity extends MainActionBarFragmentActivity implements ListI
         numberInquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
         numberBadges = DaoConfiguration.getInstance().getBadgesLocalObjectDao().loadAll().size();
         numberResponses = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().loadAll().size();
+        numberFriends = DaoConfiguration.getInstance().getFriendsLocalObjectDao().loadAll().size();
 
         setContentView(R.layout.main_main);
 
@@ -125,9 +125,9 @@ public class MainActivity extends MainActionBarFragmentActivity implements ListI
                 Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_BADGES), String.valueOf(numberBadges));
 
         // Friends button_old
-        buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_MAIN_FRIENDS,
+        myFriends = buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_MAIN_FRIENDS,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS), "");
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS), String.valueOf(numberFriends));
     }
 
     @Override
@@ -150,7 +150,8 @@ public class MainActivity extends MainActionBarFragmentActivity implements ListI
                 startActivity(intent_badges);
                 break;
             case Constants.ID_MAIN_FRIENDS:
-                Toast.makeText(getApplicationContext(), "Not implemented yet.", Toast.LENGTH_SHORT).show();
+                Intent intent_friends = new Intent(getApplicationContext(), PimFriendsFragment.class);
+                startActivity(intent_friends);
                 break;
         }
     }
@@ -214,15 +215,20 @@ public class MainActivity extends MainActionBarFragmentActivity implements ListI
         Log.e(TAG, "onEventMainThread. Number of badges: " + numberBadges);
     }
 
+    public void onEventMainThread(FriendEvent event) {
+        numberFriends = DaoConfiguration.getInstance().getFriendsLocalObjectDao().loadAll().size();
+
+        ((TextView)myFriends.findViewById(R.id.notificationText)).setText(String.valueOf(numberFriends));
+
+        Log.e(TAG, "onEventMainThread. Number of friends: " + numberFriends);
+    }
+
     private void onEventBackgroundThread(MyAccount myAccount){
         INQ.inquiry.syncInquiries();
         INQ.badges.syncBadges();
+        INQ.friendsDelegator.syncFriends();
 
         timer.schedule(new RemindTask(), 30 * 1000);
-
-//        INQ.inquiry.syncDataCollectionTasks();
-//        INQ.games.syncMyGames();
-//        INQ.responses.syncResponses();
     }
 
 

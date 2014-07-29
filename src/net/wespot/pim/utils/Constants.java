@@ -53,6 +53,7 @@ public class Constants {
     public static final int  ID_BADGES = 3;
     public static final int  ID_MAIN_FRIENDS = 4;
     public static final int  ID_NEW_INQUIRY = 5;
+    public static final int  ID_ADD_FRIEND = 6;
 
     public static final List<Integer> INQUIRY_PHASES_LIST = Arrays.asList(
             R.string.inquiry_title_description,
@@ -71,7 +72,8 @@ public class Constants {
             R.string.wrapper_profile,
             R.string.wrapper_badges,
             R.string.wrapper_friends,
-            R.string.inquiry_title_new
+            R.string.inquiry_title_new,
+            R.string.friends_add_friend
     );
 
     public static final List<Integer> INQUIRY_ICON_PHASES_LIST = Arrays.asList(
@@ -91,8 +93,8 @@ public class Constants {
             R.drawable.ic_profile,
             R.drawable.ic_badges,
             R.drawable.ic_friends,
+            R.drawable.ic_add_inquiry,
             R.drawable.ic_add_inquiry
-
             );
 
     public static final List<Integer> INQUIRY_ID_PHASES_LIST = Arrays.asList(

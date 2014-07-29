@@ -61,11 +61,7 @@ public class InqMyMediaFragment extends BaseFragmentActivity implements ListItem
 
     @Override
     public void onListItemClick(View v, int position, GeneralItemLocalObject object) {
-//        Intent intent = new Intent(getApplicationContext(), InqMyMediaDataCollectionTaskFragment.class);
-//        intent.putExtra("DataCollectionTask", object.getId());
-//        startActivity(intent);
-
-        Intent intent = new Intent(getApplicationContext(), InqDataCollectionTaskFragment.class);
+        Intent intent = new Intent(getApplicationContext(), InqMyMediaDataCollectionTaskFragment.class);
         intent.putExtra("DataCollectionTask", object.getId());
         startActivity(intent);
     }
