@@ -32,9 +32,6 @@
     <string name="data_collection_dialog_cancel">Cancel</string>
     <string name="data_collection_dialog_creating">Creating data collection task</string>
 
-    <string name="friends_friend_new">Add friend</string>
-    <string name="friends_title_list">Friends</string>
-
     <string name="phases_invite_new_friend">Invite friends</string>
 
     <string name="wrapper_myinquiry">My Inquiries</string>
@@ -51,11 +48,18 @@
     <string name="menu_add">New</string>
     <string name="menu_share">Share</string>
     <string name="menu_logout">Logout</string>
+    <string name="menu_usersite_search">Search</string>
     <string name="menu_data_collection_collect_data_image">Image</string>
     <string name="menu_data_collection_collect_data_video">Video</string>
     <string name="menu_data_collection_collect_data_audio">Audio</string>
     <string name="menu_data_collection_collect_data_text">Text</string>
     <string name="menu_data_collection_collect_data_numeric">Numeric data</string>
+
+    <string name="menu_refresh_list_friends">Refresh list friends</string>
+    <string name="menu_refresh_request_sent">Request sent</string>
+    <string name="menu_refreshing_list_friends">Synchronizing friends...</string>
+    <string name="friends_add_friend">Add friend</string>
+
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
@@ -115,7 +119,7 @@
     <string name="inquiry_title_data">Collect data</string>
     <string name="inquiry_title_analyse">Analyse</string>
     <string name="inquiry_title_discuss">Discuss</string>
-    <string name="inquiry_title_communicate">Communicate</string>
+    <string name="inquiry_title_communicate">Chat</string>
 
     <string name="imageview_description">Image Thumbnail</string>
     <string name="splash_login_button">Login</string>
@@ -127,5 +131,17 @@
     <string name="placeholder">placeholder</string>
     <string name="content">content</string>
 
+    <string name="friends_friend_new">Add friend</string>
+    <string name="friends_title_list">Friends</string>
+
+    <string name="communication_title">Chat</string>
+    <string name="communication_enter_message"></string>
+    <string name="communication_enter_message_default">Type a message to start...</string>
+
+
+
+    <string name="usersite_title_list">Users</string>
+    <string name="sent_request_usersite_title_list">Friendship requested</string>
+    <string name="usersite_menu_search">Searching user...</string>
 
 </resources>

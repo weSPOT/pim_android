@@ -1,4 +1,4 @@
-arlearn.pim.iml
+./arlearn.pim.iml
 .DS_Store
 /lib
 /.idea
@@ -19,5 +19,3 @@ build/*
 ./assets/config.properties
 assets/config.properties
 ./project.properties
-arlearn.pim.iml
-./arlearn.pim.iml

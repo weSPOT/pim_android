@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_background">
+
+    <TextView
+            android:id="@+id/name_usersite_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/icon_usersite_list"
+            android:layout_margin="0dp"
+            android:text="test"/>
+    <ImageView
+            android:id="@+id/icon_usersite_list"
+            style="@style/CustomTheme.ListItem.ImageView.Left"
+            android:src="@drawable/ic_profile_placeholder"
+            android:contentDescription="@string/icon_list"/>
+    <ImageButton
+            android:id="@+id/add_friend_usersite_list"
+            android:src="@drawable/ic_add_inquiry"
+            style="@style/CustomTheme.RequestFriendship" />
+</RelativeLayout>

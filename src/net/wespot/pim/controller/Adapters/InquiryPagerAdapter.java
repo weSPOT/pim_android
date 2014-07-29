@@ -59,6 +59,9 @@ public class InquiryPagerAdapter extends FragmentPagerAdapter {
                     frag = new InqQuestionFragment();
                     return frag;
                 }
+            case Constants.ID_COMMUNICATE:
+                frag = new InqCommunicateFragment();
+                return frag;
             default:
                 // The other sections of the app are dummy placeholders.
                 frag = new DemoObjectFragment();

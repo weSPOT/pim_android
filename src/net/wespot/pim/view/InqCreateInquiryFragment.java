@@ -49,13 +49,6 @@ import java.util.Calendar;
 @SuppressLint("NewApi")
 public class InqCreateInquiryFragment extends Fragment{
 
-    public static final String INQUIRY_ID = "object";
-
-    String[] spinnerValues = { "Blur", "NFS", "Burnout","GTA IV", "Racing", };
-
-    private static final String TAG = "InqCreateInquiryFragment";
-    private static final int REQUEST_CODE = 1234;
-    private static final int RESULT_OK = -1;
 
     private InquiryLocalObject new_inquiry;
 
@@ -248,12 +241,10 @@ public class InqCreateInquiryFragment extends Fragment{
             if (token != null && ARL.isOnline()) {
                 InquiryClient.getInquiryClient().createInquiry(token, inquiryObject.inquiry, INQ.accounts.getLoggedInAccount(), TEMP_VISIBILITY, TEMP_MEMBERSHIP, true);
                 INQ.inquiry.syncInquiries();
-//                INQ.inquiry.syncDataCollectionTasks();
                 getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
                 getActivity().finish();
             }
         }
-
     }
 
     public void onDestroy(){

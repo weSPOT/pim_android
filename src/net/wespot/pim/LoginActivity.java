@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.Toast;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.utils.Constants;
-import net.wespot.xapi.TinCan;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 
@@ -111,9 +110,7 @@ public class LoginActivity extends FragmentActivity {
                             DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().deleteAll();
                             DaoConfiguration.getInstance().getResponseLocalObjectDao().deleteAll();
                             DaoConfiguration.getInstance().getBadgesLocalObjectDao().deleteAll();
-
-                            TinCan tinCan = TinCan.getInstance();
-                            tinCan.execute();
+                            DaoConfiguration.getInstance().getFriendsLocalObjectDao().deleteAll();
 
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
