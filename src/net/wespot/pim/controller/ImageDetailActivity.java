@@ -39,10 +39,12 @@ import net.wespot.pim.utils.images.Utils;
 import net.wespot.pim.view.InqImageDetailFragment;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.dao.gen.GeneralItemLocalObject;
+import org.celstec.dao.gen.ResponseLocalObject;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 
 public class ImageDetailActivity extends FragmentActivity implements OnClickListener {
@@ -63,6 +65,8 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 
     private GeneralItemLocalObject giLocalObject;
     private int responsePosition;
+
+    private List<ResponseLocalObject> responseLocalObjectList;
 
 //    @Override
 //    public void onSaveInstanceState(Bundle outState) {
@@ -226,6 +230,7 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
         public ImagePagerAdapter(FragmentManager fm, int size) {
             super(fm);
             mSize = size;
+            responseLocalObjectList = giLocalObject.getResponses();
         }
 
         @Override
@@ -238,7 +243,7 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 //            ResponseLocalObject res = giLocalObject.getResponses().get(position);
 
 //            info_image.setText(res.getTimeStamp().toString());
-            return InqImageDetailFragment.newInstance(giLocalObject.getResponses().get(position).getUriAsString());
+            return InqImageDetailFragment.newInstance(responseLocalObjectList.get(position));
         }
     }
 
@@ -283,7 +288,7 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
             Log.d(TAG, "Current element: "+real_position);
             Log.d(TAG, "Number elements: " + real_number_elements);
 
-            Date date = new Date(giLocalObject.getResponses().get(i).getTimeStamp());
+            Date date = new Date(responseLocalObjectList.get(i).getTimeStamp());
             Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
             info_image.setText(format.format(date));
             current_info.setText(real_position+" of "+real_number_elements);

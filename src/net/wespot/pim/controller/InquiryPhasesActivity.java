@@ -78,7 +78,7 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
             Log.e(TAG, "go through savedInstanceState currentInquiry" + savedInstanceState + " " + INQ.inquiry.getCurrentInquiry());
         }
 
-        INQ.inquiry.syncDataCollectionTasks();
+        INQ.inquiry.syncDataCollectionTasks(INQ.inquiry.getCurrentInquiry());
         INQ.threads.syncThreads(INQ.inquiry.getCurrentInquiry().getRunId());
 
         setContentView(R.layout.activity_phases);

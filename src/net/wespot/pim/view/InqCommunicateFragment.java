@@ -41,6 +41,9 @@ import org.celstec.arlearn2.android.events.MessageEvent;
 import org.celstec.dao.gen.MessageLocalObject;
 import org.celstec.dao.gen.MessageLocalObjectDao;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 
@@ -157,6 +160,10 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
 
         ((TextView) newView.findViewById(R.id.name_entry_list)).setText(messageLocalObject.getBody().toString());
 
+        Date date = new Date(messageLocalObject.getTime());
+        Format format = new SimpleDateFormat("HH:mm:ss");
+        ((TextView) newView.findViewById(R.id.timeStampMessage)).setText(format.format(date));
+
         mContainerView.addView(newView, mContainerView.getChildCount());
         scrollDown();
 
@@ -166,7 +173,6 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
         Log.e(TAG, "retrieve messages");
 
         INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
-        //TODO issues when resuming
         messageLocalObjectList_newMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
                 .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
                 .orderAsc(MessageLocalObjectDao.Properties.Time)
@@ -191,6 +197,7 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
     @Override
     public void onDestroy() {
         ARL.eventBus.unregister(this);
+        timer.cancel();
         super.onDestroy();
     }
 

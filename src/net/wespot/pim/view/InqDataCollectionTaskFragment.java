@@ -219,6 +219,8 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
 
     private void onEventBackgroundThread(ResponseEvent responseEvent){
         Log.e(TAG, " response for "+responseEvent.getRunId());
+
+//        genObject.resetResponses();
     }
 
 

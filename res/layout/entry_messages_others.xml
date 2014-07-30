@@ -4,8 +4,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
                 android:gravity="right"
-                android:padding="20px"
-                android:layout_margin="2dp"
+                android:padding="10px"
+                android:layout_margin="4dp"
                 android:background="@drawable/background_message_others_chat">
 
     <TextView
@@ -14,10 +14,20 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/inquiry_entry_icon"
-            android:layout_margin="10dp"
+            android:layout_margin="8dp"
+            android:paddingRight="2dp"
+            android:paddingLeft="2dp"
             android:text="test"/>
     <TextView
             android:id="@+id/notificationTextInquiry"
             style="@style/CustomTheme.NotificationText"
             android:text="Notification"/>
+    <TextView
+            android:id="@+id/timeStampMessage"
+            android:layout_below="@id/name_entry_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/CustomTheme.TimeSteampMessageOthers"
+            android:text="7:12"/>
+
 </RelativeLayout>

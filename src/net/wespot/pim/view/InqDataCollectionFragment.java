@@ -37,6 +37,7 @@ import net.wespot.pim.utils.layout.NoticeDialogFragment;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.GeneralItemEvent;
+import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GameLocalObject;
 import org.celstec.dao.gen.GeneralItemLocalObject;
@@ -98,33 +99,28 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
 
     private void addContentValidation() {
 
-        INQ.inquiry.syncDataCollectionTasks();
-
         if(INQ.inquiry.getCurrentInquiry().getRunLocalObject()!=null){
 
             GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
 
             if (gameLocalObject != null){
-
                 if (gameLocalObject.getGeneralItems().size() != 0){
                     INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
+
+                    for (GeneralItemLocalObject generalItemLocalObject : gameLocalObject.getGeneralItems()){
+                        generalItemLocalObject.resetResponses();
+                    }
                     datAdapter =  new DataCollectionLazyListAdapter(this.getActivity(),gameLocalObject.getId());
                     datAdapter.setOnListItemClickCallback(this);
                     data_collection_tasks.setAdapter(datAdapter);
                 }else{
                     Log.e(TAG, "There are no data collection tasks for this inquiry");
-//                    data_collection_tasks_title_list.setVisibility(View.INVISIBLE);
-//                    text_default.setVisibility(View.VISIBLE);
-//                    text_default.setText(R.string.data_collection_task_no_created);
                 }
             }else{
                 Log.e(TAG, "There is no game for this run.");
             }
         }else{
             Log.e(TAG, "Data collection task are not enabled on this inquiry");
-//            data_collection_tasks_title_list.setVisibility(View.INVISIBLE);
-//            text_default.setVisibility(View.VISIBLE);
-//            text_default.setText(R.string.data_collection_task_no_enabled_created);
         }
     }
 
@@ -157,6 +153,11 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
                 break;
             case R.id.menu_refresh_data_collection:
                 // TODO enhance refreshing data collection
+                Toast.makeText(getActivity(), "Updating data collections...", Toast.LENGTH_SHORT).show();
+                GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
+                for (GeneralItemLocalObject generalItemLocalObject : gameLocalObject.getGeneralItems()){
+                    generalItemLocalObject.resetResponses();
+                }
                 addContentValidation();
                 break;
         }
@@ -178,8 +179,6 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
 
         dialog.show(getFragmentManager().beginTransaction(), "dialog");
     }
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -205,20 +204,18 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
         }
     }
 
-    private void onEventBackgroundThread(GeneralItemEvent generalItem){
-        Log.e(TAG, "Creation data collection task done ");
+    private void onEventMainThread(GeneralItemEvent generalItem){
+        Log.e(TAG, "Adding data collection in background");
 
-        // Run code on UIThread
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                addContentValidation();
-                getActivity().findViewById(R.id.text_default).setVisibility(View.GONE);
-            }
-        });
+        addContentValidation();
+        getActivity().findViewById(R.id.text_default).setVisibility(View.GONE);
     }
 
 
+    private void onEventBackgroundThread(ResponseEvent responseEvent){
+        Log.e(TAG, " response for "+responseEvent.getRunId());
+
+    }
 
     @Override
     public void onListItemClick(View v, int position, GeneralItemLocalObject object) {
@@ -237,5 +234,4 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
         super.onDestroy();
         ARL.eventBus.unregister(this);
     }
-
 }

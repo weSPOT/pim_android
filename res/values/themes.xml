@@ -107,6 +107,28 @@
         <item name="android:textSize">16dp</item>
     </style>
 
+
+    <style name="CustomTheme.TimeSteampMessage">
+        <item name="android:layout_margin">6dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:background">@drawable/pim_listitem_notification_text</item>
+        <item name="android:textColor">@color/app.base.white</item>
+        <item name="android:textSize">8dp</item>
+    </style>
+
+
+    <style name="CustomTheme.TimeSteampMessageOthers">
+        <item name="android:layout_margin">7dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:background">@drawable/pim_listitem_notification_text</item>
+        <item name="android:textColor">@color/app.base.white</item>
+        <item name="android:textSize">8dp</item>
+    </style>
+
+
+
     <style name="CustomTheme.RequestFriendship">
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_alignParentRight">true</item>

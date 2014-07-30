@@ -26,6 +26,7 @@
               android:showAsAction="always"
               android:visible="@bool/spb_default_reversed"/>
     </group>
+
     <group android:id="@+id/actions_general">
         <item android:id="@+id/menu_refresh"
               android:title="@string/menu_refresh"
