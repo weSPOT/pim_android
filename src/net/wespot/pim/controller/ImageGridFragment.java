@@ -335,6 +335,8 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
                 mImageFetcher.loadImage(responseLocalObject.getThumbnailUriAsString(), imageView);
             }else if (responseLocalObject.isVideo()){
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_video));
+            }else if (!responseLocalObject.getValue().equals(null)){
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_description));
             }else{
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.empty_photo));
             }

@@ -17,5 +17,6 @@
     <ImageButton
             android:id="@+id/remove_friend"
             android:src="@drawable/ic_remove"
+            android:visibility="gone"
             style="@style/CustomTheme.RequestFriendship" />
 </RelativeLayout>

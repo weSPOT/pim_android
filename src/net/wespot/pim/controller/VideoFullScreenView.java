@@ -21,10 +21,10 @@ package net.wespot.pim.controller;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
 import net.wespot.pim.R;
@@ -32,6 +32,7 @@ import net.wespot.pim.R;
 public class VideoFullScreenView extends Activity {
 
     private VideoView vidDisplay;
+    private MediaPlayer mediaPlayer;
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -43,12 +44,29 @@ public class VideoFullScreenView extends Activity {
             getActionBar().hide();
         }
 
-        vidDisplay = (VideoView) findViewById(R.id.videoView);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Intent i = getIntent();
         String filePath = i.getStringExtra("filePath");
 
+//        Uri myUri = Uri.parse(filePath); // initialize Uri here
+////        vidDisplay.setVideoURI(myUri);
+//
+//        mediaPlayer = new MediaPlayer();
+//        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//        try {
+//            mediaPlayer.setDataSource(getApplicationContext(), myUri);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            mediaPlayer.prepare();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        mediaPlayer.start();
+
+        vidDisplay = (VideoView) findViewById(R.id.videoView);
         vidDisplay.setVideoURI(Uri.parse(filePath));
         MediaController mediaController = new MediaController(this);
         vidDisplay.setMediaController(mediaController);
@@ -62,6 +80,8 @@ public class VideoFullScreenView extends Activity {
     @Override
     protected void onDestroy() {
         vidDisplay.getHolder().getSurface().release();
+//        mediaPlayer.release();
+//        mediaPlayer = null;
         super.onDestroy();
     }
 

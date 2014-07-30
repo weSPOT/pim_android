@@ -38,4 +38,14 @@
             android:layout_gravity="center"
             android:visibility="gone"
             android:src="@drawable/play_overlay_large" />
+    <TextView
+            android:id="@+id/text_value_response"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:padding="32dp"/>
+
 </FrameLayout>
