@@ -1,14 +1,15 @@
-package net.wespot.pim.utils.layout;
+package net.wespot.pim.compat;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Window;
 import net.wespot.pim.R;
-import org.celstec.arlearn.delegators.INQ;
+import net.wespot.pim.utils.layout.ActionBarCompat;
 
 /**
  * ****************************************************************************
@@ -30,40 +31,20 @@ import org.celstec.arlearn.delegators.INQ;
  * Contributors: Angel Suarez
  * ****************************************************************************
  */
-public class MainActionBarFragmentActivity extends FragmentActivity {
+public class BaseCompactActivity extends ActionBarCompat {
 
     private static final String TAG = "_ActBar_FragmentActivity";
     private ActionBarHelper mActionBarHelper;
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Log.e(TAG, "Recover in MainActionBarFragmentActivity > onSaveInstanceState");
-    }
+    protected void onResume() {
+        super.onResume();
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.e(TAG, "Recover in MainActionBarFragmentActivity > onRestart");
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        Log.e(TAG, "Recover in MainActionBarFragmentActivity > onRestoreInstanceState");
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Avoiding NULL exceptions when resuming the PIM
-        if (INQ.inquiry == null){
-
-            INQ.init(this);
-            INQ.accounts.syncMyAccountDetails();
-            Log.e(TAG, "recover INQ.inquiry is needed.");
-        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH){
             requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -73,8 +54,6 @@ public class MainActionBarFragmentActivity extends FragmentActivity {
 
         mActionBarHelper = createActionBarHelper();
         mActionBarHelper.init();
-
-
     }
 
     /**
@@ -82,11 +61,29 @@ public class MainActionBarFragmentActivity extends FragmentActivity {
      */
     private ActionBarHelper createActionBarHelper() {
 
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             return new ActionBarHelperICS();
         } else {
-            return new ActionBarHelper();
+//            return new ActionBarHelper();
+            return new ActionBarHelperOld();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public ActionBarHelper getmActionBarHelper() {
@@ -123,12 +120,11 @@ public class MainActionBarFragmentActivity extends FragmentActivity {
         ActionBarHelperICS() {
 //            mActionBar = getSupportActionBar();
             mActionBar = getActionBar();
-//            mActionBar.hide();
-            mActionBar.setHomeButtonEnabled(false);
-            mActionBar.setDisplayHomeAsUpEnabled(false);
-            mActionBar.setDisplayShowHomeEnabled(false);
+            assert mActionBar != null;
             mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            mActionBar.setDisplayShowTitleEnabled(false);
+                    mActionBar.setDisplayShowHomeEnabled(false);
+            //        actionBar.setHomeButtonEnabled(false);
+
         }
 
         @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -192,4 +188,17 @@ public class MainActionBarFragmentActivity extends FragmentActivity {
     }
 
 
+    /**
+     * Action bar helper for use on ICS and newer devices.
+     */
+    private class ActionBarHelperOld extends ActionBarHelper{
+//        private final com.actionbarsherlock.ActionBarSherlock mActionBar;
+        private CharSequence mDrawerTitle;
+        private CharSequence mTitle;
+
+
+        ActionBarHelperOld() {
+//            this.mActionBar = ;
+        }
+    }
 }

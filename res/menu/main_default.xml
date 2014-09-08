@@ -14,10 +14,12 @@
   limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:Inquiries="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/menu_logout"
         android:title="@string/menu_logout"
         android:icon="@drawable/ic_logout"
         android:orderInCategory="0"
-        android:showAsAction="always" />
+        android:showAsAction="always"
+        Inquiries:showAsAction="always"/>
 </menu>

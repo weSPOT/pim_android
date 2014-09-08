@@ -7,6 +7,16 @@
                 android:padding="10px"
                 android:layout_margin="4dp"
                 android:background="@drawable/background_message_others_chat">
+    <TextView
+            android:id="@+id/author_entry_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:textStyle="bold"
+            android:paddingRight="14dp"
+            android:paddingLeft="2dp"
+            android:text="test"/>
 
     <TextView
             android:id="@+id/name_entry_list"
@@ -14,14 +24,11 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/inquiry_entry_icon"
-            android:layout_margin="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="36dp"
             android:paddingRight="2dp"
             android:paddingLeft="2dp"
             android:text="test"/>
-    <TextView
-            android:id="@+id/notificationTextInquiry"
-            style="@style/CustomTheme.NotificationText"
-            android:text="Notification"/>
     <TextView
             android:id="@+id/timeStampMessage"
             android:layout_below="@id/name_entry_list"

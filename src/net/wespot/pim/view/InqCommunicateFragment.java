@@ -75,6 +75,8 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        if (savedInstanceState != null){
         ARL.eventBus.register(this);
         INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
         //TODO issues when resuming
@@ -84,13 +86,15 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
                 .list();
 
         timer = new Timer();
+
         timer.schedule(new RetrieveMessageTask(), INTERVAL * 1000, INTERVAL * 1000);
+//        }
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (messageLocalObjectList.size() > 0) {
+        if ( messageLocalObjectList.equals(null) || messageLocalObjectList.size() > 0) {
             getActivity().findViewById(android.R.id.empty).setVisibility(View.GONE);
         }
     }
@@ -156,6 +160,8 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
         } else {
             newView = (ViewGroup) LayoutInflater.from(getActivity()).inflate(
                     R.layout.entry_messages_others, mContainerView, false);
+            String[] author = messageLocalObject.getAuthor().toString().split(":");
+            ((TextView) newView.findViewById(R.id.author_entry_list)).setText(author[1]);
         }
 
         ((TextView) newView.findViewById(R.id.name_entry_list)).setText(messageLocalObject.getBody().toString());

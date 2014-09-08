@@ -151,12 +151,12 @@ public class InqMyMediaDataCollectionTaskFragment extends BaseFragmentActivity i
             case R.id.menu_data_collection_image:
                 man_pic.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
                 man_pic.setGeneralItem(genObject);
-                man_pic.takeDataSample();
+                man_pic.takeDataSample(null);
                 break;
             case R.id.menu_data_collection_video:
                 man_vid.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
                 man_vid.setGeneralItem(genObject);
-                man_vid.takeDataSample();
+                man_vid.takeDataSample(null);
                 break;
             case R.id.menu_data_collection_audio:
                 Toast.makeText(getApplicationContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();

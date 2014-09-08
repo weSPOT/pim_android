@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import net.wespot.pim.R;
 
 /**
@@ -43,6 +44,10 @@ public class BaseFragmentActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH){
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+        }
 
         setContentView(R.layout.main);
 

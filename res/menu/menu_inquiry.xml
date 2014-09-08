@@ -14,7 +14,8 @@
   limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:Inquiries="http://schemas.android.com/apk/res-auto">
 
 
 
@@ -24,7 +25,8 @@
               android:icon="@drawable/ic_content_save"
               android:orderInCategory="1"
               android:showAsAction="always"
-              android:visible="@bool/spb_default_reversed"/>
+              android:visible="@bool/spb_default_reversed"
+              Inquiries:showAsAction="always"/>
     </group>
 
     <group android:id="@+id/actions_general">
@@ -32,7 +34,8 @@
               android:title="@string/menu_refresh"
               android:showAsAction="always"
               android:icon="@drawable/ic_action_refresh_white"
-              android:orderInCategory="2" />
+              android:orderInCategory="2"
+              Inquiries:showAsAction="always"/>
     </group>
 
     <group android:id="@+id/actions_data_collection">
@@ -40,12 +43,14 @@
               android:title="@string/menu_new_data_collection"
               android:showAsAction="always"
               android:icon="@drawable/ic_action_new"
-              android:orderInCategory="1" />
+              android:orderInCategory="1"
+              Inquiries:showAsAction="always"/>
         <item android:id="@+id/menu_refresh_data_collection"
               android:title="@string/menu_refresh_data_collection"
               android:showAsAction="always"
               android:icon="@drawable/ic_action_refresh_white"
-              android:orderInCategory="2" />
+              android:orderInCategory="2"
+              Inquiries:showAsAction="always"/>
     </group>
 
     <group android:id="@+id/actions_friends">
@@ -53,7 +58,8 @@
               android:title="@string/menu_refresh_list_friends"
               android:showAsAction="always"
               android:icon="@drawable/ic_action_refresh_white"
-              android:orderInCategory="1" />
+              android:orderInCategory="1"
+              Inquiries:showAsAction="always"/>
 
     </group>
 
@@ -62,11 +68,13 @@
               android:title="@string/menu_refresh_list_friends"
               android:showAsAction="always"
               android:icon="@drawable/ic_action_search_w"
-              android:orderInCategory="1" />
+              android:orderInCategory="1"
+              Inquiries:showAsAction="always"/>
         <item android:id="@+id/menu_usersite_request_sent"
               android:title="@string/menu_refresh_request_sent"
               android:showAsAction="always"
               android:icon="@drawable/ic_action_forward_w"
-              android:orderInCategory="2" />
+              android:orderInCategory="2"
+              Inquiries:showAsAction="always"/>
     </group>
 </menu>

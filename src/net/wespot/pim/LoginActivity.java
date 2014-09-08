@@ -1,11 +1,11 @@
 package net.wespot.pim;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Window;
 import android.webkit.WebChromeClient;
@@ -14,6 +14,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.Toast;
 import daoBase.DaoConfiguration;
+import net.wespot.pim.compat.MainActivityCompat;
 import net.wespot.pim.utils.Constants;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
@@ -41,7 +42,7 @@ import org.celstec.arlearn2.android.delegators.ARL;
  * ****************************************************************************
  */
 @SuppressLint("NewApi")
-public class LoginActivity extends FragmentActivity {
+public class LoginActivity extends Activity {
 
     private static final String TAG = "LoginActivity";
     private Button loginButton;
@@ -61,6 +62,9 @@ public class LoginActivity extends FragmentActivity {
 
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
                 getActionBar().hide();
+            }else{
+                this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
             }
 
             if (!INQ.accounts.isAuthenticated()){
@@ -112,10 +116,13 @@ public class LoginActivity extends FragmentActivity {
                             DaoConfiguration.getInstance().getBadgesLocalObjectDao().deleteAll();
                             DaoConfiguration.getInstance().getFriendsLocalObjectDao().deleteAll();
 
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            Intent intent = null;
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                                intent = new Intent(getApplicationContext(), MainActivity.class);
+                            } else {
+                                intent = new Intent(getApplicationContext(), MainActivityCompat.class);
+                            }
                             startActivity(intent);
-
-
 
                             finish();
                         }
@@ -123,7 +130,12 @@ public class LoginActivity extends FragmentActivity {
                 });
             }
             else{
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                    intent = new Intent(getApplicationContext(), MainActivity.class);
+                } else {
+                    intent = new Intent(getApplicationContext(), MainActivityCompat.class);
+                }
                 startActivity(intent);
                 ARL.accounts.syncMyAccountDetails();
             }
