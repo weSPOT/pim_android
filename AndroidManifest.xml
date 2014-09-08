@@ -58,7 +58,7 @@
         <activity android:name=".view.impl.ValueInputCollectionActivityImpl" android:label="@string/app_name"
                   android:screenOrientation="portrait" />
 
-        <activity android:name=".compat.MainActivityCompat" android:label="@string/app_name"
+        <activity android:name=".MainActivityCompat" android:label="@string/app_name"
                   android:screenOrientation="portrait" android:theme="@style/CustomTheme"/>
 
         <activity android:name=".utils.layout.ActionBarCompat" android:label="@string/app_name"
