@@ -1,4 +1,4 @@
-package net.wespot.pim;
+package net.wespot.pim.compat;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import daoBase.DaoConfiguration;
+import net.wespot.pim.R;
+import net.wespot.pim.SplashActivity;
 import net.wespot.pim.compat.PimInquiriesCompatFragment;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.RemindTask;

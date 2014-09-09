@@ -14,6 +14,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.Toast;
 import daoBase.DaoConfiguration;
+import net.wespot.pim.compat.MainActivityCompat;
 import net.wespot.pim.utils.Constants;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
