@@ -1,4 +1,4 @@
-package net.wespot.pim.view;
+package net.wespot.pim.compat.view;
 
 /**
  * ****************************************************************************
@@ -38,7 +38,7 @@ import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.ResponsesLazyListAdapter;
 import net.wespot.pim.controller.ImageDetailActivity;
 import net.wespot.pim.controller.ImageGridFragment;
-import net.wespot.pim.utils.layout.BaseFragmentActivity;
+import net.wespot.pim.utils.layout.ActionBarCompat;
 import net.wespot.pim.view.impl.AudioCollectionActivityImpl;
 import net.wespot.pim.view.impl.TextInputCollectionActivityImpl;
 import net.wespot.pim.view.impl.ValueInputCollectionActivityImpl;
@@ -56,7 +56,7 @@ import java.io.File;
 /**
  * Fragment to display responses from a Data Collection Task (General Item)
  */
-public class InqDataCollectionTaskFragment extends BaseFragmentActivity implements ListItemClickInterface<ResponseLocalObject> {
+public class InqDataCollectionTaskCompatFragment extends ActionBarCompat implements ListItemClickInterface<ResponseLocalObject> {
 
     private static final String TAG = "InqDataCollectionTaskFragment";
     private ListView data_collection_tasks_items;
@@ -119,7 +119,8 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
                 ft.commit();
             }
 
-            getActionBar().setTitle(getResources().getString(R.string.actionbar_list_data_collection_task));
+            getSupportActionBar().setTitle(getResources().getString(R.string.actionbar_list_data_collection_task));
+
         }
     }
 

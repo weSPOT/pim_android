@@ -88,6 +88,8 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
         timer = new Timer();
 
         timer.schedule(new RetrieveMessageTask(), INTERVAL * 1000, INTERVAL * 1000);
+
+
 //        }
     }
 

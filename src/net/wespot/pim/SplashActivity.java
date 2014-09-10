@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
+import net.wespot.pim.compat.MainActivityCompat;
 import net.wespot.pim.controller.Adapters.InitialPagerAdapter;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.layout.CirclePageIndicator;
@@ -136,11 +137,11 @@ public class SplashActivity extends FragmentActivity {
         super.onResume();
         if (INQ.accounts.isAuthenticated()){
             Intent intent = null;
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                 intent = new Intent(getApplicationContext(), MainActivity.class);
-//            } else {
-//                intent = new Intent(getApplicationContext(), MainActivityCompat.class);
-//            }
+            } else {
+                intent = new Intent(getApplicationContext(), MainActivityCompat.class);
+            }
             startActivity(intent);
             ARL.accounts.syncMyAccountDetails();
         }

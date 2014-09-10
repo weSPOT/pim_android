@@ -1,4 +1,4 @@
-package net.wespot.pim.view;
+package net.wespot.pim.compat.view;
 
 /**
  * ****************************************************************************
@@ -33,17 +33,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.ResponsesLazyListAdapter;
 import net.wespot.pim.controller.ImageDetailActivity;
 import net.wespot.pim.controller.ImageGridFragment;
-import net.wespot.pim.utils.layout.BaseFragmentActivity;
-import net.wespot.pim.view.impl.AudioCollectionActivityImpl;
-import net.wespot.pim.view.impl.TextInputCollectionActivityImpl;
-import net.wespot.pim.view.impl.ValueInputCollectionActivityImpl;
+import net.wespot.pim.utils.layout.ActionBarCompat;
 import org.celstec.arlearn.delegators.INQ;
-import org.celstec.arlearn2.android.dataCollection.*;
+import org.celstec.arlearn2.android.dataCollection.DataCollectionManager;
+import org.celstec.arlearn2.android.dataCollection.PictureManager;
+import org.celstec.arlearn2.android.dataCollection.VideoManager;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
@@ -56,7 +56,7 @@ import java.io.File;
 /**
  * Fragment to display responses from a Data Collection Task (General Item)
  */
-public class InqDataCollectionTaskFragment extends BaseFragmentActivity implements ListItemClickInterface<ResponseLocalObject> {
+public class InqMyMediaDataCollectionTaskCompatFragment extends ActionBarCompat implements ListItemClickInterface<ResponseLocalObject> {
 
     private static final String TAG = "InqDataCollectionTaskFragment";
     private ListView data_collection_tasks_items;
@@ -67,10 +67,6 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     private GeneralItemLocalObject genObject;
     private PictureManager man_pic = new PictureManager(this);
     private VideoManager man_vid = new VideoManager(this);
-    private AudioInputManager man_aud = new AudioInputManager(this);
-    private ValueInputManager man_val = new ValueInputManager(this);
-    private TextInputManager man_tex = new TextInputManager(this);
-
     private File bitmapFile;
 
     ResponseLocalObject response;
@@ -119,7 +115,8 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
                 ft.commit();
             }
 
-            getActionBar().setTitle(getResources().getString(R.string.actionbar_list_data_collection_task));
+            getSupportActionBar().setTitle(getResources().getString(R.string.actionbar_list_data_collection_task));
+
         }
     }
 
@@ -137,7 +134,10 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_data_collection, menu);
+        /* TODO enabling data collection from the My Media screen.
+           first we need to get the inquiry ID (even if we don't have INQ.inquiry.currentInquiry()).
+         */
+//        menuInflater.inflate(R.menu.menu_data_collection, menu);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -156,19 +156,22 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
                 man_vid.takeDataSample(null);
                 break;
             case R.id.menu_data_collection_audio:
-                man_aud.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
-                man_aud.setGeneralItem(genObject);
-                man_aud.takeDataSample(AudioCollectionActivityImpl.class);
+                Toast.makeText(getApplicationContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
+                // TODO add data collection audio
                 break;
             case R.id.menu_data_collection_text:
-                man_tex.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
-                man_tex.setGeneralItem(genObject);
-                man_tex.takeDataSample(TextInputCollectionActivityImpl.class);
+                Toast.makeText(getApplicationContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
+                // TODO add data collection text
+//                man_vid.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+//                man_vid.setGeneralItem(genObject);
+//                man_vid.takeDataSample();
                 break;
             case R.id.menu_data_collection_numeric:
-                man_val.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
-                man_val.setGeneralItem(genObject);
-                man_val.takeDataSample(ValueInputCollectionActivityImpl.class);
+                Toast.makeText(getApplicationContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
+                // TODO add data collection numeric
+//                man_vid.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+//                man_vid.setGeneralItem(genObject);
+//                man_vid.takeDataSample();
                 break;
 
         }
@@ -191,27 +194,23 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-//          public static final int PICTURE_RESULT = 1;
+//        public static final int PICTURE_RESULT = 1;
 //        public static final int AUDIO_RESULT = 2;
 //        public static final int VIDEO_RESULT = 3;
 //        public static final int TEXT_RESULT = 4;
-//        public static final int VALUE_RESULT = 5;
 
         switch (requestCode){
             case DataCollectionManager.PICTURE_RESULT:
                 man_pic.onActivityResult(requestCode, resultCode, data);
                 break;
             case DataCollectionManager.AUDIO_RESULT:
-                man_aud.onActivityResult(requestCode, resultCode, data);
+
                 break;
             case DataCollectionManager.VIDEO_RESULT:
                 man_vid.onActivityResult(requestCode, resultCode, data);
                 break;
             case DataCollectionManager.TEXT_RESULT:
-                man_tex.onActivityResult(requestCode, resultCode, data);
-                break;
-            case DataCollectionManager.VALUE_RESULT:
-                man_val.onActivityResult(requestCode, resultCode, data);
+
                 break;
         }
 
@@ -220,8 +219,6 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
 
     private void onEventBackgroundThread(ResponseEvent responseEvent){
         Log.e(TAG, " response for "+responseEvent.getRunId());
-
-//        genObject.resetResponses();
     }
 
 

@@ -18,7 +18,7 @@
  * Contributors: Angel Suarez
  * ****************************************************************************
  */
-package net.wespot.pim.controller;
+package net.wespot.pim.compat.controller;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -34,16 +34,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
-import net.wespot.pim.compat.controller.InquiryActivityBack;
+import net.wespot.pim.controller.InquiryActivity;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.images.BitmapWorkerTask;
-import net.wespot.pim.utils.layout.BaseFragmentActivity;
+import net.wespot.pim.utils.layout.ActionBarCompat;
 import net.wespot.pim.utils.layout.ButtonManager;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GameLocalObject;
 
-public class InquiryPhasesActivity extends BaseFragmentActivity implements ListItemClickInterface<View>{
+public class InquiryPhasesCompatActivity extends ActionBarCompat implements ListItemClickInterface<View>{
 
     private static final String TAG = "InquiryActivity";
 
@@ -84,11 +84,8 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
 
         setContentView(R.layout.activity_phases);
 
-//        if (!(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1)) {
-//            if (!(Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH)){
-        getActionBar().setTitle(R.string.actionbar_inquiry_list);
-//            }
-//        }
+        getSupportActionBar().setTitle(R.string.actionbar_inquiry_list);
+
 
         TextView inquiry_description_title = (TextView) findViewById(R.id.list_phases_title);
         ImageView inquiry_description_image = (ImageView) findViewById(R.id.list_phases_image);
@@ -160,7 +157,7 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
             if (INQ.inquiry.getCurrentInquiry().getRunLocalObject() != null) {
                 GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
                 if (gameLocalObject != null) {
-                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
                         Intent intent = new Intent(getApplicationContext(), InquiryActivityBack.class);
                         intent.putExtra(InquiryActivity.PHASE, id);
                         startActivity(intent);

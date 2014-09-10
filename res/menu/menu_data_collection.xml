@@ -14,33 +14,38 @@
   limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:Inquiries="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/menu_data_collection_image"
           android:title="@string/menu_data_collection_collect_data_image"
           android:icon="@drawable/ic_camera"
           android:orderInCategory="0"
-          android:showAsAction="always" />
+          android:showAsAction="always"
+          Inquiries:showAsAction="always"/>
 
     <item android:id="@+id/menu_data_collection_video"
           android:title="@string/menu_data_collection_collect_data_video"
           android:icon="@drawable/ic_video"
           android:textColor="@color/app.base.white"
           android:orderInCategory="1"
-          android:showAsAction="always" />
+          android:showAsAction="always"
+          Inquiries:showAsAction="always"/>
 
     <item android:id="@+id/menu_data_collection_audio"
           android:title="@string/menu_data_collection_collect_data_audio"
           android:icon="@drawable/ic_action_mic"
           android:orderInCategory="2"
-          android:showAsAction="always" />
+          android:showAsAction="always"
+          Inquiries:showAsAction="always"/>
 
     <item android:id="@+id/menu_data_collection_text"
           android:title="@string/menu_data_collection_collect_data_text"
           android:icon="@drawable/ic_edit_description"
           android:textColor="@color/app.base.white"
           android:orderInCategory="3"
-          android:showAsAction="always" />
+          android:showAsAction="always"
+          Inquiries:showAsAction="always"/>
 
 
     <item android:id="@+id/menu_data_collection_numeric"
@@ -48,6 +53,7 @@
           android:icon="@drawable/ic_edit_number"
           android:textColor="@color/app.base.white"
           android:orderInCategory="4"
-          android:showAsAction="always" />
+          android:showAsAction="always"
+          Inquiries:showAsAction="always"/>
 
 </menu>

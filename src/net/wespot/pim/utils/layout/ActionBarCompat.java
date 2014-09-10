@@ -39,19 +39,39 @@ public class ActionBarCompat extends ActionBarActivity implements ActionBarGener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mActionBar = getSupportActionBar();
+
+        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+
+        //
+        mActionBar.setHomeButtonEnabled(false);
+
+        // Hide/show home icon
+        mActionBar.setDisplayShowHomeEnabled(false);
+
+        // Hide/show title
+        mActionBar.setDisplayShowTitleEnabled(true);
+
+        // Enable/disable button home
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+
+        // Enable/disable entire button
+        mActionBar.setHomeButtonEnabled(true);
+        mTitle = mDrawerTitle = getTitle();
+
     }
 
     @Override
     public void init() {
-        mActionBar = getSupportActionBar();
-        mActionBar.setHomeButtonEnabled(false);
-        mActionBar.setDisplayHomeAsUpEnabled(false);
-        mActionBar.setDisplayShowHomeEnabled(false);
-        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        mActionBar.setDisplayShowTitleEnabled(false);
-        mActionBar.setDisplayHomeAsUpEnabled(true);
-        mActionBar.setHomeButtonEnabled(true);
-        mTitle = mDrawerTitle = getTitle();
+//        mActionBar = getSupportActionBar();
+//        mActionBar.setHomeButtonEnabled(false);
+//        mActionBar.setDisplayShowHomeEnabled(false);
+//        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+//        mActionBar.setDisplayShowTitleEnabled(false);
+//        mActionBar.setDisplayHomeAsUpEnabled(true);
+//        mActionBar.setHomeButtonEnabled(true);
+//        mTitle = mDrawerTitle = getTitle();
     }
 
     @Override

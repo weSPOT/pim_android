@@ -15,7 +15,7 @@ import daoBase.DaoConfiguration;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.RemindTask;
 import net.wespot.pim.utils.TimeEvent;
-import net.wespot.pim.utils.layout.ActionBarCompat;
+import net.wespot.pim.utils.layout.ActionBarCurrent;
 import net.wespot.pim.utils.layout.ButtonManager;
 import net.wespot.pim.utils.layout.ViewItemClickInterface;
 import net.wespot.pim.view.*;
@@ -33,7 +33,7 @@ import java.util.LinkedList;
 import java.util.Timer;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class MainActivity extends ActionBarCompat implements ListItemClickInterface<View> {
+public class MainActivity extends ActionBarCurrent implements ListItemClickInterface<View> {
     private static final String TAG = "MainActivity";
 
     private static int numberInquiries;

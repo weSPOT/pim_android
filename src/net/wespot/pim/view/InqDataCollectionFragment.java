@@ -23,6 +23,7 @@ package net.wespot.pim.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -32,6 +33,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import net.wespot.pim.R;
+import net.wespot.pim.compat.view.InqDataCollectionTaskCompatFragment;
 import net.wespot.pim.controller.Adapters.DataCollectionLazyListAdapter;
 import net.wespot.pim.utils.layout.NoticeDialogFragment;
 import org.celstec.arlearn.delegators.INQ;
@@ -219,8 +221,15 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
 
     @Override
     public void onListItemClick(View v, int position, GeneralItemLocalObject object) {
-        Intent intent = new Intent(getActivity(), InqDataCollectionTaskFragment.class);
+
+        Intent intent = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            intent = new Intent(getActivity(), InqDataCollectionTaskFragment.class);
+        } else {
+            intent = new Intent(getActivity(), InqDataCollectionTaskCompatFragment.class);
+        }
         intent.putExtra("DataCollectionTask", object.getId());
+
         startActivity(intent);
     }
 
