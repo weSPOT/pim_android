@@ -202,21 +202,29 @@ public class MainActivityCompat extends ActionBarCompat implements ListItemClick
 
     private void onEventBackgroundThread(InquiryEvent inquiryEvent){
 
-        InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(inquiryEvent.getInquiryId());
+        if (DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size() != numberInquiries){
+            InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(inquiryEvent.getInquiryId());
 
-        timer.purge();
 
-        queueInqDatCol.add(inquiryLocalObject);
+            timer.purge();
 
-        Log.e(TAG, "sync and reset counter 30 second more: "+inquiryLocalObject.getId());
+            queueInqDatCol.add(inquiryLocalObject);
+
+            Log.e(TAG, "sync and reset counter 30 second more: "+inquiryLocalObject.getId());
+        }
+
+
     }
 
     public void onEventMainThread(InquiryEvent event) {
-        numberInquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
+        if (DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size() != numberInquiries) {
+            numberInquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
 
-        ((TextView)myInquiryView.findViewById(R.id.notificationText)).setText(String.valueOf(numberInquiries));
+            ((TextView)myInquiryView.findViewById(R.id.notificationText)).setText(String.valueOf(numberInquiries));
 
-        Log.e(TAG, "onEventMainThread. Number of inquiries: " + numberInquiries);
+            Log.e(TAG, "onEventMainThread. Number of inquiries: " + numberInquiries);
+        }
+
 
 
     }

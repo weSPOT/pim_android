@@ -17,7 +17,7 @@
                            android:layout_margin="30dp"
                            android:maxHeight="60dp"
                            android:layout_centerVertical="true"
-                           android:src="@drawable/ic_placeholder"/>
+                           android:src="@drawable/ic_inquiries"/>
 
                 <TextView android:id="@+id/list_phases_title"
                           android:textSize="20dp"

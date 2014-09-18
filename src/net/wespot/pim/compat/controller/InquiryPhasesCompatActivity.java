@@ -173,6 +173,7 @@ public class InquiryPhasesCompatActivity extends ActionBarCompat implements List
                 Toast.makeText(getApplicationContext(), "Game is not sync yet", Toast.LENGTH_SHORT).show();
             }
         }else{
+            // Implementation of friendship request
             Toast.makeText(getApplicationContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
         }
     }

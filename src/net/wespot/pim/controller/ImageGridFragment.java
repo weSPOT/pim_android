@@ -261,7 +261,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
      * columns in the GridView is used to create a fake top row of empty views as we use a
      * transparent ActionBar and don't want the real top row of images to start off covered by it.
      */
-    private class ImageAdapter extends BaseAdapter {
+    public class ImageAdapter extends BaseAdapter {
 
         private final Context mContext;
         private int mItemHeight = 0;
@@ -341,7 +341,6 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.empty_photo));
             }
 
-
             return imageView;
         }
 
@@ -368,6 +367,13 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
         public int getNumColumns() {
             return mNumColumns;
+        }
+
+        public void updateReceiptsList(GeneralItemLocalObject responseLocalObjectList) {
+            responseLocalObjectList.resetResponses();
+            responseLocalObjectList.getResponses();
+            this.notifyDataSetChanged();
+            this.notifyDataSetInvalidated();
         }
     }
 }

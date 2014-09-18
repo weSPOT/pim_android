@@ -71,9 +71,16 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     private ValueInputManager man_val = new ValueInputManager(this);
     private TextInputManager man_tex = new TextInputManager(this);
 
+    private final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+    private ImageGridFragment frag;
+
     private File bitmapFile;
 
     ResponseLocalObject response;
+
+    public InqDataCollectionTaskFragment() {
+    }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -107,12 +114,11 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
             data_collection_tasks_description.setText(genObject.getDescription());
 
             if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
-                final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
                 Bundle data = new Bundle();
                 data.putLong("generalItemId", generalItemId);
 
-                ImageGridFragment frag = new ImageGridFragment();
+                frag = new ImageGridFragment();
                 frag.setArguments(data);
 
                 ft.add(R.id.content_images, frag, TAG);
@@ -215,13 +221,20 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
                 break;
         }
 
+        ImageGridFragment.ImageAdapter adapter = frag.getmAdapter();
+        Log.e(TAG, String.valueOf(adapter.getCount()+" "+genObject.getResponses().size()));
+
+        adapter.updateReceiptsList(genObject);
+
+        Log.e(TAG, String.valueOf(adapter.getCount()+" "+genObject.getResponses().size()));
+
         INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
     }
 
     private void onEventBackgroundThread(ResponseEvent responseEvent){
         Log.e(TAG, " response for "+responseEvent.getRunId());
 
-//        genObject.resetResponses();
+        genObject.resetResponses();
     }
 
 

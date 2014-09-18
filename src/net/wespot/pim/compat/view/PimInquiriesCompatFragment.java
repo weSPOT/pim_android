@@ -33,11 +33,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
+import net.wespot.pim.compat.controller.InquiryActivityBack;
 import net.wespot.pim.compat.controller.InquiryPhasesCompatActivity;
 import net.wespot.pim.controller.Adapters.InquiryLazyListAdapter;
 import net.wespot.pim.controller.InquiryActivity;
-import net.wespot.pim.compat.controller.InquiryActivityBack;
 import net.wespot.pim.controller.InquiryPhasesActivity;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.layout.ActionBarCompat;
@@ -68,8 +69,6 @@ public class PimInquiriesCompatFragment extends ActionBarCompat implements ListI
             INQ.accounts.syncMyAccountDetails();
         }
 
-        INQ.inquiry.syncInquiries();
-
         setContentView(R.layout.fragment_inquiries);
 
         ListView inquiries = (ListView) findViewById(R.id.list_inquiries);
@@ -78,6 +77,10 @@ public class PimInquiriesCompatFragment extends ActionBarCompat implements ListI
         adapterInq =  new InquiryLazyListAdapter(this);
         inquiries.setAdapter(adapterInq);
         adapterInq.setOnListItemClickCallback(this);
+
+        if (adapterInq.getCount() != DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size()){
+            INQ.inquiry.syncInquiries();
+        }
 
         // Instantiation of the buttonManager
         ButtonManager buttonManager = new ButtonManager(this);
