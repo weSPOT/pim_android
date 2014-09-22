@@ -38,14 +38,13 @@ import net.wespot.pim.utils.TimeMessageEvent;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.MessageEvent;
+import org.celstec.dao.gen.AccountLocalObject;
 import org.celstec.dao.gen.MessageLocalObject;
 import org.celstec.dao.gen.MessageLocalObjectDao;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Timer;
+import java.util.*;
 
 public class InqCommunicateFragment extends Fragment implements View.OnFocusChangeListener {
 
@@ -58,6 +57,8 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
 
     List<MessageLocalObject> messageLocalObjectList;
     List<MessageLocalObject> messageLocalObjectList_newMessages;
+
+    Map<String, String> accountNamesID = new HashMap<String, String>();
 
     private ViewGroup mContainerView;
     private static final long INTERVAL = 5; /* seconds */
@@ -156,14 +157,22 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
 
         final ViewGroup newView;
 
-        if (INQ.accounts.getLoggedInAccount().getFullId().equals(messageLocalObject.getAuthor())) {
+        if (!accountNamesID.containsKey(messageLocalObject.getAuthor())){
+            AccountLocalObject accountLocalObject = INQ.accounts.getAccount(messageLocalObject.getAuthor());
+            if (accountLocalObject!=null){
+                accountNamesID.put(accountLocalObject.getFullId(), accountLocalObject.getName());
+            }else{
+                accountNamesID.put(messageLocalObject.getAuthor(),"-");
+            }
+        }
+
+        if (INQ.accounts.getLoggedInAccount().getFullId().equals(messageLocalObject.getAuthor()) ) {
             newView = (ViewGroup) LayoutInflater.from(getActivity()).inflate(
                     R.layout.entry_messages, mContainerView, false);
         } else {
             newView = (ViewGroup) LayoutInflater.from(getActivity()).inflate(
                     R.layout.entry_messages_others, mContainerView, false);
-            String[] author = messageLocalObject.getAuthor().toString().split(":");
-            ((TextView) newView.findViewById(R.id.author_entry_list)).setText(author[1]);
+            ((TextView) newView.findViewById(R.id.author_entry_list)).setText(accountNamesID.get(messageLocalObject.getAuthor()));
         }
 
         ((TextView) newView.findViewById(R.id.name_entry_list)).setText(messageLocalObject.getBody().toString());
