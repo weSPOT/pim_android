@@ -155,8 +155,15 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
         // Set the current item based on the extra passed in to this activity
         if (responsePosition != -1) {
             Date date = new Date(giLocalObject.getResponses().get(responsePosition).getTimeStamp());
-            Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
-            info_image.setText(format.format(date));
+            Format format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+            String author = "-";
+            if (giLocalObject.getResponses().get(responsePosition).getAccountLocalObject() != null){
+                author = giLocalObject.getResponses().get(responsePosition).getAccountLocalObject().getName();
+            }
+            info_image.setText(format.format(date)+" by "+author);
+
+//            info_image.setText(format.format(date));
             mPager.setCurrentItem(responsePosition);
         }
 
@@ -176,6 +183,7 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
             }
         });
     }
+
 
     @Override
     public void onResume() {
@@ -208,7 +216,7 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_inquiry, menu);
+//        getMenuInflater().inflate(R.menu.menu_inquiry, menu);
         return true;
     }
 
@@ -240,9 +248,6 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 
         @Override
         public Fragment getItem(int position) {
-//            ResponseLocalObject res = giLocalObject.getResponses().get(position);
-
-//            info_image.setText(res.getTimeStamp().toString());
             return InqImageDetailFragment.newInstance(responseLocalObjectList.get(position));
         }
     }
@@ -289,8 +294,12 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
             Log.d(TAG, "Number elements: " + real_number_elements);
 
             Date date = new Date(responseLocalObjectList.get(i).getTimeStamp());
-            Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
-            info_image.setText(format.format(date));
+            Format format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            String author = "-";
+            if (responseLocalObjectList.get(i).getAccountLocalObject() != null){
+                author = responseLocalObjectList.get(i).getAccountLocalObject().getName();
+            }
+            info_image.setText(format.format(date)+" by "+author);
             current_info.setText(real_position+" of "+real_number_elements);
         }
 

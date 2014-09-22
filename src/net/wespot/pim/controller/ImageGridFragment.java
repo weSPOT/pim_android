@@ -57,6 +57,8 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
     private int mImageThumbSpacing;
     private ImageAdapter mAdapter;
 
+    private GridView mGridView;
+
     public ImageAdapter getmAdapter() {
         return mAdapter;
     }
@@ -75,6 +77,14 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
      */
     public ImageGridFragment() {
 
+    }
+
+    public GridView getmGridView() {
+        return mGridView;
+    }
+
+    public void setmGridView(GridView mGridView) {
+        this.mGridView = mGridView;
     }
 
     @Override
@@ -103,12 +113,26 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
     }
 
+//    public void updateReceiptsList(GeneralItemLocalObject responseLocalObjectList) {
+//
+//        Log.e(TAG, String.valueOf(mAdapter.getCount()+" "+responseLocalObjectList.getResponses().size()));
+//
+//        responseLocalObjectList.resetResponses();
+//        responseLocalObjectList.getResponses();
+////        mAdapter = new ImageAdapter(getActivity());
+//        mAdapter.notifyDataSetChanged();
+//        mGridView.setAdapter(mAdapter);
+//
+//        Log.e(TAG, String.valueOf(mAdapter.getCount()+" "+responseLocalObjectList.getResponses().size()));
+//
+//    }
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View v = inflater.inflate(R.layout.fragment_image_grid, container, false);
-        final GridView mGridView = (GridView) v.findViewById(R.id.gridView);
+        mGridView = (GridView) v.findViewById(R.id.gridView);
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(this);
         mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -369,11 +393,6 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
             return mNumColumns;
         }
 
-        public void updateReceiptsList(GeneralItemLocalObject responseLocalObjectList) {
-            responseLocalObjectList.resetResponses();
-            responseLocalObjectList.getResponses();
-            this.notifyDataSetChanged();
-            this.notifyDataSetInvalidated();
-        }
+
     }
 }
