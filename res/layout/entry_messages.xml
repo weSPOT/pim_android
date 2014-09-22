@@ -3,7 +3,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:padding="10px"
+                android:padding="8dp"
                 android:layout_margin="4dp"
                 android:background="@drawable/background_message_chat">
 

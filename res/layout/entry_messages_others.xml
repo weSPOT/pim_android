@@ -3,8 +3,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:gravity="right"
-                android:padding="10px"
+                android:padding="8dp"
                 android:layout_margin="4dp"
                 android:background="@drawable/background_message_others_chat">
     <TextView
@@ -16,19 +15,18 @@
             android:textStyle="bold"
             android:paddingRight="14dp"
             android:paddingLeft="2dp"
+            android:layout_marginTop="1dp"
             android:text="test"/>
 
     <TextView
             android:id="@+id/name_entry_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/inquiry_entry_icon"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="20dp"
             android:paddingRight="2dp"
             android:paddingLeft="2dp"
-            android:text="test"/>
+            android:text="test" android:layout_centerHorizontal="true"/>
     <TextView
             android:id="@+id/timeStampMessage"
             android:layout_below="@id/name_entry_list"
