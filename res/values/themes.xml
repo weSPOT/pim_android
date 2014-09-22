@@ -2,10 +2,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- NEW CODE -->
-    <style name="CustomTheme"  parent="@style/Theme.AppCompat.Light.DarkActionBar">
+    <style name="CustomTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="android:textColor">@color/app.base.black</item>
         <item name="android:windowBackground">@drawable/mainmenu_960</item>
-        <item name="android:actionBarStyle" tools:ignore="NewApi">@style/CustomTheme.ActionBar</item>
 
         <!-- Support library compatibility -->
         <item name="actionBarStyle">@style/CustomTheme.ActionBar</item>
@@ -18,8 +17,9 @@
 
         <!-- Support library compatibility -->
         <item name="background">@color/app.base.blue</item>
+        <item name="backgroundStacked">@color/app.base.red</item>
+        <item name="backgroundSplit">@color/app.base.black</item>
     </style>
-
 
     <!-- OLD STUFF -->
     <style name="CustomTheme.Transparent">
@@ -36,11 +36,13 @@
 
     <style name="CustomTheme.TextView.Item" parent="CustomTheme.TextView">
         <item name="android:textColor">@color/app.base.black</item>
+        <item name="android:textSize">@dimen/entry.datacollection.name</item>
     </style>
 
     <style name="CustomTheme.TextView.Item.Title" parent="CustomTheme.TextView">
         <item name="android:textColor">@color/app.base.black</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/entry.datacollection.name</item>
     </style>
 
     <style name="CustomTheme.TextView.Title1" parent="CustomTheme.TextView">
@@ -50,6 +52,7 @@
         <item name="android:paddingTop">@dimen/inquiry.fragments.titles.paddingTop</item>
         <item name="android:paddingBottom">@dimen/inquiry.fragments.titles.paddingBottom</item>
     </style>
+
 
 
     <style name="CustomTheme.TextView.Title2" parent="CustomTheme.TextView.Title1">
@@ -158,7 +161,14 @@
     </style>
 
 
-
+    <style name="CustomTheme.Profile">
+        <item name="android:layout_width">160dp</item>
+        <item name="android:layout_height">160dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">33dp</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
+    </style>
 
 
 </resources>

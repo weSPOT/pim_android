@@ -57,6 +57,8 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
     private int mImageThumbSpacing;
     private ImageAdapter mAdapter;
 
+    private GridView mGridView;
+
     public ImageAdapter getmAdapter() {
         return mAdapter;
     }
@@ -75,6 +77,14 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
      */
     public ImageGridFragment() {
 
+    }
+
+    public GridView getmGridView() {
+        return mGridView;
+    }
+
+    public void setmGridView(GridView mGridView) {
+        this.mGridView = mGridView;
     }
 
     @Override
@@ -103,12 +113,26 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
     }
 
+//    public void updateReceiptsList(GeneralItemLocalObject responseLocalObjectList) {
+//
+//        Log.e(TAG, String.valueOf(mAdapter.getCount()+" "+responseLocalObjectList.getResponses().size()));
+//
+//        responseLocalObjectList.resetResponses();
+//        responseLocalObjectList.getResponses();
+////        mAdapter = new ImageAdapter(getActivity());
+//        mAdapter.notifyDataSetChanged();
+//        mGridView.setAdapter(mAdapter);
+//
+//        Log.e(TAG, String.valueOf(mAdapter.getCount()+" "+responseLocalObjectList.getResponses().size()));
+//
+//    }
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View v = inflater.inflate(R.layout.fragment_image_grid, container, false);
-        final GridView mGridView = (GridView) v.findViewById(R.id.gridView);
+        mGridView = (GridView) v.findViewById(R.id.gridView);
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(this);
         mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -261,7 +285,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
      * columns in the GridView is used to create a fake top row of empty views as we use a
      * transparent ActionBar and don't want the real top row of images to start off covered by it.
      */
-    private class ImageAdapter extends BaseAdapter {
+    public class ImageAdapter extends BaseAdapter {
 
         private final Context mContext;
         private int mItemHeight = 0;
@@ -341,7 +365,6 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.empty_photo));
             }
 
-
             return imageView;
         }
 
@@ -369,5 +392,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         public int getNumColumns() {
             return mNumColumns;
         }
+
+
     }
 }

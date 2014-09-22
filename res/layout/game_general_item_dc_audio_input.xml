@@ -19,38 +19,111 @@
         <TextView android:id="@+id/text"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:text="provide your audio"
+                  android:text="Record audio"
                   android:textSize="30dp"/>
+
+
+        x
         <ImageView
                 android:id="@+id/audioFeedbackView"
+                android:padding="20dip"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
 
-                android:layout_width="100dip"
-                   android:layout_height="100dip"
-                   android:layout_gravity="center_horizontal"
-
-                   android:src="@drawable/game_data_collection_audio"
+                android:src="@drawable/game_data_collection_input_norecording"
                 />
-        <Button
+
+
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/mediaBar"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dip"
+                        android:visibility="gone"
+
+                >
+
+            <ImageButton
+                    android:id="@+id/playPauseButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="24dp"
+                    android:layout_margin="10dip"
+                    android:src="@android:drawable/ic_media_play" />
+
+
+            <ImageView
+                    android:id="@+id/deleteRecordingButton"
+                    android:layout_width="40dip"
+                    android:layout_height="40dip"
+
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:padding="4dip"
+                    android:src="@android:drawable/ic_media_play" />
+
+
+            <SeekBar
+                    android:id="@+id/seekbar"
+                    android:layout_toRightOf="@id/playPauseButton"
+                    android:layout_toLeftOf="@id/deleteRecordingButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_centerVertical="true"
+                    android:progressDrawable="@drawable/game_general_item_seekbar_progress_theme1"
+                    android:thumb="@drawable/game_general_item_seekbar_thumb_theme1"
+                    />
+
+
+
+
+        </RelativeLayout>
+
+        <TextView
                 android:id="@+id/startRecording"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="start"
+                style="@style/ARLearn.StoreGameRowBigDownload"
+
+
+                android:layout_height="0dip"
+                android:layout_weight="1"
+                android:textSize="15dp"
                 android:layout_gravity="center_horizontal"
-                />
-        <Button
+                android:text="Start Recording"/>
+
+
+
+        <TextView
                 android:id="@+id/stopRecording"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="stop"
+                style="@style/ARLearn.StoreGameRowBigDownload"
+                android:visibility="gone"
+                android:layout_height="0dip"
+                android:layout_weight="1"
+                android:textSize="15dp"
                 android:layout_gravity="center_horizontal"
-                />
-        <Button
+                android:text="Stop Recording"/>
+
+        <TextView
                 android:id="@+id/dataCollectionSubmit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="submit"
+                style="@style/ARLearn.StoreGameRowBigDownload"
+                android:visibility="gone"
+                android:layout_height="0dip"
+                android:layout_weight="1"
+                android:textSize="15dp"
                 android:layout_gravity="center_horizontal"
-                />
+                android:text="Submit"/>
+
+        <TextView
+                android:id="@+id/cancelId"
+                android:paddingTop="10dip"
+                android:layout_width="wrap_content"
+                android:layout_height="0dip"
+                android:layout_weight="1"
+                android:textSize="15dp"
+                android:layout_gravity="center_horizontal"
+                android:text="Cancel"/>
     </LinearLayout>
 
 

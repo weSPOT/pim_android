@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="AppTheme.FullScreen" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
 
+    <style name="PhotoGridLayout">
+        <item name="android:drawSelectorOnTop">true</item>
+        <item name="android:listSelector">@drawable/photogrid_list_selector</item>
+    </style>
+    <style name="ARLearn">
+    </style>
 
+    <style name="ARLearn.StoreGameRowBigDownload">
+        <item name="android:background">@drawable/gradient_store_game_entry_big_download</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:padding">3dp</item>
+    </style>
 </resources>

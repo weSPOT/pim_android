@@ -31,11 +31,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
-import net.wespot.pim.controller.Adapters.ResponsesLazyListAdapter;
 import net.wespot.pim.controller.ImageDetailActivity;
 import net.wespot.pim.controller.ImageGridFragment;
 import net.wespot.pim.utils.layout.BaseFragmentActivity;
@@ -47,11 +47,10 @@ import org.celstec.arlearn2.android.dataCollection.*;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
+import org.celstec.dao.gen.GameLocalObject;
 import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.InquiryLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
-
-import java.io.File;
 
 /**
  * Fragment to display responses from a Data Collection Task (General Item)
@@ -63,7 +62,6 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     private InquiryLocalObject inquiry;
     private long generalItemId;
 
-    private ResponsesLazyListAdapter datAdapter;
     private GeneralItemLocalObject genObject;
     private PictureManager man_pic = new PictureManager(this);
     private VideoManager man_vid = new VideoManager(this);
@@ -71,9 +69,12 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     private ValueInputManager man_val = new ValueInputManager(this);
     private TextInputManager man_tex = new TextInputManager(this);
 
-    private File bitmapFile;
+    private final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-    ResponseLocalObject response;
+    private ImageGridFragment frag;
+
+    public InqDataCollectionTaskFragment() {
+    }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
@@ -81,7 +82,6 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
         super.onCreate(savedInstanceState);
 
         ARL.eventBus.register(this);
-
 
         if (savedInstanceState != null) {
             INQ.init(this);
@@ -107,23 +107,18 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
             data_collection_tasks_description.setText(genObject.getDescription());
 
             if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
-                final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
                 Bundle data = new Bundle();
                 data.putLong("generalItemId", generalItemId);
 
-                ImageGridFragment frag = new ImageGridFragment();
+                frag = new ImageGridFragment();
                 frag.setArguments(data);
 
                 ft.add(R.id.content_images, frag, TAG);
                 ft.commit();
             }
 
-            if (!(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1)) {
-                if (!(Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH)){
-                    getActionBar().setTitle(getResources().getString(R.string.actionbar_list_data_collection_task));
-                }
-            }
+            getActionBar().setTitle(getResources().getString(R.string.actionbar_list_data_collection_task));
         }
     }
 
@@ -179,6 +174,7 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
         return super.onOptionsItemSelected(item);
     }
 
+    // Not used
     @Override
     public void onListItemClick(View v, int position, ResponseLocalObject object) {
         Intent intent = new Intent(getApplicationContext(), ImageDetailActivity.class);
@@ -195,7 +191,7 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-//          public static final int PICTURE_RESULT = 1;
+//        public static final int PICTURE_RESULT = 1;
 //        public static final int AUDIO_RESULT = 2;
 //        public static final int VIDEO_RESULT = 3;
 //        public static final int TEXT_RESULT = 4;
@@ -219,7 +215,38 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
                 break;
         }
 
-        INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
+        final ImageGridFragment.ImageAdapter adapter = frag.getmAdapter();
+        final GridView grid = frag.getmGridView();
+
+        Log.e(TAG, String.valueOf(adapter.getCount()+" "+genObject.getResponses().size()));
+
+
+//        Toast.makeText(this, "Updating data collections...", Toast.LENGTH_SHORT).show();
+        GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
+        for (GeneralItemLocalObject generalItemLocalObject : gameLocalObject.getGeneralItems()){
+            generalItemLocalObject.resetResponses();
+        }
+
+//        this.runOnUiThread(new Runnable() {
+//            public void run() {
+//                grid.setAdapter(adapter);
+//                adapter.notifyDataSetChanged();
+//                Log.e(TAG, "refreshed");
+//            }
+//        });
+
+//        adapter.notifyDataChanged();
+//        adapter.notifyDataSetChanged();
+//        grid.setAdapter(adapter);
+//        grid.setAdapter(adapter);
+
+//        grid.removeAllViews();
+//        grid.refreshDrawableState();
+//        adapter.notifyDataSetChanged();
+
+        Log.e(TAG, String.valueOf(adapter.getCount() + " " + genObject.getResponses().size()));
+
+//        INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
     }
 
     private void onEventBackgroundThread(ResponseEvent responseEvent){

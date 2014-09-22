@@ -14,6 +14,7 @@ import android.widget.TextView;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import net.wespot.pim.SplashActivity;
+import net.wespot.pim.compat.view.*;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.RemindTask;
 import net.wespot.pim.utils.TimeEvent;
@@ -21,7 +22,6 @@ import net.wespot.pim.utils.layout.ActionBarCompat;
 import net.wespot.pim.utils.layout.ActionBarGeneric;
 import net.wespot.pim.utils.layout.ButtonManager;
 import net.wespot.pim.utils.layout.ViewItemClickInterface;
-import net.wespot.pim.view.*;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.GeneralItemEvent;
@@ -99,8 +99,11 @@ public class MainActivityCompat extends ActionBarCompat implements ListItemClick
 
         setContentView(R.layout.main_main);
 
-//        mActionBarHelper = createActionBarHelper(this);
-//        mActionBarHelper.init();
+        // Hide/show title
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        // Enable/disable button home
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         linearLayout = (LinearLayout)findViewById(R.id.content_main_screen);
 
@@ -138,7 +141,7 @@ public class MainActivityCompat extends ActionBarCompat implements ListItemClick
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS),
                 Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS), String.valueOf(numberFriends));
 
-        super.init();
+//        super.init();
     }
 
     @Override
@@ -149,19 +152,19 @@ public class MainActivityCompat extends ActionBarCompat implements ListItemClick
                 startActivity(intent_inquiries);
                 break;
             case Constants.ID_MYMEDIA:
-                Intent intent_media = new Intent(getApplicationContext(), InqMyMediaFragment.class);
+                Intent intent_media = new Intent(getApplicationContext(), InqMyMediaCompatFragment.class);
                 startActivity(intent_media);
                 break;
             case Constants.ID_PROFILE:
-                Intent intent_profile = new Intent(getApplicationContext(), PimProfileFragment.class);
+                Intent intent_profile = new Intent(getApplicationContext(), PimProfileCompatFragment.class);
                 startActivity(intent_profile);
                 break;
             case Constants.ID_BADGES:
-                Intent intent_badges = new Intent(getApplicationContext(), PimBadgesFragment.class);
+                Intent intent_badges = new Intent(getApplicationContext(), PimBadgesCompatFragment.class);
                 startActivity(intent_badges);
                 break;
             case Constants.ID_MAIN_FRIENDS:
-                Intent intent_friends = new Intent(getApplicationContext(), PimFriendsFragment.class);
+                Intent intent_friends = new Intent(getApplicationContext(), PimFriendsCompatFragment.class);
                 startActivity(intent_friends);
                 break;
         }
@@ -199,21 +202,29 @@ public class MainActivityCompat extends ActionBarCompat implements ListItemClick
 
     private void onEventBackgroundThread(InquiryEvent inquiryEvent){
 
-        InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(inquiryEvent.getInquiryId());
+        if (DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size() != numberInquiries){
+            InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(inquiryEvent.getInquiryId());
 
-        timer.purge();
 
-        queueInqDatCol.add(inquiryLocalObject);
+            timer.purge();
 
-        Log.e(TAG, "sync and reset counter 30 second more: "+inquiryLocalObject.getId());
+            queueInqDatCol.add(inquiryLocalObject);
+
+            Log.e(TAG, "sync and reset counter 30 second more: "+inquiryLocalObject.getId());
+        }
+
+
     }
 
     public void onEventMainThread(InquiryEvent event) {
-        numberInquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
+        if (DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size() != numberInquiries) {
+            numberInquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
 
-        ((TextView)myInquiryView.findViewById(R.id.notificationText)).setText(String.valueOf(numberInquiries));
+            ((TextView)myInquiryView.findViewById(R.id.notificationText)).setText(String.valueOf(numberInquiries));
 
-        Log.e(TAG, "onEventMainThread. Number of inquiries: " + numberInquiries);
+            Log.e(TAG, "onEventMainThread. Number of inquiries: " + numberInquiries);
+        }
+
 
 
     }

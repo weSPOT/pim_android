@@ -36,7 +36,7 @@ import android.widget.Toast;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.InquiryLazyListAdapter;
 import net.wespot.pim.controller.InquiryActivity;
-import net.wespot.pim.controller.InquiryActivityBack;
+import net.wespot.pim.compat.controller.InquiryActivityBack;
 import net.wespot.pim.controller.InquiryPhasesActivity;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.layout.BaseFragmentActivity;

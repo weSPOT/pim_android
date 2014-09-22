@@ -32,9 +32,6 @@
     <string name="data_collection_dialog_cancel">Cancelar</string>
     <string name="data_collection_dialog_creating">Nueva tarea de recogida de datos</string>
 
-    <string name="friends_friend_new">Agregar amigo</string>
-    <string name="friends_title_list">Amigos</string>
-
     <string name="phases_invite_new_friend">Invita a un amigo</string>
 
     <string name="wrapper_myinquiry">Actividades</string>
@@ -44,6 +41,7 @@
     <string name="wrapper_friends">Amigos</string>
 
     <string name="menu_new_data_collection">Nueva tarea de recogida de datos</string>
+    <string name="menu_refresh_data_collection">Actualizar datos</string>
     <string name="menu_refresh">Actualizar</string>
     <string name="menu_refreshing">Sincronizando actividades...</string>
     <string name="menu_search">Buscar</string>
@@ -52,6 +50,17 @@
     <string name="menu_logout">Salir</string>
     <string name="menu_data_collection_collect_data_image">Imagen</string>
     <string name="menu_data_collection_collect_data_video">Video</string>
+    <string name="menu_data_collection_collect_data_audio">Audio</string>
+    <string name="menu_data_collection_collect_data_text">Texto</string>
+    <string name="menu_data_collection_collect_data_numeric">Número</string>
+
+    <string name="menu_refresh_list_friends">Actualiza amigos</string>
+    <string name="menu_refresh_request_sent">Peticiones enviadas</string>
+    <string name="menu_refreshing_list_friends">Sincronizando amistades...</string>
+    <string name="friends_add_friend">Añade amigo</string>
+
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 
     <string name="profile_title">Mi perfil</string>
     <string name="profile_picture_description">profile_picture</string>
@@ -101,12 +110,12 @@
 
     <string name="inquiry_title_description">Descripción</string>
     <string name="inquiry_title_hypothesis">Hipótesis</string>
-    <string name="inquiry_title_question">Cuestión</string>
+    <string name="inquiry_title_question">Pregunta</string>
     <string name="inquiry_title_plan">Planificación</string>
     <string name="inquiry_title_data">Recogida de datos</string>
     <string name="inquiry_title_analyse">Análisis</string>
     <string name="inquiry_title_discuss">Discusión</string>
-    <string name="inquiry_title_communicate">Comunicación</string>
+    <string name="inquiry_title_communicate">Chat</string>
 
     <string name="imageview_description">Imagen en miniatura</string>
     <string name="splash_login_button">weSPOT</string>
@@ -116,6 +125,18 @@
 
     <string name="icon_list">1</string>
     <string name="placeholder">placeholder</string>
+    <string name="content">content</string>
+
+    <string name="friends_friend_new">Añade amigo</string>
+    <string name="friends_title_list">Amigos</string>
+
+    <string name="communication_title">Chat</string>
+    <string name="communication_enter_message"></string>
+    <string name="communication_enter_message_default">Start chatting..</string>
 
 
+
+    <string name="usersite_title_list">Usuarios</string>
+    <string name="sent_request_usersite_title_list">Amistades enviadas</string>
+    <string name="usersite_menu_search">Buscando usuario...</string>
 </resources>

@@ -15,22 +15,22 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="vertical">
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
 
     <EditText android:id="@+id/wonder_moment_title"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content" android:hint="@string/wonder_moment_title_placeholder"
+              android:layout_height="wrap_content"
+              android:textColorHint="@color/app.base.grey_soft"
+              android:hint="@string/wonder_moment_title_placeholder"
               android:inputType="none" />
-
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/wonder_moment_membership"
-                android:orientation="vertical"
-                android:layout_below="@id/wonder_moment_title">
+                android:orientation="vertical" android:layout_below="@+id/wonder_moment_title">
         <RadioButton android:id="@+id/wonder_moment_membership_open"
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
@@ -46,36 +46,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/wonder_moment_visibility_array"
-            android:prompt="@string/wonder_moment_visibility"
-            android:layout_below="@id/wonder_moment_membership" />
+            android:prompt="@string/wonder_moment_visibility" android:layout_below="@id/wonder_moment_membership" />
 
-    <LinearLayout android:id="@+id/layout_date"
-                  android:layout_width="match_parent" android:layout_height="wrap_content"
-                  android:orientation="horizontal"
-                  android:layout_below="@id/wonder_moment_visibility">
-        <EditText android:id="@+id/wonder_moment_date" android:layout_width="match_parent" android:layout_height="wrap_content"
-                  android:autoText="false" android:hint="@string/wonder_moment_date_placeholder"
+    <LinearLayout android:id="@+id/layout_date" android:layout_width="match_parent" android:layout_height="wrap_content"
+                  android:orientation="horizontal" android:layout_below="@id/wonder_moment_visibility">
+        <EditText android:id="@+id/wonder_moment_date"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:autoText="false"
+                  android:hint="@string/wonder_moment_date_placeholder"
+                  android:textColorHint="@color/app.base.grey_soft"
                   android:inputType="date" android:layout_weight="1"/>
-        <EditText android:id="@+id/wonder_moment_time" android:layout_width="match_parent" android:layout_height="wrap_content"
-                  android:autoText="false" android:hint="@string/wonder_moment_time_placeholder"
-                  android:inputType="time" android:layout_weight="1"/>
+        <EditText android:id="@+id/wonder_moment_time"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:autoText="false"
+                  android:hint="@string/wonder_moment_time_placeholder"
+                  android:textColorHint="@color/app.base.grey_soft"
+                  android:inputType="time" android:layout_weight="4"/>
     </LinearLayout>
-
-    <EditText android:id="@+id/wonder_moment_content" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_below="@+id/layout_date"
-              android:gravity="top" android:hint="@string/wonder_moment_content_placeholder"/>
-
-    <LinearLayout android:orientation="horizontal" android:layout_below="@id/wonder_moment_content" android:layout_width="match_parent" android:layout_height="wrap_content">
-        <ImageButton android:id="@+id/wonder_moment_save"  android:contentDescription="@string/wonder_moment_save" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerInParent="true"/>
-        <ImageButton android:id="@+id/wonder_moment_cancel" android:contentDescription="@string/wonder_moment_cancel" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-
+    <EditText android:id="@+id/wonder_moment_content"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_below="@+id/layout_date"
+              android:gravity="top"
+              android:textColorHint="@color/app.base.grey_soft"
+              android:hint="@string/wonder_moment_content_placeholder"/>
     <!--<ImageView-->
-            <!--android:id="@+id/wonder_moment_clear"-->
-            <!--android:layout_width="40dp"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:src="@drawable/ic_action_mic"-->
-            <!--android:text="Button" android:layout_alignTop="@+id/wonder_moment_content"-->
-            <!--android:layout_alignParentRight="true" android:clickable="true" android:focusableInTouchMode="false"/>-->
-
+    <!--android:id="@+id/wonder_moment_clear"-->
+    <!--android:layout_width="40dp"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:src="@drawable/ic_action_mic"-->
+    <!--android:text="Button" android:layout_alignTop="@+id/wonder_moment_content"-->
+    <!--android:layout_alignParentRight="true" android:clickable="true" android:focusableInTouchMode="false"/>-->
 </RelativeLayout>

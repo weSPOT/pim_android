@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.wespot.pim.controller;
+package net.wespot.pim.compat.controller;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -29,11 +29,11 @@ import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.InquiryPagerAdapter;
 import net.wespot.pim.controller.Adapters.NewInquiryPagerAdapter;
-import net.wespot.pim.utils.layout.BaseFragmentActivity;
+import net.wespot.pim.utils.layout.ActionBarCompat;
 import net.wespot.pim.view.InqCreateInquiryFragment;
 import org.celstec.arlearn.delegators.INQ;
 
-public class InquiryActivityBack extends BaseFragmentActivity {
+public class InquiryActivityBack extends ActionBarCompat {
 
     private static final String TAG = "InquiryActivity";
     private static final String PHASE = "num_phase";
@@ -96,6 +96,9 @@ public class InquiryActivityBack extends BaseFragmentActivity {
             InqCreateInquiryFragment fragment = new InqCreateInquiryFragment();
             fragmentTransaction.add(R.id.content, fragment);
             fragmentTransaction.commit();
+
+            getSupportActionBar().setTitle(R.string.actionbar_inquiry_list);
+
         }else{
 
             setContentView(R.layout.activity_inquiry);
@@ -107,19 +110,19 @@ public class InquiryActivityBack extends BaseFragmentActivity {
             // ViewPager and its adapters use support library fragments, so we must use
             // getSupportFragmentManager.
             /*
-      The {@link android.support.v4.view.PagerAdapter} that will provide fragments representing
-      each object in a collection. We use a {@link android.support.v4.app.FragmentStatePagerAdapter}
-      derivative, which will destroy and re-create fragments as needed, saving and restoring their
-      state in the process. This is important to conserve memory and is a best practice when
-      allowing navigation between objects in a potentially large collection.
-     */
+              The {@link android.support.v4.view.PagerAdapter} that will provide fragments representing
+              each object in a collection. We use a {@link android.support.v4.app.FragmentStatePagerAdapter}
+              derivative, which will destroy and re-create fragments as needed, saving and restoring their
+              state in the process. This is important to conserve memory and is a best practice when
+              allowing navigation between objects in a potentially large collection.
+             */
             InquiryPagerAdapter mInquiryPagerAdapter = new InquiryPagerAdapter(getSupportFragmentManager());
-            getmActionBarHelper().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
             // Set up the ViewPager, attaching the adapter.
             /*
-      The {@link android.support.v4.view.ViewPager} that will display the object collection.
-     */
+              The {@link android.support.v4.view.ViewPager} that will display the object collection.
+             */
             ViewPager mViewPager = (ViewPager) findViewById(R.id.pager);
             mViewPager.setAdapter(mInquiryPagerAdapter);
             mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -143,7 +146,7 @@ public class InquiryActivityBack extends BaseFragmentActivity {
 //                                .setTabListener(this));
 //            }
 
-//            getActionBar().setTitle(getResources().getString(R.string.actionbar_inquiry)+" - "+INQ.inquiry.getCurrentInquiry().getTitle());
+            getSupportActionBar().setTitle(getResources().getString(R.string.actionbar_inquiry)+" - "+INQ.inquiry.getCurrentInquiry().getTitle());
 
             Bundle extras = getIntent().getExtras();
             if (extras != null){

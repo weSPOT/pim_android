@@ -35,7 +35,7 @@ public class Constants {
     public static final int WESPOT = 0;
     public static final int LINKEDIN = 2;
     public static final int FACEBOOK = 3;
-    public static final String ENCONDING = null;
+    public static final String ENCONDING = "UTF-8";
 
     public static final int  ID_DESCRIPTION = 0;
     public static final int  ID_DATA = 1;

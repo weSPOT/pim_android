@@ -34,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
+import net.wespot.pim.compat.controller.InquiryActivityBack;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.images.BitmapWorkerTask;
 import net.wespot.pim.utils.layout.BaseFragmentActivity;
@@ -83,11 +84,11 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
 
         setContentView(R.layout.activity_phases);
 
-        if (!(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1)) {
-            if (!(Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH)){
-                getActionBar().setTitle(R.string.actionbar_inquiry_list);
-            }
-        }
+//        if (!(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1)) {
+//            if (!(Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH)){
+        getActionBar().setTitle(R.string.actionbar_inquiry_list);
+//            }
+//        }
 
         TextView inquiry_description_title = (TextView) findViewById(R.id.list_phases_title);
         ImageView inquiry_description_image = (ImageView) findViewById(R.id.list_phases_image);
@@ -159,7 +160,7 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
             if (INQ.inquiry.getCurrentInquiry().getRunLocalObject() != null) {
                 GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
                 if (gameLocalObject != null) {
-                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                         Intent intent = new Intent(getApplicationContext(), InquiryActivityBack.class);
                         intent.putExtra(InquiryActivity.PHASE, id);
                         startActivity(intent);

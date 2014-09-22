@@ -81,6 +81,8 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
 
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.main_main);
+
         ARL.eventBus.register(this);
         timer = new Timer(true);
 
@@ -91,7 +93,6 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
         numberResponses = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().loadAll().size();
         numberFriends = DaoConfiguration.getInstance().getFriendsLocalObjectDao().loadAll().size();
 
-        setContentView(R.layout.main_main);
 
         linearLayout = (LinearLayout)findViewById(R.id.content_main_screen);
 

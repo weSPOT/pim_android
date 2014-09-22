@@ -1,4 +1,4 @@
-package net.wespot.pim.compat;
+package net.wespot.pim.compat.view;
 
 /**
  * ****************************************************************************
@@ -33,12 +33,15 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
+import net.wespot.pim.compat.controller.InquiryActivityBack;
+import net.wespot.pim.compat.controller.InquiryPhasesCompatActivity;
 import net.wespot.pim.controller.Adapters.InquiryLazyListAdapter;
 import net.wespot.pim.controller.InquiryActivity;
-import net.wespot.pim.controller.InquiryActivityBack;
 import net.wespot.pim.controller.InquiryPhasesActivity;
 import net.wespot.pim.utils.Constants;
+import net.wespot.pim.utils.layout.ActionBarCompat;
 import net.wespot.pim.utils.layout.ButtonManager;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
@@ -49,7 +52,7 @@ import org.celstec.events.InquiryEvent;
 /**
  * A fragment that launches other parts of the demo application.
  */
-public class PimInquiriesCompatFragment extends BaseCompactActivity implements ListItemClickInterface<InquiryLocalObject> {
+public class PimInquiriesCompatFragment extends ActionBarCompat implements ListItemClickInterface<InquiryLocalObject> {
 
     private static final String TAG = "PimInquiriesFragment";
     private InquiryLazyListAdapter adapterInq;
@@ -66,8 +69,6 @@ public class PimInquiriesCompatFragment extends BaseCompactActivity implements L
             INQ.accounts.syncMyAccountDetails();
         }
 
-        INQ.inquiry.syncInquiries();
-
         setContentView(R.layout.fragment_inquiries);
 
         ListView inquiries = (ListView) findViewById(R.id.list_inquiries);
@@ -76,6 +77,10 @@ public class PimInquiriesCompatFragment extends BaseCompactActivity implements L
         adapterInq =  new InquiryLazyListAdapter(this);
         inquiries.setAdapter(adapterInq);
         adapterInq.setOnListItemClickCallback(this);
+
+        if (adapterInq.getCount() != DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size()){
+            INQ.inquiry.syncInquiries();
+        }
 
         // Instantiation of the buttonManager
         ButtonManager buttonManager = new ButtonManager(this);
@@ -101,7 +106,7 @@ public class PimInquiriesCompatFragment extends BaseCompactActivity implements L
             }
         });
 
-        setTitle(R.string.common_title);
+        getSupportActionBar().setTitle(R.string.common_title);
     }
 
     private void onEventAsync(InquiryEvent inquiryObject){
@@ -117,7 +122,14 @@ public class PimInquiriesCompatFragment extends BaseCompactActivity implements L
 
     @Override
     public void onListItemClick(View v, int position, InquiryLocalObject object) {
-        Intent intent = new Intent(getApplicationContext(), InquiryPhasesActivity.class);
+        Intent intent = null;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            intent = new Intent(getApplicationContext(), InquiryPhasesActivity.class);
+        } else {
+            intent = new Intent(getApplicationContext(), InquiryPhasesCompatActivity.class);
+        }
+
         INQ.inquiry.setCurrentInquiry(object);
         startActivity(intent);
     }

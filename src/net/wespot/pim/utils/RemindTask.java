@@ -14,6 +14,7 @@ public class RemindTask extends TimerTask{
     private static final String TAG = "Timer";
 
     public RemindTask() {
+        Log.e(TAG,"____ Constructor :)");
         ARL.eventBus.register(this);
     }
 
@@ -26,6 +27,7 @@ public class RemindTask extends TimerTask{
     }
 
     public void doSomeWork() {
+        Log.e(TAG,"____ :)");
         ARL.eventBus.post(new doSomeWorkClass());
     }
 

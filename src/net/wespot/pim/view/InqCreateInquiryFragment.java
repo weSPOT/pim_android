@@ -26,7 +26,6 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -106,7 +105,7 @@ public class InqCreateInquiryFragment extends Fragment{
         // Apply the adapter to the spinner
         wm_visibility.setAdapter(adapter);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 
 //            if (!(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1)) {
 //                if (!(Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH)){
@@ -115,24 +114,24 @@ public class InqCreateInquiryFragment extends Fragment{
 //            }
 
 
-            wm_save =   (ImageButton) rootView.findViewById(R.id.wonder_moment_save);
-            wm_cancel =   (ImageButton) rootView.findViewById(R.id.wonder_moment_cancel);
-            wm_save.setImageDrawable(getResources().getDrawable(R.drawable.ic_content_save_black));
-            wm_cancel.setImageDrawable(getResources().getDrawable(R.drawable.ic_navigation_cancel_black));
-            wm_save.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    save_inquiry();
-                }
-            });
+//            wm_save =   (ImageButton) rootView.findViewById(R.id.wonder_moment_save);
+//            wm_cancel =   (ImageButton) rootView.findViewById(R.id.wonder_moment_cancel);
+//            wm_save.setImageDrawable(getResources().getDrawable(R.drawable.ic_content_save_black));
+//            wm_cancel.setImageDrawable(getResources().getDrawable(R.drawable.ic_navigation_cancel_black));
+//            wm_save.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    save_inquiry();
+//                }
+//            });
 
-            wm_cancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    getActivity().onBackPressed();
-                }
-            });
-        }else {
+//            wm_cancel.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    getActivity().onBackPressed();
+//                }
+//            });
+//        }else {
             wm_membership_open.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -147,9 +146,11 @@ public class InqCreateInquiryFragment extends Fragment{
                 }
             });
 
-        }
+//        }
 
         setDataTime();
+
+
 
 //        wm_clear.setOnClickListener(new View.OnClickListener() {
 //            @Override
