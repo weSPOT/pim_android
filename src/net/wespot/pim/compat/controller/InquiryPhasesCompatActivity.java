@@ -138,9 +138,9 @@ public class InquiryPhasesCompatActivity extends ActionBarCompat implements List
                 Constants.INQUIRY_PHASES_LIST.get(Constants.ID_COMMUNICATE),
                 Constants.INQUIRY_ICON_PHASES_LIST.get(Constants.ID_COMMUNICATE), "");
 
-        // Invite friends button_old
-        buttonManager.generateButton(listPhasesContainer, separatorLayoutParams, Constants.ID_FRIENDS,
-                R.string.phases_invite_new_friend, R.drawable.ic_invite_friend, "");
+//        // Invite friends button_old
+//        buttonManager.generateButton(listPhasesContainer, separatorLayoutParams, Constants.ID_FRIENDS,
+//                R.string.phases_invite_new_friend, R.drawable.ic_invite_friend, "");
 
     }
 

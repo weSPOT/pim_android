@@ -51,6 +51,8 @@ import org.celstec.dao.gen.GameLocalObject;
 import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.InquiryLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 /**
  * Fragment to display responses from a Data Collection Task (General Item)
@@ -63,6 +65,13 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     private long generalItemId;
 
     private GeneralItemLocalObject genObject;
+
+    private boolean isDataCollectionAudio;
+    private boolean isDataCollectionVideo;
+    private boolean isDataCollectionPicture;
+    private boolean isDataCollectionValue;
+    private boolean isDataCollectionText;
+
     private PictureManager man_pic = new PictureManager(this);
     private VideoManager man_vid = new VideoManager(this);
     private AudioInputManager man_aud = new AudioInputManager(this);
@@ -98,6 +107,22 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
             generalItemId = extras.getLong("DataCollectionTask");
 
             genObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(generalItemId);
+
+            JSONObject json = null;
+            try {
+                json = new JSONObject(genObject.getBean());
+                JSONObject openQuestionJson = json.getJSONObject("openQuestion");
+
+                isDataCollectionAudio = openQuestionJson.getBoolean("withAudio");
+                isDataCollectionText = openQuestionJson.getBoolean("withText");
+                isDataCollectionPicture = openQuestionJson.getBoolean("withPicture");
+                isDataCollectionValue = openQuestionJson.getBoolean("withValue");
+                isDataCollectionVideo = openQuestionJson.getBoolean("withVideo");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             genObject.getResponses();
 
             TextView data_collection_tasks_description = (TextView) findViewById(R.id.data_collection_tasks_description_list);
@@ -138,7 +163,24 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_data_collection, menu);
 
+        setEnabledDisabled(menu.getItem(0), isDataCollectionPicture);
+        setEnabledDisabled(menu.getItem(1), isDataCollectionVideo);
+        setEnabledDisabled(menu.getItem(2), isDataCollectionAudio);
+        setEnabledDisabled(menu.getItem(3), isDataCollectionText);
+        setEnabledDisabled(menu.getItem(4), isDataCollectionValue);
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public void setEnabledDisabled(MenuItem item, boolean shouldBeEnabled){
+        if (shouldBeEnabled) {
+            item.setEnabled(true);
+            item.getIcon().setAlpha(255);
+        } else {
+            // disabled
+            item.setEnabled(false);
+            item.getIcon().setAlpha(130);
+        }
     }
 
     @Override

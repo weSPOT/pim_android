@@ -54,9 +54,6 @@ public class PimFriendsFragment extends BaseFragmentActivity implements ListItem
 
         setContentView(R.layout.fragment_friends);
 
-//        ARL.eventBus.register(this);
-
-
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.friends_add_friend);
         ListView friendsListView = (ListView) findViewById(R.id.list_friends);
 

@@ -142,8 +142,8 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
                 Constants.INQUIRY_ICON_PHASES_LIST.get(Constants.ID_COMMUNICATE), "");
 
         // Invite friends button_old
-        buttonManager.generateButton(listPhasesContainer, separatorLayoutParams, Constants.ID_FRIENDS,
-                R.string.phases_invite_new_friend, R.drawable.ic_invite_friend, "");
+//        buttonManager.generateButton(listPhasesContainer, separatorLayoutParams, Constants.ID_FRIENDS,
+//                R.string.phases_invite_new_friend, R.drawable.ic_invite_friend, "");
 
     }
 
@@ -177,6 +177,7 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
             }
         }else{
             Toast.makeText(getApplicationContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();
+//            INQ.friendsDelegator.
         }
     }
 

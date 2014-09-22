@@ -50,6 +50,8 @@ import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.InquiryLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import java.io.File;
 
@@ -62,6 +64,14 @@ public class InqDataCollectionTaskCompatFragment extends ActionBarCompat impleme
     private ListView data_collection_tasks_items;
     private InquiryLocalObject inquiry;
     private long generalItemId;
+
+
+    private boolean isDataCollectionAudio;
+    private boolean isDataCollectionVideo;
+    private boolean isDataCollectionPicture;
+    private boolean isDataCollectionValue;
+    private boolean isDataCollectionText;
+
 
     private ResponsesLazyListAdapter datAdapter;
     private GeneralItemLocalObject genObject;
@@ -98,6 +108,22 @@ public class InqDataCollectionTaskCompatFragment extends ActionBarCompat impleme
             generalItemId = extras.getLong("DataCollectionTask");
 
             genObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(generalItemId);
+
+            JSONObject json = null;
+            try {
+                json = new JSONObject(genObject.getBean());
+                JSONObject openQuestionJson = json.getJSONObject("openQuestion");
+
+                isDataCollectionAudio = openQuestionJson.getBoolean("withAudio");
+                isDataCollectionText = openQuestionJson.getBoolean("withText");
+                isDataCollectionPicture = openQuestionJson.getBoolean("withPicture");
+                isDataCollectionValue = openQuestionJson.getBoolean("withValue");
+                isDataCollectionVideo = openQuestionJson.getBoolean("withVideo");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             genObject.getResponses();
 
             TextView data_collection_tasks_description = (TextView) findViewById(R.id.data_collection_tasks_description_list);
@@ -140,7 +166,24 @@ public class InqDataCollectionTaskCompatFragment extends ActionBarCompat impleme
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_data_collection, menu);
 
+        setEnabledDisabled(menu.getItem(0), isDataCollectionPicture);
+        setEnabledDisabled(menu.getItem(1), isDataCollectionVideo);
+        setEnabledDisabled(menu.getItem(2), isDataCollectionAudio);
+        setEnabledDisabled(menu.getItem(3), isDataCollectionText);
+        setEnabledDisabled(menu.getItem(4), isDataCollectionValue);
+
         return super.onCreateOptionsMenu(menu);
+    }
+
+    public void setEnabledDisabled(MenuItem item, boolean shouldBeEnabled){
+        if (shouldBeEnabled) {
+            item.setEnabled(true);
+            item.getIcon().setAlpha(255);
+        } else {
+            // disabled
+            item.setEnabled(false);
+            item.getIcon().setAlpha(130);
+        }
     }
 
     @Override
@@ -175,6 +218,8 @@ public class InqDataCollectionTaskCompatFragment extends ActionBarCompat impleme
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     public void onListItemClick(View v, int position, ResponseLocalObject object) {
