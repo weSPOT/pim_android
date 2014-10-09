@@ -31,8 +31,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.TextView;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
@@ -47,9 +45,7 @@ import org.celstec.arlearn2.android.dataCollection.*;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
-import org.celstec.dao.gen.GameLocalObject;
 import org.celstec.dao.gen.GeneralItemLocalObject;
-import org.celstec.dao.gen.InquiryLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -60,8 +56,6 @@ import org.codehaus.jettison.json.JSONObject;
 public class InqDataCollectionTaskFragment extends BaseFragmentActivity implements ListItemClickInterface<ResponseLocalObject> {
 
     private static final String TAG = "InqDataCollectionTaskFragment";
-    private ListView data_collection_tasks_items;
-    private InquiryLocalObject inquiry;
     private long generalItemId;
 
     private GeneralItemLocalObject genObject;
@@ -102,7 +96,7 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
 
         Bundle extras = getIntent().getExtras();
         if (extras != null){
-            Log.d(TAG,"Entering in data collection number: "+extras.getLong("DataCollectionTask")+"");
+            Log.i(TAG,"Entering in data collection number: "+extras.getLong("DataCollectionTask")+"");
 
             generalItemId = extras.getLong("DataCollectionTask");
 
@@ -177,7 +171,6 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
             item.setEnabled(true);
             item.getIcon().setAlpha(255);
         } else {
-            // disabled
             item.setEnabled(false);
             item.getIcon().setAlpha(130);
         }
@@ -257,44 +250,22 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
                 break;
         }
 
-        final ImageGridFragment.ImageAdapter adapter = frag.getmAdapter();
-        final GridView grid = frag.getmGridView();
-
-        Log.e(TAG, String.valueOf(adapter.getCount()+" "+genObject.getResponses().size()));
-
-
-//        Toast.makeText(this, "Updating data collections...", Toast.LENGTH_SHORT).show();
-        GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
-        for (GeneralItemLocalObject generalItemLocalObject : gameLocalObject.getGeneralItems()){
-            generalItemLocalObject.resetResponses();
-        }
-
-//        this.runOnUiThread(new Runnable() {
-//            public void run() {
-//                grid.setAdapter(adapter);
-//                adapter.notifyDataSetChanged();
-//                Log.e(TAG, "refreshed");
-//            }
-//        });
-
-//        adapter.notifyDataChanged();
-//        adapter.notifyDataSetChanged();
-//        grid.setAdapter(adapter);
-//        grid.setAdapter(adapter);
-
-//        grid.removeAllViews();
-//        grid.refreshDrawableState();
-//        adapter.notifyDataSetChanged();
-
-        Log.e(TAG, String.valueOf(adapter.getCount() + " " + genObject.getResponses().size()));
-
-//        INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
+//        final ImageGridFragment.ImageAdapter adapter = frag.getmAdapter();
+//        final GridView grid = frag.getmGridView();
+//
+//        Log.i(TAG, String.valueOf(adapter.getCount()+" "+genObject.getResponses().size()));
+//
+//        GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
+//        for (GeneralItemLocalObject generalItemLocalObject : gameLocalObject.getGeneralItems()){
+//            generalItemLocalObject.resetResponses();
+//        }
+//
+//        Log.i(TAG, String.valueOf(adapter.getCount() + " " + genObject.getResponses().size()));
+        INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
     }
 
-    private void onEventBackgroundThread(ResponseEvent responseEvent){
-        Log.e(TAG, " response for "+responseEvent.getRunId());
+    private void onEventMainThread(ResponseEvent responseEvent){
 
-//        genObject.resetResponses();
     }
 
 

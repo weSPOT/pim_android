@@ -120,7 +120,6 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
             @Override
             public void onClick(View view) {
                 if (!message.getText().toString().equals("")) {
-
                     MessageLocalObject messageLocalObject = new MessageLocalObject();
                     messageLocalObject.setBody(message.getText().toString());
                     messageLocalObject.setAuthor(INQ.accounts.getLoggedInAccount().getFullId());
@@ -130,13 +129,11 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
                     messageLocalObject.setSubject("");
 
                     DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
-
                     INQ.messages.postMessagesToServer();
 
                     addMessage(messageLocalObject);
                     message.setText("");
 //                    INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
-
                 }
             }
         });
@@ -187,7 +184,7 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
     }
 
     private void onEventMainThread(TimeMessageEvent timeMessageEvent) {
-        Log.e(TAG, "retrieve messages");
+        Log.i(TAG, "retrieve messages");
 
         INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
         messageLocalObjectList_newMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()

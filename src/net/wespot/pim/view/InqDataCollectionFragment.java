@@ -43,7 +43,6 @@ import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GameLocalObject;
 import org.celstec.dao.gen.GeneralItemLocalObject;
-import org.celstec.dao.gen.InquiryLocalObject;
 
 /**
  * Fragment to display Data Collection Task (General Item) from an Inquiry (Game)
@@ -55,7 +54,6 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
     private ListView data_collection_tasks;
     private TextView text_default;
     private TextView data_collection_tasks_title_list;
-    private InquiryLocalObject inquiry;
     private NoticeDialogFragment dialog;
 
     private DataCollectionLazyListAdapter datAdapter;
@@ -69,7 +67,7 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
         outState.putLong("currentInquiry", INQ.inquiry.getCurrentInquiry().getId());
         if(INQ.inquiry.getCurrentInquiry().getRunLocalObject()!=null){
             outState.putLong("currentInquiryRunLocalObject", INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
-            Log.e(TAG, "Recover in InqDataCollectionFragment > onSaveInstanceState & current inq = null");
+            Log.i(TAG, "Recover in InqDataCollectionFragment > onSaveInstanceState & current inq = null");
         }
     }
 
@@ -120,13 +118,13 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
                     datAdapter.setOnListItemClickCallback(this);
                     data_collection_tasks.setAdapter(datAdapter);
                 }else{
-                    Log.e(TAG, "There are no data collection tasks for this inquiry");
+                    Log.i(TAG, "There are no data collection tasks for this inquiry");
                 }
             }else{
-                Log.e(TAG, "There is no game for this run.");
+                Log.i(TAG, "There is no game for this run.");
             }
         }else{
-            Log.e(TAG, "Data collection task are not enabled on this inquiry");
+            Log.i(TAG, "Data collection task are not enabled on this inquiry");
         }
     }
 
@@ -193,7 +191,7 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
 
                 if (resultCode == Activity.RESULT_OK) {
                     // After Ok code.
-                    Log.e(TAG, "ok code");
+                    Log.i(TAG, "ok code");
 
                     INQ.dataCollection.createDataCollectionTask(
                             INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject().getId(),
@@ -204,14 +202,14 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
                     Toast.makeText(getActivity(), getResources().getString(R.string.data_collection_dialog_creating), Toast.LENGTH_SHORT).show();
                 } else if (resultCode == Activity.RESULT_CANCELED){
                     // After Cancel code.
-                    Log.e(TAG, "cancel code");
+                    Log.i(TAG, "cancel code");
                 }
                 break;
         }
     }
 
     private void onEventMainThread(GeneralItemEvent generalItem){
-        Log.e(TAG, "Adding data collection in background");
+        Log.i(TAG, "Adding data collection in background");
 
         addContentValidation();
         getActivity().findViewById(R.id.text_default).setVisibility(View.GONE);
@@ -219,7 +217,7 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
 
 
     private void onEventBackgroundThread(ResponseEvent responseEvent){
-        Log.e(TAG, " response for "+responseEvent.getRunId());
+        Log.i(TAG, " response for "+responseEvent.getRunId());
 
     }
 

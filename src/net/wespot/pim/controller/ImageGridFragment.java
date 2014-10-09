@@ -26,10 +26,14 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.*;
+import android.widget.AbsListView;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.BuildConfig;
 import net.wespot.pim.R;
+import net.wespot.pim.controller.Adapters.ResponsesLazyListAdapter;
 import net.wespot.pim.utils.images.ImageCache.ImageCacheParams;
 import net.wespot.pim.utils.images.ImageFetcher;
 import net.wespot.pim.utils.images.Utils;
@@ -49,21 +53,23 @@ import java.util.List;
  * cache is retained over configuration changes like orientation change so the images are populated
  * quickly if, for example, the user rotates the device.
  */
-public class ImageGridFragment extends Fragment implements AdapterView.OnItemClickListener, ListItemClickInterface<ResponseLocalObject> {
+public class ImageGridFragment extends Fragment implements ListItemClickInterface<ResponseLocalObject> {
     private static final String TAG = "ImageGridFragment";
     private static final String IMAGE_CACHE_DIR = "thumbs";
 
     private int mImageThumbSize;
     private int mImageThumbSpacing;
-    private ImageAdapter mAdapter;
+//    private ImageAdapter mAdapter;
+
+    private ResponsesLazyListAdapter mAdapter;
 
     private GridView mGridView;
 
-    public ImageAdapter getmAdapter() {
+    public ResponsesLazyListAdapter getmAdapter() {
         return mAdapter;
     }
 
-    public void setmAdapter(ImageAdapter mAdapter) {
+    public void setmAdapter(ResponsesLazyListAdapter mAdapter) {
         this.mAdapter = mAdapter;
     }
 
@@ -100,7 +106,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
         mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
 
-        mAdapter = new ImageAdapter(getActivity());
+
 
         responseLocalObjectList = giLocalObject.getResponses();
 
@@ -109,32 +115,21 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
 
         mImageFetcher = new ImageFetcher(getActivity(), mImageThumbSize);
-//        mImageFetcher.setLoadingImage(R.drawable.empty_photo);
         mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
-    }
 
-//    public void updateReceiptsList(GeneralItemLocalObject responseLocalObjectList) {
-//
-//        Log.e(TAG, String.valueOf(mAdapter.getCount()+" "+responseLocalObjectList.getResponses().size()));
-//
-//        responseLocalObjectList.resetResponses();
-//        responseLocalObjectList.getResponses();
-////        mAdapter = new ImageAdapter(getActivity());
-//        mAdapter.notifyDataSetChanged();
-//        mGridView.setAdapter(mAdapter);
-//
-//        Log.e(TAG, String.valueOf(mAdapter.getCount()+" "+responseLocalObjectList.getResponses().size()));
-//
-//    }
+    }
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View v = inflater.inflate(R.layout.fragment_image_grid, container, false);
-        mGridView = (GridView) v.findViewById(R.id.gridView);
+        mGridView = (GridView) v.findViewById(R.id.gridView1);
+
+        mAdapter = new ResponsesLazyListAdapter(getActivity(), mImageFetcher, giLocalObject);
         mGridView.setAdapter(mAdapter);
-        mGridView.setOnItemClickListener(this);
+        mAdapter.setOnListItemClickCallback(this);
+
         mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int scrollState) {
@@ -151,14 +146,10 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem,
-                    int visibleItemCount, int totalItemCount) {
+                                 int visibleItemCount, int totalItemCount) {
             }
         });
 
-        // This listener is used to get the final width of the GridView and then calculate the
-        // number of columns and the width of each column. The width of each column is variable
-        // as the GridView has stretchMode=columnWidth. The column width is used to set the height
-        // of each view so we get nice square thumbnails.
         mGridView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @TargetApi(VERSION_CODES.JELLY_BEAN)
@@ -187,6 +178,62 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
                     }
                 });
 
+//
+// mGridView.setAdapter(mAdapter);
+//        mGridView.setOnItemClickListener(this);
+//
+//        mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
+//                // Pause fetcher to ensure smoother scrolling when flinging
+//                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
+//                    // Before Honeycomb pause image loading on scroll to help with performance
+//                    if (!Utils.hasHoneycomb()) {
+//                        mImageFetcher.setPauseWork(true);
+//                    }
+//                } else {
+//                    mImageFetcher.setPauseWork(false);
+//                }
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView absListView, int firstVisibleItem,
+//                    int visibleItemCount, int totalItemCount) {
+//            }
+//        });
+//
+////        // This listener is used to get the final width of the GridView and then calculate the
+////        // number of columns and the width of each column. The width of each column is variable
+////        // as the GridView has stretchMode=columnWidth. The column width is used to set the height
+////        // of each view so we get nice square thumbnails.
+//        mGridView.getViewTreeObserver().addOnGlobalLayoutListener(
+//                new ViewTreeObserver.OnGlobalLayoutListener() {
+//                    @TargetApi(VERSION_CODES.JELLY_BEAN)
+//                    @Override
+//                    public void onGlobalLayout() {
+//                        if (mAdapter.getNumColumns() == 0) {
+//                            final int numColumns = (int) Math.floor(
+//                                    mGridView.getWidth() / (mImageThumbSize + mImageThumbSpacing));
+//                            if (numColumns > 0) {
+//                                final int columnWidth =
+//                                        (mGridView.getWidth() / numColumns) - mImageThumbSpacing;
+//                                mAdapter.setNumColumns(numColumns);
+//                                mAdapter.setItemHeight(columnWidth);
+//                                if (BuildConfig.DEBUG) {
+//                                    Log.d(TAG, "onCreateView - numColumns set to " + numColumns);
+//                                }
+//                                if (Utils.hasJellyBean()) {
+//                                    mGridView.getViewTreeObserver()
+//                                            .removeOnGlobalLayoutListener(this);
+//                                } else {
+//                                    mGridView.getViewTreeObserver()
+//                                            .removeGlobalOnLayoutListener(this);
+//                                }
+//                            }
+//                        }
+//                    }
+//                });
+
         return v;
     }
 
@@ -205,32 +252,64 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         mImageFetcher.flushCache();
     }
 
+    public void onEventMainThread(ResponseEvent responseEvent){
+//        Log.e(TAG, "Numero de elementos antes de notifyDataSetChanged: "+mAdapter.getCount()+" "+responseLocalObjectList.size());
+//        mAdapter.notifyDataSetChanged();
+//        Log.e(TAG, "Numero de elementos antes de notifiy invalidated "+mAdapter.getCount()+" "+responseLocalObjectList.size());
+//        mAdapter.notifyDataSetInvalidated();
+//        Log.e(TAG, "Numero de elementos despues de notifiy invalidated "+mAdapter.getCount()+" "+responseLocalObjectList.size());
+//        mGridView.invalidate();
+//        Log.e(TAG, "Numero de elementos de invalidar "+mAdapter.getCount()+" "+responseLocalObjectList.size());
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         ARL.eventBus.unregister(this);
         mImageFetcher.closeCache();
+
     }
 
-    @TargetApi(VERSION_CODES.JELLY_BEAN)
-    @Override
-    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-        final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
+//    @TargetApi(VERSION_CODES.JELLY_BEAN)
+//    @Override
+//    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+//        final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
+//
+//        intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, giLocalObject.getId());
+//        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, (int) id);
+//
+//        if (Utils.hasJellyBean()) {
+//            // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
+//            // show plus the thumbnail image in GridView is cropped. so using
+//            // makeScaleUpAnimation() instead.
+//            ActivityOptions options =
+//                    ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
+//            getActivity().startActivity(intent, options.toBundle());
+//        } else {
+//            startActivity(intent);
+//        }
+//    }
 
-        intent.putExtra("DataCollectionTaskGeneralItemId", giLocalObject.getId());
-        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, (int) id);
+//    @TargetApi(VERSION_CODES.JELLY_BEAN)
+//    @Override
+//    public void onListItemClick(View v, int position, ResponseLocalObject item) {
+//        final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
+//
+//        intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, item.getGeneralItemLocalObject().getId());
+//        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, position);
+//
+//        if (Utils.hasJellyBean()) {
+//            // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
+//            // show plus the thumbnail image in GridView is cropped. so using
+//            // makeScaleUpAnimation() instead.
+//            ActivityOptions options =
+//                    ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
+//            getActivity().startActivity(intent, options.toBundle());
+//        } else {
+//            startActivity(intent);
+//        }
+//    }
 
-        if (Utils.hasJellyBean()) {
-            // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
-            // show plus the thumbnail image in GridView is cropped. so using
-            // makeScaleUpAnimation() instead.
-            ActivityOptions options =
-                    ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
-            getActivity().startActivity(intent, options.toBundle());
-        } else {
-            startActivity(intent);
-        }
-    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -242,25 +321,50 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         return super.onOptionsItemSelected(item);
     }
 
-    private void onEventAsync(ResponseEvent responseEvent){
+//    @Override
+//    public void onListItemClick(View v, int position, InquiryLocalObject object) {
+//        final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
+//
+//        intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, giLocalObject.getId());
+//        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, (int) position);
+//
+//        if (Utils.hasJellyBean()) {
+//            // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
+//            // show plus the thumbnail image in GridView is cropped. so using
+//            // makeScaleUpAnimation() instead.
+//            ActivityOptions options =
+//                    ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
+//            getActivity().startActivity(intent, options.toBundle());
+//        } else {
+//            startActivity(intent);
+//        }
+//    }
 
-        // TODO Make it better it doesn't work well
-        final BaseAdapter adapter = getmAdapter();
-        getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                adapter.notifyDataSetChanged();
-                Log.e(TAG, "refreshed");
-            }
-        });
-    }
+//    @Override
+//    public void onItemClick(AdapterView<?> adapterView, View v, int position, long id) {
+//        final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
+//
+//        intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, giLocalObject.getId());
+//        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, (int) position);
+//
+//        if (Utils.hasJellyBean()) {
+//            // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
+//            // show plus the thumbnail image in GridView is cropped. so using
+//            // makeScaleUpAnimation() instead.
+//            ActivityOptions options =
+//                    ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
+//            getActivity().startActivity(intent, options.toBundle());
+//        } else {
+//            startActivity(intent);
+//        }
+//    }
 
-    @TargetApi(VERSION_CODES.JELLY_BEAN)
     @Override
-    public void onListItemClick(View v, int position, ResponseLocalObject item) {
+    public void onListItemClick(View v, int position, ResponseLocalObject object) {
         final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
 
-        intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, item.getGeneralItemLocalObject().getId());
-        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, position);
+        intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, giLocalObject.getId());
+        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, (int) position);
 
         if (Utils.hasJellyBean()) {
             // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
@@ -298,6 +402,17 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
             mImageViewLayoutParams = new GridView.LayoutParams(
                     LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         }
+
+//        private ArrayList<DataSetObserver> observers = new ArrayList<DataSetObserver>();
+//
+//        public void registerDataSetObserver(DataSetObserver observer) {
+//            observers.add(observer);
+//        }
+//        public void notifyDataSetChanged(){
+//            for (DataSetObserver observer: observers) {
+//                observer.onChanged();
+//            }
+//        }
 
         @Override
         public int getCount() {
@@ -392,6 +507,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         public int getNumColumns() {
             return mNumColumns;
         }
+
 
 
     }

@@ -43,6 +43,8 @@ import org.celstec.dao.gen.ResponseLocalObject;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -106,6 +108,17 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 
 //        if (extras != null){
         giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(extras.getLong(GENERAL_ITEM_ID));
+        List<ResponseLocalObject> responseLocalObjectList1 = giLocalObject.getResponses();
+
+        Collections.sort(responseLocalObjectList1, new Comparator<ResponseLocalObject>() {
+            @Override
+            public int compare(ResponseLocalObject responseLocalObject, ResponseLocalObject responseLocalObject2) {
+                if (responseLocalObject.getTimeStamp() == responseLocalObject2.getTimeStamp())
+                    return 0;
+                return responseLocalObject.getTimeStamp() < responseLocalObject2.getTimeStamp() ? -1 : 1;
+            }
+        });
+
         responsePosition = extras.getInt(RESPONSE_POSITION);
 //        }
 

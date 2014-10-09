@@ -57,19 +57,19 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.e(TAG, "Recover in MainActivity > onRestart");
+        Log.i(TAG, "Recover in MainActivity > onRestart");
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        Log.e(TAG, "Recover in MainActivity > onRestoreInstanceState");
+        Log.i(TAG, "Recover in MainActivity > onRestoreInstanceState");
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.e(TAG, "Recover in MainActivity > onSaveInstanceState");
+        Log.i(TAG, "Recover in MainActivity > onSaveInstanceState");
     }
 
     /**
@@ -167,7 +167,7 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
     protected void onResume() {
         super.onResume();
 
-        Log.e(TAG, "on resume Main activity. Number of inquiries: "+ numberInquiries);
+        Log.i(TAG, "on resume Main activity. Number of inquiries: "+ numberInquiries);
 
         numberInquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
     }
@@ -179,7 +179,7 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
     }
 
     private void onEventBackgroundThread(TimeEvent inquiryEvent){
-        Log.e(TAG, "time's up");
+        Log.i(TAG, "time's up");
 
         if (!queueInqDatCol.isEmpty()){
             INQ.inquiry.syncDataCollectionTasks(queueInqDatCol.remove());
@@ -195,7 +195,7 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
 
         queueInqDatCol.add(inquiryLocalObject);
 
-        Log.e(TAG, "sync and reset counter 30 second more: "+inquiryLocalObject.getId());
+        Log.i(TAG, "sync and reset counter 30 second more: "+inquiryLocalObject.getId());
     }
 
     public void onEventMainThread(InquiryEvent event) {
@@ -203,7 +203,7 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
 
         ((TextView)myInquiryView.findViewById(R.id.notificationText)).setText(String.valueOf(numberInquiries));
 
-        Log.e(TAG, "onEventMainThread. Number of inquiries: " + numberInquiries);
+        Log.i(TAG, "onEventMainThread. Number of inquiries: " + numberInquiries);
 
 
     }
@@ -213,7 +213,7 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
 
         ((TextView)myBadges.findViewById(R.id.notificationText)).setText(String.valueOf(numberBadges));
 
-        Log.e(TAG, "onEventMainThread. Number of badges: " + numberBadges);
+        Log.i(TAG, "onEventMainThread. Number of badges: " + numberBadges);
     }
 
     public void onEventMainThread(FriendEvent event) {
@@ -221,7 +221,7 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
 
         ((TextView)myFriends.findViewById(R.id.notificationText)).setText(String.valueOf(numberFriends));
 
-        Log.e(TAG, "onEventMainThread. Number of friends: " + numberFriends);
+        Log.i(TAG, "onEventMainThread. Number of friends: " + numberFriends);
     }
 
     private void onEventBackgroundThread(MyAccount myAccount){
