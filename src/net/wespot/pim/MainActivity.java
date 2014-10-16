@@ -11,16 +11,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.RemindTask;
 import net.wespot.pim.utils.TimeEvent;
+import net.wespot.pim.utils.generic.NetworkHandle;
 import net.wespot.pim.utils.layout.ActionBarCurrent;
 import net.wespot.pim.utils.layout.ButtonManager;
 import net.wespot.pim.utils.layout.ViewItemClickInterface;
 import net.wespot.pim.view.*;
 import org.celstec.arlearn.delegators.INQ;
-import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.GeneralItemEvent;
 import org.celstec.arlearn2.android.events.MyAccount;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
@@ -83,7 +84,7 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
 
         setContentView(R.layout.main_main);
 
-        ARL.eventBus.register(this);
+        INQ.eventBus.register(this);
         timer = new Timer(true);
 
         queueInqDatCol = new LinkedList<InquiryLocalObject>();
@@ -101,34 +102,41 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
         buttonManager.setOnListItemClickCallback(this);
 
         // Creation of layout params
-        LinearLayout.LayoutParams secondLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_second, (int)getResources().getDimension(R.dimen.space_between_list_items));
-        LinearLayout.LayoutParams thirdLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_zero, (int)getResources().getDimension(R.dimen.space_between_list_items));
-        LinearLayout.LayoutParams firstLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_first, (int)getResources().getDimension(R.dimen.zero_space_between_list_items));
+        LinearLayout.LayoutParams firstLayoutParams = buttonManager.generateLayoutParams(
+                R.dimen.mainscreen_margintop_first,
+                (int)getResources().getDimension(R.dimen.mainscreen_margintop_zero));
+        LinearLayout.LayoutParams secondLayoutParams = buttonManager.generateLayoutParams(
+                R.dimen.mainscreen_margintop_second,
+                (int)getResources().getDimension(R.dimen.space_between_list_items));
+        LinearLayout.LayoutParams thirdLayoutParams = buttonManager.generateLayoutParams(
+                R.dimen.mainscreen_margintop_zero,
+                (int)getResources().getDimension(R.dimen.mainscreen_margintop_zero));
+
 
         // My Inquiries button_old
         myInquiryView = buttonManager.generateButton(linearLayout,firstLayoutParams, Constants.ID_MYINQUIRIES,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MYINQUIRIES),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MYINQUIRIES), String.valueOf(numberInquiries));
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MYINQUIRIES), String.valueOf(numberInquiries), true);
 
         // My media button_old
         myMediaView = buttonManager.generateButton(linearLayout,secondLayoutParams, Constants.ID_MYMEDIA,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MYMEDIA),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MYMEDIA), String.valueOf(numberResponses));
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MYMEDIA), String.valueOf(numberResponses), false);
 
         // Profile button_old
         buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_PROFILE,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_PROFILE),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_PROFILE), "");
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_PROFILE), "", false);
 
         // Badges button_old
         myBadges = buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_BADGES,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_BADGES),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_BADGES), String.valueOf(numberBadges));
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_BADGES), String.valueOf(numberBadges), false);
 
         // Friends button_old
         myFriends = buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_MAIN_FRIENDS,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS), String.valueOf(numberFriends));
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS), String.valueOf(numberFriends), true);
     }
 
     @Override
@@ -232,12 +240,10 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
         timer.schedule(new RemindTask(), 30 * 1000);
     }
 
-
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ARL.eventBus.unregister(this);
+        INQ.eventBus.unregister(this);
     }
 
     @Override
@@ -248,27 +254,46 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
         return super.onCreateOptionsMenu(menu);
     }
 
+
+    public void onEventMainThread(NetworkHandle.NetworkResult result) {
+        if (result.isResult()) {
+            Log.d(TAG, "Before logout: " + INQ.accounts.isAuthenticated());
+            INQ.accounts.disAuthenticate();
+            INQ.properties.setAccount(0l);
+
+            Intent myIntent = new Intent(this, SplashActivity.class);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);// clear back stack
+            startActivity(myIntent);
+            finish();
+
+            Log.d(TAG, "After logout: " + INQ.accounts.isAuthenticated());
+        } else {
+            notOnline();
+        }
+    }
+
+    public void notOnline(){
+        Toast.makeText(this, "Logout functionality has been disabled to save your offline progress", Toast.LENGTH_LONG).show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_logout:
 
-                Log.d(TAG, "Before logout: " + INQ.accounts.isAuthenticated());
-                INQ.accounts.disAuthenticate();
-                INQ.properties.setAccount(0l);
-
-                Intent myIntent = new Intent(this, SplashActivity.class);
-                myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);// clear back stack
-                startActivity(myIntent);
-                finish();
-
-                Log.d(TAG, "After logout: "+INQ.accounts.isAuthenticated());
-
-//                Toast.makeText(this,R.string.menu_logout,Toast.LENGTH_SHORT).show();
-
+                if (INQ.isOnline()) {
+                    INQ.eventBus.post(new NetworkHandle());
+                } else {
+                    notOnline();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private void onEventAsync(NetworkHandle networkTest) {
+        networkTest.executeTest();
     }
 
     @Override
