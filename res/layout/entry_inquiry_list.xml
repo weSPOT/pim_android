@@ -5,7 +5,7 @@
                 android:background="@drawable/btn_background">
 
     <TextView
-            android:id="@+id/name_entry_list"
+            android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

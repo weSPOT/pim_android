@@ -156,8 +156,11 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
                 create_new_data_collection();
                 break;
             case R.id.menu_refresh_data_collection:
-                // TODO enhance refreshing data collection
+
                 Toast.makeText(getActivity(), "Updating data collections...", Toast.LENGTH_SHORT).show();
+
+//                DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().deleteAll();
+
                 GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
                 for (GeneralItemLocalObject generalItemLocalObject : gameLocalObject.getGeneralItems()){
                     generalItemLocalObject.resetResponses();

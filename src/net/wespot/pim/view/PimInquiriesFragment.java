@@ -82,12 +82,14 @@ public class PimInquiriesFragment extends BaseFragmentActivity implements ListIt
         ButtonManager buttonManager = new ButtonManager(this);
 
         // Creation of layout params
-        LinearLayout.LayoutParams secondLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_zero, 0);
+        LinearLayout.LayoutParams secondLayoutParams = buttonManager.generateLayoutParams(
+                R.dimen.mainscreen_margintop_zero,
+                (int)getResources().getDimension(R.dimen.mainscreen_margintop_zero));
 
         // New inquiry button
         buttonManager.generateButton(linearLayout, secondLayoutParams, Constants.ID_NEW_INQUIRY,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_NEW_INQUIRY),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_NEW_INQUIRY), "")
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_NEW_INQUIRY), "", true)
                 .setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

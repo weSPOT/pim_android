@@ -91,7 +91,7 @@ public class PimInquiriesCompatFragment extends ActionBarCompat implements ListI
         // New inquiry button
         buttonManager.generateButton(linearLayout, secondLayoutParams, Constants.ID_NEW_INQUIRY,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_NEW_INQUIRY),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_NEW_INQUIRY), "")
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_NEW_INQUIRY), "", false)
                 .setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -48,8 +48,8 @@ public class BadgesLazyListAdapter extends AbstractBadgesLazyListAdapter {
         if (item == null) return null;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         return inflater.inflate(R.layout.entry_badges_list, parent, false);
-
     }
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public void bindView(View view, Context context,  BadgeLocalObject item) {
@@ -58,12 +58,14 @@ public class BadgesLazyListAdapter extends AbstractBadgesLazyListAdapter {
 
         firstLineView.setText(item.getTitle());
 
+
+
         if (item.getBadgeIcon() != null){
             BitmapWorkerTask task = new BitmapWorkerTask(imageItem);
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, item.getBadgeIcon());
         }
         else{
-            imageItem.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.placeholder_badge));
+            imageItem.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.badge_image_placeholder));
         }
     }
 

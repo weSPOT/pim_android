@@ -21,6 +21,7 @@ package net.wespot.pim.view;
  * ****************************************************************************
  */
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -29,29 +30,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
+import net.wespot.pim.controller.Adapters.ChatAdapter;
+import net.wespot.pim.utils.Message;
 import net.wespot.pim.utils.RetrieveMessageTask;
 import net.wespot.pim.utils.TimeMessageEvent;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.MessageEvent;
-import org.celstec.dao.gen.AccountLocalObject;
 import org.celstec.dao.gen.MessageLocalObject;
 import org.celstec.dao.gen.MessageLocalObjectDao;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class InqCommunicateFragment extends Fragment implements View.OnFocusChangeListener {
+public class InqCommunicateFragment extends Fragment {
 
     private static final String TAG = "InqCommunicateFragment";
     private EditText message;
     private ImageButton send;
     private ScrollView scroll;
+
+    private ListView listViewMessages;
+
+    ChatAdapter chatAdapter;
+    ArrayList<Message> messages;
 
     public static Timer timer;
 
@@ -74,31 +79,12 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-//        if (savedInstanceState != null){
-        ARL.eventBus.register(this);
-        INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
-        //TODO issues when resuming
-        messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
-                .orderAsc(MessageLocalObjectDao.Properties.Time)
-                .list();
-
-        timer = new Timer();
-
-        timer.schedule(new RetrieveMessageTask(), INTERVAL * 1000, INTERVAL * 1000);
-
-
-//        }
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        if ( messageLocalObjectList.equals(null) || messageLocalObjectList.size() > 0) {
-            getActivity().findViewById(android.R.id.empty).setVisibility(View.GONE);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong("currentInquiry", INQ.inquiry.getCurrentInquiry().getId());
+        if(INQ.inquiry.getCurrentInquiry().getRunLocalObject()!=null){
+            outState.putLong("currentInquiryRunLocalObject", INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
+            Log.i(TAG, "Recover in InqDataCollectionFragment > onSaveInstanceState & current inq = null");
         }
     }
 
@@ -112,10 +98,10 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
         mContainerView = (ViewGroup) rootView.findViewById(R.id.list_threads);
         message = (EditText) rootView.findViewById(R.id.communication_enter_message);
         send = (ImageButton) rootView.findViewById(R.id.communication_enter_message_button);
+        listViewMessages = (ListView) rootView.findViewById(R.id.list_messages);
+        listViewMessages.setAdapter(chatAdapter);
 
-        scroll = (ScrollView) rootView.findViewById(R.id.list_threads_scroll);
         send.requestFocus();
-
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,80 +117,141 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
                     DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
                     INQ.messages.postMessagesToServer();
 
-                    addMessage(messageLocalObject);
+                    messages.add(new Message(messageLocalObject.getBody(),messageLocalObject.getAuthor(), messageLocalObject.getTime() ));
                     message.setText("");
-//                    INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
+//                    new SendMessage().execute();
+                    chatAdapter.notifyDataSetChanged();
                 }
             }
         });
 
-        for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
-            addMessage(messageLocalObject);
-        }
-
         return rootView;
     }
 
+
     @Override
-    public void onFocusChange(View view, boolean b) {
-//        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        messages = new ArrayList<Message>();
+
+        ARL.eventBus.register(this);
+        INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
+
+        messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
+                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
+                .orderAsc(MessageLocalObjectDao.Properties.Time)
+                .list();
+
+        timer = new Timer();
+        timer.schedule(new RetrieveMessageTask(), INTERVAL * 1000, INTERVAL * 1000);
+        Log.e(TAG, "timer");
+
+
+        for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
+
+//            if (!accountNamesID.containsKey(messageLocalObject.getAuthor())){
+//                AccountLocalObject accountLocalObject = INQ.accounts.getAccount(messageLocalObject.getAuthor());
+//                if (accountLocalObject!=null){
+//                    accountNamesID.put(accountLocalObject.getFullId(), accountLocalObject.getName());
+//                }else{
+//                    accountNamesID.put(messageLocalObject.getAuthor(),"-");
+//                }
+//            }
+
+//            boolean isMine = false;
+//
+//            if (INQ.accounts.getLoggedInAccount().getFullId().equals(messageLocalObject.getAuthor()) ) {
+//                isMine = true;
+//            }
+            messages.add(new Message(messageLocalObject.getBody(),messageLocalObject.getAuthor(), messageLocalObject.getTime()));
+        }
+
+        chatAdapter = new ChatAdapter(getActivity(), messages);
+
     }
 
-    private void addMessage(MessageLocalObject messageLocalObject) {
+    private class SendMessage extends AsyncTask<Void, String, String>
+    {
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                Thread.sleep(2000); //simulate a network call
+            }catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-        final ViewGroup newView;
+            this.publishProgress(String.format("%s started writing", INQ.accounts.getLoggedInAccount().getFullId()));
+            try {
+                Thread.sleep(2000); //simulate a network call
+            }catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            this.publishProgress(String.format("%s has entered text", INQ.accounts.getLoggedInAccount().getFullId()));
+            try {
+                Thread.sleep(3000);//simulate a network call
+            }catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-        if (!accountNamesID.containsKey(messageLocalObject.getAuthor())){
-            AccountLocalObject accountLocalObject = INQ.accounts.getAccount(messageLocalObject.getAuthor());
-            if (accountLocalObject!=null){
-                accountNamesID.put(accountLocalObject.getFullId(), accountLocalObject.getName());
-            }else{
-                accountNamesID.put(messageLocalObject.getAuthor(),"-");
+
+            return "";
+
+
+        }
+        @Override
+        public void onProgressUpdate(String... v) {
+
+            if(messages.get(messages.size()-1).isStatusMessage)//check wether we have already added a status message
+            {
+                messages.get(messages.size()-1).setMessage(v[0]); //update the status for that
+                chatAdapter.notifyDataSetChanged();
+//                getListView().setSelection(messages.size()-1);
+            }
+            else{
+//                addNewMessage(new Message(true,v[0])); //add new message, if there is no existing status message
             }
         }
+        @Override
+        protected void onPostExecute(String text) {
+            if(messages.get(messages.size()-1).isStatusMessage)//check if there is any status message, now remove it.
+            {
+                messages.remove(messages.size()-1);
+            }
 
-        if (INQ.accounts.getLoggedInAccount().getFullId().equals(messageLocalObject.getAuthor()) ) {
-            newView = (ViewGroup) LayoutInflater.from(getActivity()).inflate(
-                    R.layout.entry_messages, mContainerView, false);
-        } else {
-            newView = (ViewGroup) LayoutInflater.from(getActivity()).inflate(
-                    R.layout.entry_messages_others, mContainerView, false);
-            ((TextView) newView.findViewById(R.id.author_entry_list)).setText(accountNamesID.get(messageLocalObject.getAuthor()));
+//            addNewMessage(new Message(text, false)); // add the orignal message from server.
         }
 
-        ((TextView) newView.findViewById(R.id.name_entry_list)).setText(messageLocalObject.getBody().toString());
-
-        Date date = new Date(messageLocalObject.getTime());
-        Format format = new SimpleDateFormat("HH:mm:ss");
-        ((TextView) newView.findViewById(R.id.timeStampMessage)).setText(format.format(date));
-
-        mContainerView.addView(newView, mContainerView.getChildCount());
-        scrollDown();
 
     }
 
-    private void onEventMainThread(TimeMessageEvent timeMessageEvent) {
+    public synchronized void onEventMainThread(TimeMessageEvent timeMessageEvent) {
         Log.i(TAG, "retrieve messages");
 
         INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
+
         messageLocalObjectList_newMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
                 .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
                 .orderAsc(MessageLocalObjectDao.Properties.Time)
                 .list();
 
-        messageLocalObjectList_newMessages.removeAll(messageLocalObjectList);
+        if (messageLocalObjectList_newMessages.size() != messageLocalObjectList.size()){
 
+            messageLocalObjectList_newMessages.removeAll(messageLocalObjectList);
 
-        for (MessageLocalObject messageLocalObject : messageLocalObjectList_newMessages) {
-            if(!INQ.accounts.getLoggedInAccount().getFullId().equals(messageLocalObject.getAuthor())){
-                addMessage(messageLocalObject);
+            for (MessageLocalObject messageLocalObject : messageLocalObjectList_newMessages) {
+                if(!INQ.accounts.getLoggedInAccount().getFullId().equals(messageLocalObject.getAuthor())){
+                    messages.add(new Message(messageLocalObject.getBody(), messageLocalObject.getAuthor(), messageLocalObject.getTime()));
+                }
+                messageLocalObjectList.add(messageLocalObject);
+                messageLocalObjectList_newMessages.remove(messageLocalObject);
             }
-            messageLocalObjectList.add(messageLocalObject);
-            messageLocalObjectList_newMessages.remove(messageLocalObject);
+
+            chatAdapter.notifyDataSetChanged();
         }
     }
 
-    private void onEventBackgroundThread(MessageEvent messageEvent) {
+    public void onEventBackgroundThread(MessageEvent messageEvent) {
         Log.e(TAG, "message synced: " + messageEvent.getRunId());
     }
 
@@ -213,24 +260,6 @@ public class InqCommunicateFragment extends Fragment implements View.OnFocusChan
         ARL.eventBus.unregister(this);
         timer.cancel();
         super.onDestroy();
-    }
-
-    void scrollDown() {
-        Thread scrollThread = new Thread() {
-            public void run() {
-                try {
-                    sleep(500);
-                    getActivity().runOnUiThread(new Runnable() {
-                        public void run() {
-                            scroll.fullScroll(View.FOCUS_DOWN);
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        scrollThread.start();
     }
 }
 

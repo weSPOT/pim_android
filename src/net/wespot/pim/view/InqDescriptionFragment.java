@@ -54,10 +54,8 @@ public class InqDescriptionFragment extends Fragment {
         TextView title = (TextView) rootView.findViewById(R.id.title_description);
         title.setText(R.string.inquiry_title_description);
         webView.setBackgroundColor(0x00000000);
-//        webView.loadData(INQ.inquiry.getCurrentInquiry().getDescription(), Constants.MIME_TYPE, Constants.ENCONDING);
         webView.loadDataWithBaseURL(null, INQ.inquiry.getCurrentInquiry().getDescription(), Constants.MIME_TYPE, Constants.ENCONDING, null);
 
         return rootView;
     }
-
 }

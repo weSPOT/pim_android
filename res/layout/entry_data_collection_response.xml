@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <ImageView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/inquiry_entry_data_collection_response_icon"
-            android:src="@drawable/ic_taks_photo"
-            android:contentDescription="@string/icon_list" android:layout_height="match_parent" android:layout_width="match_parent"/>
+<ImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent" android:layout_width="match_parent"/>

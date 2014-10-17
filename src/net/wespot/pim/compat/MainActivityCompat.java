@@ -119,27 +119,27 @@ public class MainActivityCompat extends ActionBarCompat implements ListItemClick
         // My Inquiries button_old
         myInquiryView = buttonManager.generateButton(linearLayout,firstLayoutParams, Constants.ID_MYINQUIRIES,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MYINQUIRIES),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MYINQUIRIES), String.valueOf(numberInquiries));
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MYINQUIRIES), String.valueOf(numberInquiries), false);
 
         // My media button_old
         myMediaView = buttonManager.generateButton(linearLayout,secondLayoutParams, Constants.ID_MYMEDIA,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MYMEDIA),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MYMEDIA), String.valueOf(numberResponses));
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MYMEDIA), String.valueOf(numberResponses), false);
 
         // Profile button_old
         buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_PROFILE,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_PROFILE),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_PROFILE), "");
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_PROFILE), "", false);
 
         // Badges button_old
         myBadges = buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_BADGES,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_BADGES),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_BADGES), String.valueOf(numberBadges));
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_BADGES), String.valueOf(numberBadges), false);
 
         // Friends button_old
         myFriends = buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_MAIN_FRIENDS,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS), String.valueOf(numberFriends));
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS), String.valueOf(numberFriends), true);
 
 //        super.init();
     }

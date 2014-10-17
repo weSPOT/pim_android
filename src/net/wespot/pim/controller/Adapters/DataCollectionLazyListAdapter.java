@@ -62,6 +62,8 @@ public class DataCollectionLazyListAdapter extends AbstractGeneralItemsLazyListA
         TextView notificationTextview = (TextView) view.findViewById(R.id.notificationText);
         notificationTextview.setVisibility(View.VISIBLE);
         notificationTextview.setText(String.valueOf(item.getResponses().size()));
+
+
     }
 
     @Override

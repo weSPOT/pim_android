@@ -41,18 +41,24 @@ public class ButtonManager {
 
     public LinearLayout.LayoutParams generateLayoutParams(int marginTop, int marginBottom) {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(-1, (int) context.getResources().getDimension(marginTop), -2, marginBottom);
+        layoutParams.setMargins(0, (int) context.getResources().getDimension(marginTop), 0, marginBottom);
         return layoutParams;
     }
 
-    public View generateButton(LinearLayout linearLayout, ViewGroup.LayoutParams firstLayoutParams, final int id, int phases_invite_new_friend, int ic_invite_friend, String notification) {
+    public View generateButton(LinearLayout linearLayout, ViewGroup.LayoutParams firstLayoutParams, final int id, int phases_invite_new_friend, int ic_invite_friend, String notification, boolean lastbutton) {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
         View view = inflater.inflate(R.layout.entry_main_list, null);
         assert view != null;
         view.setLayoutParams(firstLayoutParams);
 
-        ((TextView) view.findViewById(R.id.name_entry_list)).setText(context.getResources().getString(phases_invite_new_friend));
+        if (lastbutton){
+            view.setBackground(context.getResources().getDrawable(R.drawable.btn_background_last));
+        }else{
+            view.setBackground(context.getResources().getDrawable(R.drawable.btn_background));
+        }
+
+        ((TextView) view.findViewById(R.id.message)).setText(context.getResources().getString(phases_invite_new_friend));
         if (notification.equals("")){
             ((TextView) view.findViewById(R.id.notificationText)).setText("");
             ((TextView) view.findViewById(R.id.notificationText)).setVisibility(View.INVISIBLE);
@@ -87,7 +93,7 @@ public class ButtonManager {
         View view = inflater.inflate(R.layout.entry_main_list, null);
         assert view != null;
 
-        ((TextView) view.findViewById(R.id.name_entry_list)).setText(context.getResources().getString(phases_invite_new_friend));
+        ((TextView) view.findViewById(R.id.message)).setText(context.getResources().getString(phases_invite_new_friend));
         if (notification.equals("")){
             ((TextView) view.findViewById(R.id.notificationText)).setText("");
             ((TextView) view.findViewById(R.id.notificationText)).setVisibility(View.INVISIBLE);

@@ -6,33 +6,41 @@
                 android:padding="8dp"
                 android:layout_margin="4dp"
                 android:background="@drawable/background_message_others_chat">
+
     <TextView
             android:id="@+id/author_entry_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_marginLeft="10dp"
             android:textStyle="bold"
             android:paddingRight="14dp"
             android:paddingLeft="2dp"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="3dp"
             android:text="test"/>
 
     <TextView
-            android:id="@+id/name_entry_list"
+            android:id="@+id/timeStampMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/pim_listitem_notification_text"
+            android:textSize="8dp"
+            android:layout_toRightOf="@id/author_entry_list"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/app.base.white"
+            android:text="7:12"/>
+
+    <TextView
+            android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="20dp"
+            android:layout_below="@id/author_entry_list"
             android:paddingRight="2dp"
             android:paddingLeft="2dp"
-            android:text="test" android:layout_centerHorizontal="true"/>
-    <TextView
-            android:id="@+id/timeStampMessage"
-            android:layout_below="@id/name_entry_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/CustomTheme.TimeSteampMessageOthers"
-            android:text="7:12"/>
+            android:layout_marginTop="5dp"
+            android:text="test"/>
+
 
 </RelativeLayout>

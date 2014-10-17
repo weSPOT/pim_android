@@ -1,6 +1,5 @@
 package net.wespot.pim.utils;
 
-import android.util.Log;
 import org.celstec.arlearn2.android.delegators.ARL;
 
 import java.util.TimerTask;
@@ -19,9 +18,9 @@ public class RetrieveMessageTask extends TimerTask{
 
     @Override
     public void run() {
-        Log.e(TAG, "Start");
+//        Log.e(TAG, "Start");
         doSomeWork();
-        Log.e(TAG, "Stop");
+//        Log.e(TAG, "Stop");
 
     }
 

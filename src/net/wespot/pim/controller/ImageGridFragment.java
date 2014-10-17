@@ -26,14 +26,10 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.AbsListView;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
+import android.widget.*;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.BuildConfig;
 import net.wespot.pim.R;
-import net.wespot.pim.controller.Adapters.ResponsesLazyListAdapter;
 import net.wespot.pim.utils.images.ImageCache.ImageCacheParams;
 import net.wespot.pim.utils.images.ImageFetcher;
 import net.wespot.pim.utils.images.Utils;
@@ -53,25 +49,25 @@ import java.util.List;
  * cache is retained over configuration changes like orientation change so the images are populated
  * quickly if, for example, the user rotates the device.
  */
-public class ImageGridFragment extends Fragment implements ListItemClickInterface<ResponseLocalObject> {
+public class ImageGridFragment extends Fragment implements AdapterView.OnItemClickListener, ListItemClickInterface<ResponseLocalObject> {
     private static final String TAG = "ImageGridFragment";
     private static final String IMAGE_CACHE_DIR = "thumbs";
 
     private int mImageThumbSize;
     private int mImageThumbSpacing;
-//    private ImageAdapter mAdapter;
+    private ImageAdapter mAdapter;
 
-    private ResponsesLazyListAdapter mAdapter;
+//    private ResponsesLazyListAdapter mAdapter;
 
     private GridView mGridView;
 
-    public ResponsesLazyListAdapter getmAdapter() {
-        return mAdapter;
-    }
-
-    public void setmAdapter(ResponsesLazyListAdapter mAdapter) {
-        this.mAdapter = mAdapter;
-    }
+//    public ResponsesLazyListAdapter getmAdapter() {
+//        return mAdapter;
+//    }
+//
+//    public void setmAdapter(ResponsesLazyListAdapter mAdapter) {
+//        this.mAdapter = mAdapter;
+//    }
 
     private ImageFetcher mImageFetcher;
 
@@ -106,8 +102,6 @@ public class ImageGridFragment extends Fragment implements ListItemClickInterfac
         mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
         mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
 
-
-
         responseLocalObjectList = giLocalObject.getResponses();
 
         ImageCacheParams cacheParams = new ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
@@ -115,6 +109,7 @@ public class ImageGridFragment extends Fragment implements ListItemClickInterfac
         cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
 
         mImageFetcher = new ImageFetcher(getActivity(), mImageThumbSize);
+        mImageFetcher.setLoadingImage(R.drawable.ic_taks_photo);
         mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
 
     }
@@ -126,9 +121,11 @@ public class ImageGridFragment extends Fragment implements ListItemClickInterfac
         final View v = inflater.inflate(R.layout.fragment_image_grid, container, false);
         mGridView = (GridView) v.findViewById(R.id.gridView1);
 
-        mAdapter = new ResponsesLazyListAdapter(getActivity(), mImageFetcher, giLocalObject);
+//        mAdapter = new ResponsesLazyListAdapter(getActivity(), mImageFetcher, giLocalObject);
+        mAdapter = new ImageAdapter(getActivity());
         mGridView.setAdapter(mAdapter);
-        mAdapter.setOnListItemClickCallback(this);
+//        mAdapter.setOnListItemClickCallback(this);
+        mGridView.setOnItemClickListener(this);
 
         mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -270,97 +267,9 @@ public class ImageGridFragment extends Fragment implements ListItemClickInterfac
 
     }
 
-//    @TargetApi(VERSION_CODES.JELLY_BEAN)
-//    @Override
-//    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-//        final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
-//
-//        intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, giLocalObject.getId());
-//        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, (int) id);
-//
-//        if (Utils.hasJellyBean()) {
-//            // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
-//            // show plus the thumbnail image in GridView is cropped. so using
-//            // makeScaleUpAnimation() instead.
-//            ActivityOptions options =
-//                    ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
-//            getActivity().startActivity(intent, options.toBundle());
-//        } else {
-//            startActivity(intent);
-//        }
-//    }
-
-//    @TargetApi(VERSION_CODES.JELLY_BEAN)
-//    @Override
-//    public void onListItemClick(View v, int position, ResponseLocalObject item) {
-//        final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
-//
-//        intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, item.getGeneralItemLocalObject().getId());
-//        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, position);
-//
-//        if (Utils.hasJellyBean()) {
-//            // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
-//            // show plus the thumbnail image in GridView is cropped. so using
-//            // makeScaleUpAnimation() instead.
-//            ActivityOptions options =
-//                    ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
-//            getActivity().startActivity(intent, options.toBundle());
-//        } else {
-//            startActivity(intent);
-//        }
-//    }
-
-
+    @TargetApi(VERSION_CODES.JELLY_BEAN)
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.main_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
-
-//    @Override
-//    public void onListItemClick(View v, int position, InquiryLocalObject object) {
-//        final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
-//
-//        intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, giLocalObject.getId());
-//        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, (int) position);
-//
-//        if (Utils.hasJellyBean()) {
-//            // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
-//            // show plus the thumbnail image in GridView is cropped. so using
-//            // makeScaleUpAnimation() instead.
-//            ActivityOptions options =
-//                    ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
-//            getActivity().startActivity(intent, options.toBundle());
-//        } else {
-//            startActivity(intent);
-//        }
-//    }
-
-//    @Override
-//    public void onItemClick(AdapterView<?> adapterView, View v, int position, long id) {
-//        final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
-//
-//        intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, giLocalObject.getId());
-//        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, (int) position);
-//
-//        if (Utils.hasJellyBean()) {
-//            // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
-//            // show plus the thumbnail image in GridView is cropped. so using
-//            // makeScaleUpAnimation() instead.
-//            ActivityOptions options =
-//                    ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
-//            getActivity().startActivity(intent, options.toBundle());
-//        } else {
-//            startActivity(intent);
-//        }
-//    }
-
-    @Override
-    public void onListItemClick(View v, int position, ResponseLocalObject object) {
+    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
 
         intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, giLocalObject.getId());
@@ -377,6 +286,56 @@ public class ImageGridFragment extends Fragment implements ListItemClickInterfac
             startActivity(intent);
         }
     }
+
+    @TargetApi(VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void onListItemClick(View v, int position, ResponseLocalObject item) {
+        final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
+
+        intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, item.getGeneralItemLocalObject().getId());
+        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, position);
+
+        if (Utils.hasJellyBean()) {
+            // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
+            // show plus the thumbnail image in GridView is cropped. so using
+            // makeScaleUpAnimation() instead.
+            ActivityOptions options =
+                    ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
+            getActivity().startActivity(intent, options.toBundle());
+        } else {
+            startActivity(intent);
+        }
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.main_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+//    @Override
+//    public void onListItemClick(View v, int position, ResponseLocalObject object) {
+//        final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
+//
+//        intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, giLocalObject.getId());
+//        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, (int) position);
+//
+//        if (Utils.hasJellyBean()) {
+//            // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
+//            // show plus the thumbnail image in GridView is cropped. so using
+//            // makeScaleUpAnimation() instead.
+//            ActivityOptions options =
+//                    ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
+//            getActivity().startActivity(intent, options.toBundle());
+//        } else {
+//            startActivity(intent);
+//        }
+//    }
 
     @Override
     public boolean setOnLongClickListener(View v, int position, ResponseLocalObject object) {
@@ -402,17 +361,6 @@ public class ImageGridFragment extends Fragment implements ListItemClickInterfac
             mImageViewLayoutParams = new GridView.LayoutParams(
                     LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         }
-
-//        private ArrayList<DataSetObserver> observers = new ArrayList<DataSetObserver>();
-//
-//        public void registerDataSetObserver(DataSetObserver observer) {
-//            observers.add(observer);
-//        }
-//        public void notifyDataSetChanged(){
-//            for (DataSetObserver observer: observers) {
-//                observer.onChanged();
-//            }
-//        }
 
         @Override
         public int getCount() {
@@ -469,11 +417,11 @@ public class ImageGridFragment extends Fragment implements ListItemClickInterfac
             }
 
             if (responseLocalObject.isAudio()){
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_mic));
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_task_record));
             }else if(responseLocalObject.isPicture()){
                 mImageFetcher.loadImage(responseLocalObject.getThumbnailUriAsString(), imageView);
             }else if (responseLocalObject.isVideo()){
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_video));
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_task_video));
             }else if (!responseLocalObject.getValue().equals(null)){
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_description));
             }else{

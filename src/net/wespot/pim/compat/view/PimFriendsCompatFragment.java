@@ -75,7 +75,7 @@ public class PimFriendsCompatFragment extends ActionBarCompat implements ListIte
         // New inquiry button
         buttonManager.generateButton(linearLayout, secondLayoutParams, Constants.ID_ADD_FRIEND,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_ADD_FRIEND),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_ADD_FRIEND), "").setOnClickListener(
+                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_ADD_FRIEND), "", false).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

@@ -8,7 +8,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import net.wespot.pim.R;
 import net.wespot.pim.utils.images.ImageFetcher;
-import net.wespot.pim.utils.layout.RecyclingImageView;
 import org.celstec.arlearn2.android.listadapter.AbstractResponsesLazyListAdapter;
 import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
@@ -47,7 +46,63 @@ public class ResponsesLazyListAdapter extends AbstractResponsesLazyListAdapter {
     public ResponsesLazyListAdapter(Context context, ImageFetcher imageFetcher, GeneralItemLocalObject giLocalObject) {
         super(context, giLocalObject.getId());
         mImageFetcher = imageFetcher;
+        mImageViewLayoutParams = new GridView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
+
+    @Override
+    public View newView(Context context, ResponseLocalObject item, ViewGroup parent) {
+
+        if (item == null) return null;
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        mImageViewLayoutParams = new GridView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        return inflater.inflate(R.layout.entry_data_collection_response, parent, false);
+    }
+
+    @Override
+    public void bindView(View convertView, Context mContext, ResponseLocalObject responseLocalObject) {
+        ImageView imageView;
+        if (convertView == null) { // if it's not recycled, instantiate and initialize
+            imageView = new ImageView(mContext);
+            imageView.setLayoutParams(new GridView.LayoutParams(85,85));
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setPadding(15, 15, 15, 15);
+//            imageView = new RecyclingImageView(mContext);
+//            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//            imageView.setLayoutParams(mImageViewLayoutParams);
+        } else { // Otherwise re-use the converted view
+            imageView = (ImageView) convertView;
+//            imageView.setLayoutParams(new GridView.LayoutParams(85,85));
+////            imageView.setAdjustViewBounds(true);
+//            imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+//            imageView.setPadding(15, 15, 15, 15);
+        }
+
+//        // Check the height matches our calculated column width
+        if (imageView.getLayoutParams().height != mItemHeight) {
+            imageView.setLayoutParams(mImageViewLayoutParams);
+        }
+
+        if (responseLocalObject.isAudio()){
+            imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_task_record));
+        }else if(responseLocalObject.isPicture()){
+            mImageFetcher.loadImage(responseLocalObject.getThumbnailUriAsString(), imageView);
+        }else if (responseLocalObject.isVideo()){
+            imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_video));
+        }else if (!responseLocalObject.getValue().equals(null)){
+            imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_description));
+        }else{
+            imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.empty_photo));
+        }
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
 
     /**
      * Sets the item height. Useful for when we know the column width so the height can be set
@@ -73,51 +128,4 @@ public class ResponsesLazyListAdapter extends AbstractResponsesLazyListAdapter {
     public int getNumColumns() {
         return mNumColumns;
     }
-
-    @Override
-    public View newView(Context context, ResponseLocalObject item, ViewGroup parent) {
-        if (item == null) return null;
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        mImageViewLayoutParams = new GridView.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        return inflater.inflate(R.layout.entry_data_collection_response, parent, false);
-    }
-
-    @Override
-    public void bindView(View convertView, Context mContext, ResponseLocalObject responseLocalObject) {
-        ImageView imageView;
-        if (convertView == null) { // if it's not recycled, instantiate and initialize
-            imageView = new RecyclingImageView(mContext);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setLayoutParams(mImageViewLayoutParams);
-        } else { // Otherwise re-use the converted view
-            imageView = (ImageView) convertView;
-        }
-
-        // Check the height matches our calculated column width
-        if (imageView.getLayoutParams().height != mItemHeight) {
-            imageView.setLayoutParams(mImageViewLayoutParams);
-        }
-
-        if (responseLocalObject.isAudio()){
-            imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_task_record));
-        }else if(responseLocalObject.isPicture()){
-            mImageFetcher.loadImage(responseLocalObject.getThumbnailUriAsString(), imageView);
-        }else if (responseLocalObject.isVideo()){
-            imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_task_video));
-        }else if (!responseLocalObject.getValue().equals(null)){
-            imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_description));
-        }else{
-            imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.empty_photo));
-        }
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return i;
-    }
-
-
 }

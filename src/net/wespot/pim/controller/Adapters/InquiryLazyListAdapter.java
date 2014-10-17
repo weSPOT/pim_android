@@ -59,7 +59,7 @@ public class InquiryLazyListAdapter extends AbstractInquiryLazyListAdapter {
 
     @Override
     public void bindView(View view, Context context,  InquiryLocalObject item) {
-        TextView firstLineView =(TextView) view.findViewById(R.id.name_entry_list);
+        TextView firstLineView =(TextView) view.findViewById(R.id.message);
         firstLineView.setText(item.getTitle());
         ImageView icon = (ImageView) view.findViewById(R.id.inquiry_entry_icon);
         TextView notificationText = (TextView) view.findViewById(R.id.notificationTextInquiry);
