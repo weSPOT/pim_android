@@ -39,7 +39,7 @@
     <dimen name="inquiry.fragments.titles.paddingTop">6dp</dimen>
 
     <dimen name="image_thumbnail_size">100dp</dimen>
-    <dimen name="image_thumbnail_spacing">1dp</dimen>
+    <dimen name="image_thumbnail_spacing">0dp</dimen>
     <dimen name="image_detail_pager_margin">80dp</dimen>
 
     <dimen name="view_pager.indicator.line.width">12dp</dimen>

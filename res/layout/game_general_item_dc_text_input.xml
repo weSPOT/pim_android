@@ -2,10 +2,8 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
-
-                android:layout_marginTop="50dip"
+                android:background="#99000000"
                 android:layout_gravity="center_vertical"
-                android:background="#00000000"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
 
@@ -13,24 +11,54 @@
                   android:background="@drawable/gradient_alert_window"
                   android:orientation="vertical"
                   android:padding="10dip"
+                  android:layout_marginLeft="20dp"
+                  android:layout_marginRight="20dp"
+                  android:layout_marginTop="20dp"
+                  android:layout_marginBottom="20dp"
                   android:layout_gravity="center_horizontal"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content">
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+
         <TextView android:id="@+id/text"
-                  android:layout_width="wrap_content"
+                  android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:text="provide your text"
-                  android:textSize="30dp"/>
+                  android:textColor="@color/app.base.white"
+                  android:textAlignment="center"
+                  android:gravity="center"
+                  android:textStyle="italic"
+                  android:layout_marginTop="10dp"
+                  android:textSize="22dp"/>
         <EditText
                 android:id="@+id/dataCollectionText"
-                android:layout_width="fill_parent"
-                  android:layout_height="wrap_content"/>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="20dp"
+                android:hint="Type your text..."
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/background_edittext"
+                android:gravity="top|left"
+                android:textStyle="italic"
+                android:textColor="@color/app.base.grey_soft"
+                android:padding="15dp"
+                android:layout_marginBottom="20dp"/>
+
         <Button
                 android:id="@+id/dataCollectionSubmit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="submit"
-                android:layout_gravity="center_horizontal"
+                style="@style/pim.dataCollection.submit.text"
+                android:text="Submit"
+                android:layout_weight="3"
+                android:layout_gravity="bottom"
+                />
+
+        <Button
+                android:id="@+id/dataCollectionCancel"
+                style="@style/pim.dataCollection.submit.text"
+                android:text="Cancel"
+                android:layout_weight="3"
+                android:layout_gravity="bottom"
                 />
     </LinearLayout>
 

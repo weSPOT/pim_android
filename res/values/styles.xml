@@ -15,4 +15,95 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:padding">3dp</item>
     </style>
+
+
+    <!-- New style -->
+
+    <style name="pim"></style>
+    <style name="pim.dataCollection"></style>
+
+    <style name="pim.dataCollection.row">
+        <item name="android:layout_weight">.12</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="pim.dataCollection.keyboardNumber">
+        <item name="android:background">@drawable/background_number_keyboard</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:textColor">@color/app.base.white</item>
+        <item name="android:layout_margin">12dip</item>
+        <item name="android:layout_width">50dip</item>
+        <item name="android:layout_height">50dip</item>
+    </style>
+
+    <style name="pim.dataCollection.resultBox">
+        <item name="android:background">@drawable/background_number_box</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginLeft">5dip</item>
+        <item name="android:layout_marginRight">5dip</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:gravity">right</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:textColor">@color/app.base.grey_soft</item>
+    </style>
+
+    <style name="pim.dataCollection.submit">
+        <item name="android:background">@drawable/background_button_submit</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:textColor">@color/app.base.white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginRight">15dp</item>
+    </style>
+
+    <style name="pim.dataCollection.submit.text">
+        <item name="android:background">@drawable/background_button_submit</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/app.base.white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginLeft">30dp</item>
+        <item name="android:layout_marginRight">30dp</item>
+    </style>
+
+    <style name="pim.response">
+
+    </style>
+
+    <style name="pim.response.text">
+
+    </style>
+    <style name="pim.response.text.header">
+        <!-- Theme customization goes here. -->
+        <item name="android:keepScreenOn">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/app.base.white</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_gravity">center_vertical</item>
+
+    </style>
+
+    <style name="pim.response.text.description">
+        <!-- Theme customization goes here. -->
+        <item name="android:keepScreenOn">true</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:textSize">@dimen/entry.datacollection.name</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_marginBottom">30dp</item>
+    </style>
+
 </resources>

@@ -12,6 +12,7 @@
             android:layout_toRightOf="@+id/inquiry_entry_data_collection_icon"
             android:layout_marginTop="10dp"
             android:width="220dp"
+            android:layout_centerVertical="true"
             style="@style/CustomTheme.TextView.Item"
             />
         <TextView
@@ -19,6 +20,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/texto_de_pruebas"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"
             style="@style/CustomTheme.TextView.Item.Title"
             android:layout_below="@+id/name_entry_data_colletion_list"
             android:layout_toRightOf="@+id/inquiry_entry_data_collection_icon"

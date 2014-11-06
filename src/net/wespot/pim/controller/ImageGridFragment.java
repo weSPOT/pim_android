@@ -334,8 +334,8 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
                             responseLocalObject.setNextSynchronisationTime(0l);
                             responseLocalObject.setIsSynchronized(false);
                             DaoConfiguration.getInstance().getResponseLocalObjectDao().insertOrReplace(responseLocalObject);
-                            responseLocalObject.delete();
                             ResponseDelegator.getInstance().syncResponses(responseLocalObject.getRunId());
+
                         }
 
                         break;

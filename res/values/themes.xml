@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- NEW CODE -->
     <style name="CustomTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
@@ -41,8 +41,7 @@
 
     <style name="CustomTheme.TextView.Item.Title" parent="CustomTheme.TextView">
         <item name="android:textColor">@color/app.base.black</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">@dimen/entry.datacollection.name</item>
+        <item name="android:textSize">@dimen/entry.datacollection.subtitle</item>
     </style>
 
     <style name="CustomTheme.TextView.Title1" parent="CustomTheme.TextView">
@@ -169,6 +168,7 @@
         <item name="android:layout_alignParentTop">true</item>
         <item name="android:layout_centerHorizontal">true</item>
     </style>
+
 
 
 </resources>

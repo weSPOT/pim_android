@@ -50,8 +50,7 @@
 
     <style name="CustomTheme.TextView.Item.Title" parent="CustomTheme.TextView">
         <item name="android:textColor">@color/app.base.black</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">@dimen/entry.datacollection.name</item>
+        <item name="android:textSize">@dimen/entry.datacollection.subtitle</item>
     </style>
 
     <style name="CustomTheme.TextView.Title1" parent="CustomTheme.TextView">

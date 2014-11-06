@@ -3,170 +3,127 @@
               android:id="@+id/functionPad"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="#99000000"
               android:layout_gravity="center"
-              android:orientation="vertical"
-              android:background="@drawable/gradient_alert_window"
-              android:layout_margin="20dip"
-              >
+              android:orientation="vertical">
 
-    <LinearLayout
-            android:id="@+id/row1"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
+    <LinearLayout android:id="@+id/content"
+                  android:background="@drawable/gradient_alert_window"
+                  android:orientation="vertical"
+                  android:padding="10dip"
+                  android:layout_margin="30dp"
+                  android:layout_gravity="center_horizontal"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent">
 
-            android:layout_weight=".12" >
-
-        <TextView
-                android:id="@+id/textView1"
+        <LinearLayout
+                android:id="@+id/row1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:maxLines="1"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="0"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textSize="40sp" />
-    </LinearLayout>
+                android:layout_height="0dp"
+                android:layout_weight=".12"
+                android:layout_marginTop="10dp">
+
+            <TextView
+                    android:id="@+id/textView1"
+                    style="@style/pim.dataCollection.resultBox"
+                    android:hint="0"
+                     />
+        </LinearLayout>
 
 
 
-    <LinearLayout
-            android:id="@+id/row4"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight=".12" >
+        <LinearLayout
+                android:id="@+id/row4"
+                style="@style/pim.dataCollection.row">
 
+            <Button
+                    android:id="@+id/button7"
+                    style="@style/pim.dataCollection.keyboardNumber"
+                    android:text="7" />
+
+            <Button
+                    android:id="@+id/button8"
+                    style="@style/pim.dataCollection.keyboardNumber"
+                    android:text="8" />
+
+            <Button
+                    android:id="@+id/button9"
+                    style="@style/pim.dataCollection.keyboardNumber"
+                    android:text="9" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/row5"
+                style="@style/pim.dataCollection.row">
+
+            <Button
+                    android:id="@+id/button4"
+                    style="@style/pim.dataCollection.keyboardNumber"
+                    android:text="4" />
+
+            <Button
+                    android:id="@+id/button5"
+                    style="@style/pim.dataCollection.keyboardNumber"
+                    android:text="5" />
+
+            <Button
+                    android:id="@+id/button6"
+                    style="@style/pim.dataCollection.keyboardNumber"
+                    android:text="6" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/row6"
+                style="@style/pim.dataCollection.row">
+
+            <Button
+                    android:id="@+id/button1"
+                    style="@style/pim.dataCollection.keyboardNumber"
+                    android:text="1" />
+
+            <Button
+                    android:id="@+id/button2"
+                    style="@style/pim.dataCollection.keyboardNumber"
+                    android:text="2" />
+
+            <Button
+                    android:id="@+id/button3"
+                    style="@style/pim.dataCollection.keyboardNumber"
+                    android:text="3" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/row7"
+                style="@style/pim.dataCollection.row">
+
+            <Button
+                    android:id="@+id/buttonDot"
+                    style="@style/pim.dataCollection.keyboardNumber"
+                    android:text="."/>
+
+            <Button
+                    android:id="@+id/button0"
+                    style="@style/pim.dataCollection.keyboardNumber"
+                    android:text="0"/>
+
+            <Button
+                    android:id="@+id/buttonBack"
+                    style="@style/pim.dataCollection.keyboardNumber"
+                    android:text="B"/>
+
+
+        </LinearLayout>
         <Button
-                android:id="@+id/button7"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".25"
-                android:text="7"
-                android:textSize="25sp" />
-
-        <Button
-                android:id="@+id/button8"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".25"
-                android:text="8"
-                android:textSize="25sp" />
-
-        <Button
-                android:id="@+id/button9"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".25"
-                android:text="9"
-                android:textSize="25sp" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-            android:id="@+id/row5"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight=".12" >
-
-        <Button
-                android:id="@+id/button4"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".25"
-                android:text="4"
-                android:textSize="25sp" />
-
-        <Button
-                android:id="@+id/button5"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".25"
-                android:text="5"
-                android:textSize="25sp" />
-
-        <Button
-                android:id="@+id/button6"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".25"
-                android:text="6"
-                android:textSize="25sp" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-            android:id="@+id/row6"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight=".12" >
-
-        <Button
-                android:id="@+id/button1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".25"
-                android:text="1"
-                android:textSize="25sp" />
-
-        <Button
-                android:id="@+id/button2"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".25"
-                android:text="2"
-                android:textSize="25sp" />
-
-        <Button
-                android:id="@+id/button3"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".25"
-                android:text="3"
-                android:textSize="25sp" />
-
+                android:id="@+id/dataCollectionSubmit"
+                style="@style/pim.dataCollection.submit"
+                android:text="Submit"
+                />
 
     </LinearLayout>
-
-    <LinearLayout
-            android:id="@+id/row7"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight=".12" >
-
-        <Button
-                android:id="@+id/buttonDot"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".25"
-                android:text="."
-                android:textSize="25sp" />
-
-        <Button
-                android:id="@+id/button0"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".25"
-                android:text="0"
-                android:textSize="25sp" />
-
-        <Button
-                android:id="@+id/buttonBack"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".25"
-                android:text="back"
-                android:textSize="25sp" />
-
-
-    </LinearLayout>
-    <Button
-            android:id="@+id/dataCollectionSubmit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="submit"
-            android:layout_gravity="center_horizontal"
-            />
 </LinearLayout>
