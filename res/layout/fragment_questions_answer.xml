@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView android:id="@+id/data_collection_tasks_title_list"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@string/data_collection_task_responses"
+              style="@style/CustomTheme.TextView.Title1"
+            />
+    <TextView android:id="@+id/data_collection_tasks_description_list"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_below="@+id/data_collection_tasks_title_list"
+              style="@style/CustomTheme.TextView.Title4"
+            />
+    <ListView android:id="@+id/data_collection_tasks_items"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:dividerHeight="0dp"
+              android:layout_below="@+id/data_collection_tasks_description_list"
+              />
+
+    <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/content_images"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/data_collection_tasks_description_list"
+            android:layout_height="match_parent" >
+
+    </RelativeLayout>
+</RelativeLayout>
