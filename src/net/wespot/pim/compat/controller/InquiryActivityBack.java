@@ -116,14 +116,17 @@ public class InquiryActivityBack extends ActionBarCompat {
               state in the process. This is important to conserve memory and is a best practice when
               allowing navigation between objects in a potentially large collection.
              */
-            InquiryPagerAdapter mInquiryPagerAdapter = new InquiryPagerAdapter(getSupportFragmentManager());
-            getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+
 
             // Set up the ViewPager, attaching the adapter.
             /*
               The {@link android.support.v4.view.ViewPager} that will display the object collection.
              */
             ViewPager mViewPager = (ViewPager) findViewById(R.id.pager);
+
+            InquiryPagerAdapter mInquiryPagerAdapter = new InquiryPagerAdapter(getSupportFragmentManager(), mViewPager);
+            getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+
             mViewPager.setAdapter(mInquiryPagerAdapter);
             mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
                 @Override
@@ -134,17 +137,6 @@ public class InquiryActivityBack extends ActionBarCompat {
 //                    getmActionBarHelper().setSelectedNavigationItem(position);
                 }
             });
-
-//            // For each of the sections in the app, add a tab to the action bar.
-//            for (int i = 0; i < mInquiryPagerAdapter.getCount(); i++) {
-//                // Create a tab with text corresponding to the page title defined by the adapter.
-//                // Also specify this Activity object, which implements the TabListener interface, as the
-//                // listener for when this tab is selected.
-//                getmActionBarHelper().addTab(
-//                        getmActionBarHelper().newTab()
-//                                .setText(mInquiryPagerAdapter.getPageTitle(i))
-//                                .setTabListener(this));
-//            }
 
             getSupportActionBar().setTitle(getResources().getString(R.string.actionbar_inquiry)+" - "+INQ.inquiry.getCurrentInquiry().getTitle());
 
@@ -164,26 +156,7 @@ public class InquiryActivityBack extends ActionBarCompat {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // This is called when the Home (Up) button_old is pressed in the action bar.
-                // Create a simple intent that starts the hierarchical parent activity and
-                // use NavUtils in the Support Package to ensure proper handling of Up.
-//                Intent upIntent = new Intent(this, MainActivity.class);
-//                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
-//                    // This activity is not part of the application's task, so create a new task
-//                    // with a synthesized back stack.
-//                    TaskStackBuilder.from(this)
-//                            // If there are ancestor activities, they should be added here.
-//                            .addNextIntent(upIntent)
-//                            .startActivities();
-//                    finish();
-//                } else {
-//                    // This activity is part of the application's task, so simply
-//                    // navigate up to the hierarchical parent activity.
-//                    NavUtils.navigateUpTo(this, upIntent);
-//                }
-
                 onBackPressed();
-
                 return true;
         }
         return super.onOptionsItemSelected(item);

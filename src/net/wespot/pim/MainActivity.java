@@ -235,6 +235,7 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
     private void onEventBackgroundThread(MyAccount myAccount){
         INQ.inquiry.syncInquiries();
         INQ.badges.syncBadges();
+
         INQ.friendsDelegator.syncFriends();
 
         timer.schedule(new RemindTask(), 30 * 1000);

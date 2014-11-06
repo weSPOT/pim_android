@@ -18,7 +18,9 @@ package net.wespot.pim.controller;
 
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -35,11 +37,14 @@ import net.wespot.pim.utils.images.ImageFetcher;
 import net.wespot.pim.utils.images.Utils;
 import net.wespot.pim.utils.layout.RecyclingImageView;
 import org.celstec.arlearn2.android.delegators.ARL;
+import org.celstec.arlearn2.android.delegators.ResponseDelegator;
 import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -49,7 +54,7 @@ import java.util.List;
  * cache is retained over configuration changes like orientation change so the images are populated
  * quickly if, for example, the user rotates the device.
  */
-public class ImageGridFragment extends Fragment implements AdapterView.OnItemClickListener, ListItemClickInterface<ResponseLocalObject> {
+public class ImageGridFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, ListItemClickInterface<ResponseLocalObject> {
     private static final String TAG = "ImageGridFragment";
     private static final String IMAGE_CACHE_DIR = "thumbs";
 
@@ -57,26 +62,19 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
     private int mImageThumbSpacing;
     private ImageAdapter mAdapter;
 
-//    private ResponsesLazyListAdapter mAdapter;
-
     private GridView mGridView;
 
-//    public ResponsesLazyListAdapter getmAdapter() {
-//        return mAdapter;
-//    }
-//
-//    public void setmAdapter(ResponsesLazyListAdapter mAdapter) {
-//        this.mAdapter = mAdapter;
-//    }
+    Comparator<ResponseLocalObject> responseLocalObjectComparator = new Comparator<ResponseLocalObject>() {
+        public int compare(ResponseLocalObject responseLocalObject, ResponseLocalObject responseLocalObject2) {
+            return (int) (responseLocalObject.getTimeStamp() - responseLocalObject2.getTimeStamp());
+        }
+    };
 
     private ImageFetcher mImageFetcher;
 
     private GeneralItemLocalObject giLocalObject;
     private List<ResponseLocalObject> responseLocalObjectList;
 
-    /**
-     * Empty constructor as per the Fragment documentation
-     */
     public ImageGridFragment() {
 
     }
@@ -103,6 +101,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
 
         responseLocalObjectList = giLocalObject.getResponses();
+        Collections.sort(responseLocalObjectList, responseLocalObjectComparator);
 
         ImageCacheParams cacheParams = new ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
 
@@ -121,11 +120,11 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         final View v = inflater.inflate(R.layout.fragment_image_grid, container, false);
         mGridView = (GridView) v.findViewById(R.id.gridView1);
 
-//        mAdapter = new ResponsesLazyListAdapter(getActivity(), mImageFetcher, giLocalObject);
         mAdapter = new ImageAdapter(getActivity());
+
         mGridView.setAdapter(mAdapter);
-//        mAdapter.setOnListItemClickCallback(this);
         mGridView.setOnItemClickListener(this);
+        mGridView.setOnItemLongClickListener(this);
 
         mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -174,62 +173,6 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
                         }
                     }
                 });
-
-//
-// mGridView.setAdapter(mAdapter);
-//        mGridView.setOnItemClickListener(this);
-//
-//        mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
-//                // Pause fetcher to ensure smoother scrolling when flinging
-//                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-//                    // Before Honeycomb pause image loading on scroll to help with performance
-//                    if (!Utils.hasHoneycomb()) {
-//                        mImageFetcher.setPauseWork(true);
-//                    }
-//                } else {
-//                    mImageFetcher.setPauseWork(false);
-//                }
-//            }
-//
-//            @Override
-//            public void onScroll(AbsListView absListView, int firstVisibleItem,
-//                    int visibleItemCount, int totalItemCount) {
-//            }
-//        });
-//
-////        // This listener is used to get the final width of the GridView and then calculate the
-////        // number of columns and the width of each column. The width of each column is variable
-////        // as the GridView has stretchMode=columnWidth. The column width is used to set the height
-////        // of each view so we get nice square thumbnails.
-//        mGridView.getViewTreeObserver().addOnGlobalLayoutListener(
-//                new ViewTreeObserver.OnGlobalLayoutListener() {
-//                    @TargetApi(VERSION_CODES.JELLY_BEAN)
-//                    @Override
-//                    public void onGlobalLayout() {
-//                        if (mAdapter.getNumColumns() == 0) {
-//                            final int numColumns = (int) Math.floor(
-//                                    mGridView.getWidth() / (mImageThumbSize + mImageThumbSpacing));
-//                            if (numColumns > 0) {
-//                                final int columnWidth =
-//                                        (mGridView.getWidth() / numColumns) - mImageThumbSpacing;
-//                                mAdapter.setNumColumns(numColumns);
-//                                mAdapter.setItemHeight(columnWidth);
-//                                if (BuildConfig.DEBUG) {
-//                                    Log.d(TAG, "onCreateView - numColumns set to " + numColumns);
-//                                }
-//                                if (Utils.hasJellyBean()) {
-//                                    mGridView.getViewTreeObserver()
-//                                            .removeOnGlobalLayoutListener(this);
-//                                } else {
-//                                    mGridView.getViewTreeObserver()
-//                                            .removeGlobalOnLayoutListener(this);
-//                                }
-//                            }
-//                        }
-//                    }
-//                });
 
         return v;
     }
@@ -338,10 +281,76 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 //    }
 
     @Override
-    public boolean setOnLongClickListener(View v, int position, ResponseLocalObject object) {
+    public boolean setOnLongClickListener(View v, int position, final ResponseLocalObject object) {
+        // Not used
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        if (object.getIsSynchronized() == false){
+                            DaoConfiguration.getInstance().getResponseLocalObjectDao().delete(object);
+                        }else{
+                            object.setRevoked(true);
+                            object.setNextSynchronisationTime(0l);
+                            object.setIsSynchronized(false);
+                            DaoConfiguration.getInstance().getResponseLocalObjectDao().insertOrReplace(object);
+//                            object.delete();
+                            ResponseDelegator.getInstance().syncResponses(object.getRunId());
+                        }
+
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //Do your No progress
+                        break;
+                }
+            }
+        };
+        AlertDialog.Builder ab = new AlertDialog.Builder(getActivity());
+        ab.setMessage("Are you sure to delete?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
         return false;
     }
 
+
+
+    @TargetApi(VERSION_CODES.JELLY_BEAN)
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long id) {
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                ResponseLocalObject responseLocalObject = giLocalObject.getResponses().get(position);
+
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        if (responseLocalObject.getIsSynchronized() == false){
+                            DaoConfiguration.getInstance().getResponseLocalObjectDao().delete(responseLocalObject);
+                        }else{
+                            responseLocalObject.setRevoked(true);
+                            responseLocalObject.setNextSynchronisationTime(0l);
+                            responseLocalObject.setIsSynchronized(false);
+                            DaoConfiguration.getInstance().getResponseLocalObjectDao().insertOrReplace(responseLocalObject);
+                            responseLocalObject.delete();
+                            ResponseDelegator.getInstance().syncResponses(responseLocalObject.getRunId());
+                        }
+
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //Do your No progress
+                        break;
+                }
+            }
+        };
+        AlertDialog.Builder ab = new AlertDialog.Builder(getActivity());
+        ab.setMessage("Are you sure to delete?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+        return false;
+    }
 
     /**
      * The main adapter that backs the GridView. This is fairly standard except the number of
@@ -403,33 +412,99 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
             ResponseLocalObject responseLocalObject = responseLocalObjectList.get(position);
 
             ImageView imageView;
-            if (convertView == null) { // if it's not recycled, instantiate and initialize
+
+
+//            if (convertView == null) {
+//                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_data_collection_response, null);
+//
+//                final ImageView[] imageView = new ImageView[]{
+//                        (ImageView) convertView.findViewById(R.id.filtered_image)};
+//
+//                final VideoView[] videos = new VideoView[]{
+//                        (VideoView) convertView.findViewById(R.id.video)};
+
+
+    //            ImageView imageView;
+    //            if (convertView == null) { // if it's not recycled, instantiate and initialize
+    //                imageView = new RecyclingImageView(mContext);
+    //                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+    //                imageView.setLayoutParams(mImageViewLayoutParams);
+    //            } else { // Otherwise re-use the converted view
+    //                imageView = (ImageView) convertView;
+    //            }
+    //
+    //            // Check the height matches our calculated column width
+    //            if (imageView.getLayoutParams().height != mItemHeight) {
+    //                imageView.setLayoutParams(mImageViewLayoutParams);
+    //            }
+
+            if (responseLocalObject.isAudio()) {
                 imageView = new RecyclingImageView(mContext);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setLayoutParams(mImageViewLayoutParams);
-            } else { // Otherwise re-use the converted view
-                imageView = (ImageView) convertView;
-            }
 
-            // Check the height matches our calculated column width
-            if (imageView.getLayoutParams().height != mItemHeight) {
-                imageView.setLayoutParams(mImageViewLayoutParams);
-            }
+                if (imageView.getLayoutParams().height != mItemHeight) {
+                    imageView.setLayoutParams(mImageViewLayoutParams);
+                }
 
-            if (responseLocalObject.isAudio()){
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_task_record));
-            }else if(responseLocalObject.isPicture()){
-                mImageFetcher.loadImage(responseLocalObject.getThumbnailUriAsString(), imageView);
-            }else if (responseLocalObject.isVideo()){
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_task_video));
-            }else if (!responseLocalObject.getValue().equals(null)){
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_description));
-            }else{
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.empty_photo));
-            }
+                return imageView;
+            } else if (responseLocalObject.isPicture()) {
+                imageView = new RecyclingImageView(mContext);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setLayoutParams(mImageViewLayoutParams);
 
-            return imageView;
+                if (imageView.getLayoutParams().height != mItemHeight) {
+                    imageView.setLayoutParams(mImageViewLayoutParams);
+                }
+
+                mImageFetcher.loadImage(responseLocalObject.getThumbnailUriAsString(), imageView);
+                return imageView;
+            } else if (responseLocalObject.isVideo()) {
+                imageView = new RecyclingImageView(mContext);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setLayoutParams(mImageViewLayoutParams);
+
+                if (imageView.getLayoutParams().height != mItemHeight) {
+                    imageView.setLayoutParams(mImageViewLayoutParams);
+                }
+
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_task_video));
+                return imageView;
+            } else if (responseLocalObject.getValue() != null ) {
+//                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_data_collection_response, null);
+//
+//                final TextView[] views = new TextView[]{
+//                        (TextView) convertView.findViewById(R.id.caption)};
+//                views[0].setText(responseLocalObject.getValue().toString());
+//                views[0].setVisibility(View.VISIBLE);
+//                return convertView;
+
+                imageView = new RecyclingImageView(mContext);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setLayoutParams(mImageViewLayoutParams);
+
+                if (imageView.getLayoutParams().height != mItemHeight) {
+                    imageView.setLayoutParams(mImageViewLayoutParams);
+                }
+
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_description));
+
+                return imageView;
+            } else {
+                imageView = new RecyclingImageView(mContext);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setLayoutParams(mImageViewLayoutParams);
+
+                if (imageView.getLayoutParams().height != mItemHeight) {
+                    imageView.setLayoutParams(mImageViewLayoutParams);
+                }
+
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.empty_photo));
+                return imageView;
+            }
         }
+
 
         /**
          * Sets the item height. Useful for when we know the column width so the height can be set
@@ -455,6 +530,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         public int getNumColumns() {
             return mNumColumns;
         }
+
 
 
 

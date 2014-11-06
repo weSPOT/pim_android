@@ -31,7 +31,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.ChatAdapter;
@@ -51,7 +50,6 @@ public class InqCommunicateFragment extends Fragment {
     private static final String TAG = "InqCommunicateFragment";
     private EditText message;
     private ImageButton send;
-    private ScrollView scroll;
 
     private ListView listViewMessages;
 
@@ -95,7 +93,6 @@ public class InqCommunicateFragment extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_section_communicate, container, false);
 
-        mContainerView = (ViewGroup) rootView.findViewById(R.id.list_threads);
         message = (EditText) rootView.findViewById(R.id.communication_enter_message);
         send = (ImageButton) rootView.findViewById(R.id.communication_enter_message_button);
         listViewMessages = (ListView) rootView.findViewById(R.id.list_messages);
@@ -218,11 +215,7 @@ public class InqCommunicateFragment extends Fragment {
             {
                 messages.remove(messages.size()-1);
             }
-
-//            addNewMessage(new Message(text, false)); // add the orignal message from server.
         }
-
-
     }
 
     public synchronized void onEventMainThread(TimeMessageEvent timeMessageEvent) {

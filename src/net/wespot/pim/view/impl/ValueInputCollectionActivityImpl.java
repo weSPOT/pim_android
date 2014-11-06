@@ -1,5 +1,7 @@
 package net.wespot.pim.view.impl;
 
+import android.app.ActionBar;
+import android.os.Bundle;
 import net.wespot.pim.R;
 import org.celstec.arlearn2.android.dataCollection.activities.ValueInputCollectionActivity;
 
@@ -25,6 +27,20 @@ import org.celstec.arlearn2.android.dataCollection.activities.ValueInputCollecti
  */
 public class ValueInputCollectionActivityImpl extends ValueInputCollectionActivity {
 
+    private ActionBar mActionBar;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mActionBar = getActionBar();
+        mActionBar.setHomeButtonEnabled(false);
+        mActionBar.setDisplayHomeAsUpEnabled(false);
+        mActionBar.setDisplayShowHomeEnabled(false);
+        mActionBar.setNavigationMode(android.support.v7.app.ActionBar.NAVIGATION_MODE_STANDARD);
+        mActionBar.setDisplayShowTitleEnabled(true);
+
+        setTitle("Numeric data collection");
+    }
     @Override
     public int getTextView() {
         return R.id.textView1;

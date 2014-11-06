@@ -77,6 +77,7 @@ public class InquiryActivity extends BaseFragmentActivity implements ActionBar.T
     }
 
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
@@ -136,7 +137,7 @@ public class InquiryActivity extends BaseFragmentActivity implements ActionBar.T
               state in the process. This is important to conserve memory and is a best practice when
               allowing navigation between objects in a potentially large collection.
              */
-            InquiryPagerAdapter mInquiryPagerAdapter = new InquiryPagerAdapter(getSupportFragmentManager());
+            InquiryPagerAdapter mInquiryPagerAdapter = new InquiryPagerAdapter(getSupportFragmentManager(), mViewPager);
             getmActionBarHelper().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
             // Set up the ViewPager, attaching the adapter.

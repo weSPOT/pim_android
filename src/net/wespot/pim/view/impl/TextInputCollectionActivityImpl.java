@@ -1,5 +1,7 @@
 package net.wespot.pim.view.impl;
 
+import android.app.ActionBar;
+import android.os.Bundle;
 import net.wespot.pim.R;
 import org.celstec.arlearn2.android.dataCollection.activities.TextInputCollectionActivity;
 
@@ -24,6 +26,33 @@ import org.celstec.arlearn2.android.dataCollection.activities.TextInputCollectio
  * ****************************************************************************
  */
 public class TextInputCollectionActivityImpl extends TextInputCollectionActivity {
+
+    private ActionBar mActionBar;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mActionBar = getActionBar();
+        mActionBar.setHomeButtonEnabled(false);
+        mActionBar.setDisplayHomeAsUpEnabled(false);
+        mActionBar.setDisplayShowHomeEnabled(false);
+        mActionBar.setNavigationMode(android.support.v7.app.ActionBar.NAVIGATION_MODE_STANDARD);
+        mActionBar.setDisplayShowTitleEnabled(true);
+
+        setTitle("Text data collection");
+    }
+
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            // Respond to the action bar's Up/Home button
+//            case android.R.id.home:
+//                NavUtils.
+//                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+
     @Override
     public int getGameGeneralItemDcTextInput() {
         return R.layout.game_general_item_dc_text_input;

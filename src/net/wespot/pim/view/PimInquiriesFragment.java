@@ -42,6 +42,7 @@ import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.layout.BaseFragmentActivity;
 import net.wespot.pim.utils.layout.ButtonManager;
 import org.celstec.arlearn.delegators.INQ;
+import org.celstec.arlearn.delegators.QuestionDelegator;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.InquiryLocalObject;
@@ -122,6 +123,8 @@ public class PimInquiriesFragment extends BaseFragmentActivity implements ListIt
     public void onListItemClick(View v, int position, InquiryLocalObject object) {
         Intent intent = new Intent(getApplicationContext(), InquiryPhasesActivity.class);
         INQ.inquiry.setCurrentInquiry(object);
+        QuestionDelegator.getInstance().syncQuestions(object);
+
         startActivity(intent);
     }
 

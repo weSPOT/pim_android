@@ -1,5 +1,8 @@
 package net.wespot.pim.view.impl;
 
+import android.app.ActionBar;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import net.wespot.pim.R;
 import org.celstec.arlearn2.android.dataCollection.activities.AudioCollectionActivity;
 
@@ -24,6 +27,22 @@ import org.celstec.arlearn2.android.dataCollection.activities.AudioCollectionAct
  * ****************************************************************************
  */
 public class AudioCollectionActivityImpl extends AudioCollectionActivity{
+
+    private ActionBar mActionBar;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mActionBar = getActionBar();
+        mActionBar.setHomeButtonEnabled(false);
+        mActionBar.setDisplayHomeAsUpEnabled(false);
+        mActionBar.setDisplayShowHomeEnabled(false);
+        mActionBar.setNavigationMode(android.support.v7.app.ActionBar.NAVIGATION_MODE_STANDARD);
+        mActionBar.setDisplayShowTitleEnabled(true);
+
+        setTitle("Audio data collection");
+    }
+
     public  int getGameGeneralitemAudioInput() {
         return R.layout.game_general_item_dc_audio_input;
     }
@@ -57,6 +76,17 @@ public class AudioCollectionActivityImpl extends AudioCollectionActivity{
     public int getAudioRecordingLevel4() {
         return R.drawable.game_data_collection_input_recording_level4;
     }
+
+    @Override
+    public Drawable getPlayBackground() {
+        return null;
+    }
+
+    @Override
+    public Drawable getPauseBackground() {
+        return null;
+    }
+
     @Override
     public int getStartRecordingButton() {
         return R.id.startRecording;

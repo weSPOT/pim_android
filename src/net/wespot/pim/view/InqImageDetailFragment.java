@@ -129,7 +129,7 @@ public class InqImageDetailFragment extends Fragment {
             if (View.OnClickListener.class.isInstance(getActivity()) && Utils.hasHoneycomb()) {
                 mImageView.setOnClickListener((View.OnClickListener) getActivity());
             }
-            Log.e(TAG, "Current element image: " + mImageUrl);
+            Log.i(TAG, "Current element image: " + mImageUrl);
         }else if(mVideoUrl != null){
             mPlayButtonView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
@@ -144,12 +144,12 @@ public class InqImageDetailFragment extends Fragment {
                     getActivity().startActivity(intent);
                 }
             });
-            Log.e(TAG, "Current element video: " + mVideoUrl);
+            Log.i(TAG, "Current element video: " + mVideoUrl);
         }else if(mTextValue != null){
             progressBar.setVisibility(View.INVISIBLE);
             valueResponse.setVisibility(View.VISIBLE);
             valueResponse.setText(mTextValue);
-            Log.e(TAG, "Current element text: " + mTextValue);
+            Log.i(TAG, "Current element text: " + mTextValue);
         }else if(mAudioUrl != null){
             mPlayButtonView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
@@ -165,37 +165,6 @@ public class InqImageDetailFragment extends Fragment {
                 }
             });
         }
-
-//        if(!mImageUrl.contains(".jpg")){
-//            mPlayButtonView.setVisibility(View.VISIBLE);
-//                progressBar.setVisibility(View.INVISIBLE);
-//            mImageView.setOnClickListener(new View.OnClickListener() {
-//
-//                @Override
-//                public void onClick(View view) {
-//                    //To change body of implemented methods use File | Settings | File Templates.
-//                    Log.i(TAG, "Video in fullscreen (URI): " +mImageUrl);
-//
-//                    Intent intent = new Intent(getActivity(), VideoFullScreenView.class);
-//                    intent.putExtra("filePath", mImageUrl);
-//                    getActivity().startActivity(intent);
-//                }
-//            });
-//        } else{
-//            // Use the parent activity to load the image asynchronously into the ImageView (so a single
-//            // cache can be used over all pages in the ViewPager
-//            if (ImageDetailActivity.class.isInstance(getActivity())) {
-//                mImageFetcher = ((ImageDetailActivity) getActivity()).getImageFetcher();
-//                mImageFetcher.loadImage(mImageUrl, mImageView);
-//            }
-//
-//            // Pass clicks on the ImageView to the parent activity to handle
-//            if (OnClickListener.class.isInstance(getActivity()) && Utils.hasHoneycomb()) {
-//                mImageView.setOnClickListener((OnClickListener) getActivity());
-//            }
-//        }
-
-
     }
 
     @Override

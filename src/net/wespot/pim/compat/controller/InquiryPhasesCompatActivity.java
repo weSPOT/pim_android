@@ -113,30 +113,33 @@ public class InquiryPhasesCompatActivity extends ActionBarCompat implements List
         buttonManager.setOnListItemClickCallback(this);
 
         // Creation of layout params
-        LinearLayout.LayoutParams separatorLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_second, (int)getResources().getDimension(R.dimen.zero_space_between_list_items));
-        LinearLayout.LayoutParams zeroLayoutParams = buttonManager.generateLayoutParams(R.dimen.mainscreen_margintop_zero, (int)getResources().getDimension(R.dimen.space_between_list_items));
+        LinearLayout.LayoutParams zeroLayoutParams = buttonManager.generateLayoutParams(
+                R.dimen.mainscreen_margintop_zero,
+                (int)getResources().getDimension(R.dimen.mainscreen_margintop_zero));
 
         // Description button_old
         buttonManager.generateButton(listPhasesContainer, zeroLayoutParams,
                 Constants.ID_DESCRIPTION,
-                Constants.INQUIRY_PHASES_LIST.get(Constants.ID_DESCRIPTION),
-                Constants.INQUIRY_ICON_PHASES_LIST.get(Constants.ID_DESCRIPTION), "", false);
+                R.string.inquiry_title_description,
+                R.drawable.ic_description, "", false);
 
-        if (INQ.config.getProperty("question_phase").equals("true")) {
-            // Question button_old
-            buttonManager.generateButton(listPhasesContainer, zeroLayoutParams, Constants.ID_QUESTION,
-                    Constants.INQUIRY_PHASES_LIST.get(Constants.ID_QUESTION),
-                    Constants.INQUIRY_ICON_PHASES_LIST.get(Constants.ID_QUESTION), "", false);
-        }
+        // Question button_old
+        buttonManager.generateButton(listPhasesContainer, zeroLayoutParams,
+                Constants.ID_QUESTION,
+                R.string.inquiry_title_question,
+                R.drawable.ic_question, "", false);
+
         // Data Collection button_old
-        buttonManager.generateButton(listPhasesContainer, zeroLayoutParams, Constants.ID_DATA,
-                Constants.INQUIRY_PHASES_LIST.get(Constants.ID_DATA),
-                Constants.INQUIRY_ICON_PHASES_LIST.get(Constants.ID_DATA), "", false);
+        buttonManager.generateButton(listPhasesContainer, zeroLayoutParams,
+                Constants.ID_DATA,
+                R.string.inquiry_title_data,
+                R.drawable.ic_data, "", false);
 
         // Messaging button
-        buttonManager.generateButton(listPhasesContainer, zeroLayoutParams, Constants.ID_COMMUNICATE,
-                Constants.INQUIRY_PHASES_LIST.get(Constants.ID_COMMUNICATE),
-                Constants.INQUIRY_ICON_PHASES_LIST.get(Constants.ID_COMMUNICATE), "", true);
+        buttonManager.generateButton(listPhasesContainer, zeroLayoutParams,
+                Constants.ID_COMMUNICATE,
+                R.string.inquiry_title_communicate,
+                R.drawable.ic_communicate, "", true);
 
 //        // Invite friends button_old
 //        buttonManager.generateButton(listPhasesContainer, separatorLayoutParams, Constants.ID_FRIENDS,

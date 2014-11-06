@@ -38,13 +38,13 @@ public class Constants {
     public static final String ENCONDING = "UTF-8";
 
     public static final int  ID_DESCRIPTION = 0;
-    public static final int  ID_DATA = 1;
-    public static final int  ID_QUESTION = 2;
+    public static final int  ID_QUESTION = 1;
+    public static final int  ID_DATA = 2;
+    public static final int  ID_COMMUNICATE = 3;
     public static final int  ID_HYPOTHESIS = 3;
     public static final int  ID_PLAN = 4;
     public static final int  ID_ANALYSIS = 5;
     public static final int  ID_DISCUSS = 6;
-    public static final int  ID_COMMUNICATE = 7;
     public static final int  ID_FRIENDS = 8;
 
     public static final int  ID_MYINQUIRIES = 0;
@@ -80,7 +80,7 @@ public class Constants {
             R.drawable.ic_description,
             R.drawable.ic_data,
             R.drawable.ic_task_explore,
-            R.drawable.ic_hypothesis,
+            R.drawable.ic_question,
             R.drawable.ic_plan,
             R.drawable.ic_analyze,
             R.drawable.ic_discuss,

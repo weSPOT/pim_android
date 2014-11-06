@@ -12,8 +12,12 @@ import android.widget.TextView;
 import net.wespot.pim.R;
 import org.celstec.arlearn2.android.listadapter.AbstractGeneralItemsLazyListAdapter;
 import org.celstec.dao.gen.GeneralItemLocalObject;
+import org.celstec.dao.gen.GeneralItemLocalObjectDao;
 
 import java.lang.ref.WeakReference;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * ****************************************************************************
@@ -42,7 +46,7 @@ public class DataCollectionLazyListAdapter extends AbstractGeneralItemsLazyListA
     }
 
     public DataCollectionLazyListAdapter(Context context, long gameId) {
-        super(context, gameId);
+        super(context, gameId, false, GeneralItemLocalObjectDao.Properties.LastModificationDate, false);
     }
 
     public View newView(Context context, GeneralItemLocalObject item, ViewGroup parent) {
@@ -55,7 +59,11 @@ public class DataCollectionLazyListAdapter extends AbstractGeneralItemsLazyListA
         TextView firstLineView =(TextView) view.findViewById(R.id.name_entry_data_colletion_list);
         firstLineView.setText(item.getTitle());
         TextView secondlineView =(TextView) view.findViewById(R.id.inquiry_entry_data_colletion_list);
-        secondlineView.setText(item.getGameLocalObject().getTitle());
+
+        Date date = new Date(item.getLastModificationDate());
+        Format format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+        secondlineView.setText(format.format(date));
         ImageView icon = (ImageView) view.findViewById(R.id.inquiry_entry_data_collection_icon);
         icon.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_task_explore));
 

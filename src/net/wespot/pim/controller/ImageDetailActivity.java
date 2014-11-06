@@ -63,20 +63,12 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
     private ImageView prev_item;
     private ImageView next_item;
 
+
+
     private GeneralItemLocalObject giLocalObject;
     private int responsePosition;
 
     private List<ResponseLocalObject> responseLocalObjectList;
-
-//    @Override
-//    public void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putLong("currentInquiry", INQ.inquiry.getCurrentInquiry().getId());
-//        if(INQ.inquiry.getCurrentInquiry().getRunLocalObject()!=null){
-//            outState.putLong("currentInquiryRunLocalObject", INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
-//            Log.e(TAG, "Recover in InqDataCollectionFragment > onSaveInstanceState & current inq = null");
-//        }
-//    }
 
     @TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
@@ -104,21 +96,9 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 
         Bundle extras = getIntent().getExtras();
 
-//        if (extras != null){
         giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(extras.getLong(GENERAL_ITEM_ID));
-        List<ResponseLocalObject> responseLocalObjectList1 = giLocalObject.getResponses();
-
-//        Collections.sort(responseLocalObjectList1, new Comparator<ResponseLocalObject>() {
-//            @Override
-//            public int compare(ResponseLocalObject responseLocalObject, ResponseLocalObject responseLocalObject2) {
-//                if (responseLocalObject.getTimeStamp() == responseLocalObject2.getTimeStamp())
-//                    return 0;
-//                return responseLocalObject.getTimeStamp() < responseLocalObject2.getTimeStamp() ? -1 : 1;
-//            }
-//        });
 
         responsePosition = extras.getInt(RESPONSE_POSITION);
-//        }
 
         // Fetch screen height and width, to use as our max size when loading images as this
         // activity runs full screen
@@ -306,8 +286,12 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 
             Date date = new Date(responseLocalObjectList.get(i).getTimeStamp());
             Format format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+
+
             String author = "-";
             if (responseLocalObjectList.get(i).getAccountLocalObject() != null){
+
                 author = responseLocalObjectList.get(i).getAccountLocalObject().getName();
             }
             info_image.setText(format.format(date)+" by "+author);

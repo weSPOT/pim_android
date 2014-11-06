@@ -22,15 +22,16 @@ package net.wespot.pim.view;
  */
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.TextView;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
@@ -45,10 +46,13 @@ import org.celstec.arlearn2.android.dataCollection.*;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
+import org.celstec.arlearn2.android.util.MediaFolders;
 import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+import java.io.File;
 
 /**
  * Fragment to display responses from a Data Collection Task (General Item)
@@ -72,6 +76,12 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     private ValueInputManager man_val = new ValueInputManager(this);
     private TextInputManager man_tex = new TextInputManager(this);
 
+    public static final Object PICTURE_RESULT = 0;
+
+    private Context context;
+
+    private File bitmapFile;
+
     private final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
     private ImageGridFragment frag;
@@ -84,6 +94,8 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        context = this;
         ARL.eventBus.register(this);
 
         if (savedInstanceState != null) {
@@ -180,6 +192,7 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_data_collection_image:
+//                chooseCapturingPicture();
                 man_pic.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
                 man_pic.setGeneralItem(genObject);
                 man_pic.takeDataSample(null);
@@ -209,9 +222,44 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
         return super.onOptionsItemSelected(item);
     }
 
+    private void chooseCapturingPicture() {
+
+//        DialogFragment newFragment = new CaptureImageDialogFragment(this, man_pic, genObject);
+//        newFragment.show(getSupportFragmentManager(), "missiles");
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = this.getLayoutInflater();
+
+        builder.setTitle(R.string.data_collection_dialog_choose_action)
+                .setItems(R.array.capturing_picture, new DialogInterface.OnClickListener() {
+
+
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                man_pic.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+                                man_pic.setGeneralItem(genObject);
+                                man_pic.takeDataSample(null);
+                                break;
+                            case 1:
+                                Intent cameraIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                bitmapFile = MediaFolders.createOutgoingJpgFile();
+                                cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(bitmapFile));
+                                startActivityForResult(cameraIntent, (Integer) PICTURE_RESULT);
+                                break;
+                        }
+                    }
+                });
+        builder.create();
+    }
+
     // Not used
     @Override
     public void onListItemClick(View v, int position, ResponseLocalObject object) {
+        // Not used
         Intent intent = new Intent(getApplicationContext(), ImageDetailActivity.class);
         intent.putExtra("DataCollectionTask", object.getId());
         intent.putExtra("DataCollectionTaskGeneralItemId", generalItemId);
@@ -220,7 +268,8 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     }
 
     @Override
-    public boolean setOnLongClickListener(View v, int position, ResponseLocalObject object) {
+    public boolean setOnLongClickListener(View v, int position, final ResponseLocalObject object) {
+        // Not used
         return false;
     }
 
@@ -250,17 +299,6 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
                 break;
         }
 
-//        final ImageGridFragment.ImageAdapter adapter = frag.getmAdapter();
-//        final GridView grid = frag.getmGridView();
-//
-//        Log.i(TAG, String.valueOf(adapter.getCount()+" "+genObject.getResponses().size()));
-//
-//        GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
-//        for (GeneralItemLocalObject generalItemLocalObject : gameLocalObject.getGeneralItems()){
-//            generalItemLocalObject.resetResponses();
-//        }
-//
-//        Log.i(TAG, String.valueOf(adapter.getCount() + " " + genObject.getResponses().size()));
         INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
     }
 

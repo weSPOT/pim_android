@@ -161,6 +161,10 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
 
 //                DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().deleteAll();
 
+//                INQ.inquiry.syncDataCollectionTasks(INQ.inquiry.getCurrentInquiry());
+//                INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
+
+
                 GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
                 for (GeneralItemLocalObject generalItemLocalObject : gameLocalObject.getGeneralItems()){
                     generalItemLocalObject.resetResponses();
@@ -215,7 +219,7 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
         Log.i(TAG, "Adding data collection in background");
 
         addContentValidation();
-        getActivity().findViewById(R.id.text_default).setVisibility(View.GONE);
+//        getActivity().findViewById(R.id.text_default).setVisibility(View.GONE);
     }
 
 
