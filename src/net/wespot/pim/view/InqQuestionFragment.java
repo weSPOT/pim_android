@@ -32,6 +32,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.QuestionsLazyListAdapter;
+import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.InquiryQuestionLocalObject;
 
@@ -53,7 +54,7 @@ public class InqQuestionFragment extends Fragment implements ListItemClickInterf
     @Override
     public void onResume() {
         super.onResume();
-        questionsLazyListAdapter =  new QuestionsLazyListAdapter(this.getActivity());
+        questionsLazyListAdapter =  new QuestionsLazyListAdapter(this.getActivity(), INQ.inquiry.getCurrentInquiry());
         questionsLazyListAdapter.setOnListItemClickCallback(this);
         listView.setAdapter(questionsLazyListAdapter);
     }

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import net.wespot.pim.R;
+import org.celstec.dao.gen.InquiryLocalObject;
 import org.celstec.dao.gen.InquiryQuestionLocalObject;
 import org.celstec.listadapter.AbstractQuestionsLazyListAdapter;
 
@@ -35,8 +36,8 @@ import org.celstec.listadapter.AbstractQuestionsLazyListAdapter;
 
 public class QuestionsLazyListAdapter extends AbstractQuestionsLazyListAdapter {
 
-    public QuestionsLazyListAdapter(Context context) {
-        super(context);
+    public QuestionsLazyListAdapter(Context context, InquiryLocalObject inquiryLocalObject) {
+        super(context, inquiryLocalObject.getId());
     }
 
     @Override

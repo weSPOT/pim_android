@@ -101,6 +101,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
 
         responseLocalObjectList = giLocalObject.getResponses();
+
         Collections.sort(responseLocalObjectList, responseLocalObjectComparator);
 
         ImageCacheParams cacheParams = new ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
