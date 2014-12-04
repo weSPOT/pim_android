@@ -53,6 +53,21 @@
               Inquiries:showAsAction="always"/>
     </group>
 
+    <group android:id="@+id/actions_questions">
+        <item android:id="@+id/menu_new_question"
+              android:title="@string/menu_new_question"
+              android:showAsAction="always"
+              android:icon="@drawable/ic_action_new"
+              android:orderInCategory="1"
+              Inquiries:showAsAction="always"/>
+        <!--<item android:id="@+id/menu_refresh_questions"-->
+              <!--android:title="@string/menu_refresh_questions"-->
+              <!--android:showAsAction="always"-->
+              <!--android:icon="@drawable/ic_action_refresh_white"-->
+              <!--android:orderInCategory="2"-->
+              <!--Inquiries:showAsAction="always"/>-->
+    </group>
+
     <group android:id="@+id/actions_friends">
         <item android:id="@+id/menu_refresh_list_friends"
               android:title="@string/menu_refresh_list_friends"

@@ -80,6 +80,7 @@ public class InqRequestSentFragment extends BaseFragmentActivity {
         menu.setGroupVisible(R.id.actions_data_collection, false);
         menu.setGroupVisible(R.id.actions_friends, false);
         menu.setGroupVisible(R.id.actions_usersite, false);
+        menu.setGroupVisible(R.id.actions_questions, false);
 
         return super.onCreateOptionsMenu(menu);
     }

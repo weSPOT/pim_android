@@ -17,6 +17,7 @@
               android:layout_height="wrap_content"
               android:layout_below="@id/question_title"
               style="@style/CustomTheme.TextView.Title4"
+              android:background="@drawable/btn_background"
             />
     <ListView android:id="@+id/question_answers"
               android:layout_width="match_parent"

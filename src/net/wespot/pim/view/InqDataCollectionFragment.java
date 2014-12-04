@@ -144,6 +144,8 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
         menu.setGroupVisible(R.id.actions_data_collection, true);
         menu.setGroupVisible(R.id.actions_friends, false);
         menu.setGroupVisible(R.id.actions_usersite, false);
+        menu.setGroupVisible(R.id.actions_questions, false);
+
 
 
         super.onCreateOptionsMenu(menu, inflater);

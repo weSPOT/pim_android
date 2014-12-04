@@ -42,7 +42,9 @@
     <string name="wrapper_friends">Friends</string>
 
     <string name="menu_new_data_collection">New data collection</string>
+    <string name="menu_new_question">New question</string>
     <string name="menu_refresh_data_collection">Refresh data collection</string>
+    <string name="menu_refresh_questions">Refresh questions</string>
     <string name="menu_refresh">Refresh</string>
     <string name="menu_refreshing">Synchronizing inquiries...</string>
     <string name="menu_search">Search</string>
@@ -157,5 +159,14 @@
     <string name="usersite_menu_search">Searching user...</string>
 
     <string name="questions">Questions</string>
+
+    <string name="new_question_title_dialog">Title for the question</string>
+    <string name="new_question_description_dialog">Question</string>
+    <string name="new_question_tags_dialog">Add tags for the question</string>
+    <string name="new_question_dialog_cancel">Cancel</string>
+    <string name="new_question_dialog_ok">Save</string>
+    <string name="question_dialog_creating">Saving new question</string>
+    <string name="question_sync">Synchronizing and saving question...</string>
+
 
 </resources>

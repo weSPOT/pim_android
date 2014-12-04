@@ -305,6 +305,7 @@ public class InqCreateInquiryFragment extends Fragment{
         menu.setGroupVisible(R.id.actions_data_collection, false);
         menu.setGroupVisible(R.id.actions_friends, false);
         menu.setGroupVisible(R.id.actions_usersite, false);
+        menu.setGroupVisible(R.id.actions_questions, false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

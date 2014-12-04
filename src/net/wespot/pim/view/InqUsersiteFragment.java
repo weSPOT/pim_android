@@ -81,6 +81,7 @@ public class InqUsersiteFragment extends BaseFragmentActivity {
         menu.setGroupVisible(R.id.actions_wonder_moment, false);
         menu.setGroupVisible(R.id.actions_data_collection, false);
         menu.setGroupVisible(R.id.actions_friends, false);
+        menu.setGroupVisible(R.id.actions_questions, false);
         menu.setGroupVisible(R.id.actions_usersite, true);
 
         return super.onCreateOptionsMenu(menu);

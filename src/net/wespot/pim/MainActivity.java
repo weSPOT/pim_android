@@ -189,6 +189,8 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
     private void onEventBackgroundThread(TimeEvent inquiryEvent){
         Log.i(TAG, "time's up");
 
+
+
         if (!queueInqDatCol.isEmpty()){
             INQ.inquiry.syncDataCollectionTasks(queueInqDatCol.remove());
             timer.schedule(new RemindTask(), INTERVAL * 1000);

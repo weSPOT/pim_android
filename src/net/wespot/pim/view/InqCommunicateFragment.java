@@ -130,6 +130,12 @@ public class InqCommunicateFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (savedInstanceState != null) {
+            INQ.init(getActivity());
+            INQ.accounts.syncMyAccountDetails();
+            INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(savedInstanceState.getLong("currentInquiry")));
+        }
+
         messages = new ArrayList<Message>();
 
         ARL.eventBus.register(this);
