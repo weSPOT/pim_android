@@ -153,7 +153,6 @@ public class InqQuestionFragment extends Fragment implements ListItemClickInterf
                     questionLocalObject.setTitle(data.getExtras().get(QuestionDialogFragment.TITLE).toString());
                     questionLocalObject.setInquiryId(INQ.inquiry.getCurrentInquiry().getId());
                     questionLocalObject.setInquiryLocalObject(INQ.inquiry.getCurrentInquiry());
-//                    questionLocalObject.setTags(data.getExtras().get(QuestionDialogFragment.TAGS).toString());
                     questionLocalObject.setTags(data.getExtras().get(QuestionDialogFragment.TAGS).toString().equals("") ? "-": data.getExtras().get(QuestionDialogFragment.TAGS).toString());
 
                     CreateQuestionObject createQuestionObject = new CreateQuestionObject();
