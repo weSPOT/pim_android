@@ -75,6 +75,10 @@ public class InqCommunicateFragment extends Fragment {
         super.onResume();
     }
 
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -82,7 +86,7 @@ public class InqCommunicateFragment extends Fragment {
         outState.putLong("currentInquiry", INQ.inquiry.getCurrentInquiry().getId());
         if(INQ.inquiry.getCurrentInquiry().getRunLocalObject()!=null){
             outState.putLong("currentInquiryRunLocalObject", INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
-            Log.i(TAG, "Recover in InqDataCollectionFragment > onSaveInstanceState & current inq = null");
+            Log.i(TAG, "Recover in InqCommunicateFragment > onSaveInstanceState & current inq = null");
         }
     }
 
@@ -197,10 +201,7 @@ public class InqCommunicateFragment extends Fragment {
                 e.printStackTrace();
             }
 
-
             return "";
-
-
         }
         @Override
         public void onProgressUpdate(String... v) {
@@ -226,6 +227,9 @@ public class InqCommunicateFragment extends Fragment {
 
     public synchronized void onEventMainThread(TimeMessageEvent timeMessageEvent) {
         Log.i(TAG, "retrieve messages");
+
+//        Toast.makeText(getActivity(),"Retrieving messages",Toast.LENGTH_SHORT).show();
+
 
         INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
 

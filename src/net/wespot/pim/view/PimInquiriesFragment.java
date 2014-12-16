@@ -21,11 +21,16 @@ package net.wespot.pim.view;
  * ****************************************************************************
  */
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,13 +39,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import net.wespot.pim.R;
+import net.wespot.pim.compat.controller.InquiryActivityBack;
 import net.wespot.pim.controller.Adapters.InquiryLazyListAdapter;
 import net.wespot.pim.controller.InquiryActivity;
-import net.wespot.pim.compat.controller.InquiryActivityBack;
 import net.wespot.pim.controller.InquiryPhasesActivity;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.layout.BaseFragmentActivity;
 import net.wespot.pim.utils.layout.ButtonManager;
+import net.wespot.pim.utils.layout.InquiryDialogFragment;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn.delegators.QuestionDelegator;
 import org.celstec.arlearn2.android.delegators.ARL;
@@ -55,6 +61,7 @@ public class PimInquiriesFragment extends BaseFragmentActivity implements ListIt
 
     private static final String TAG = "PimInquiriesFragment";
     private InquiryLazyListAdapter adapterInq;
+    private InquiryDialogFragment dialog;
 
     private static final int DIALOG_FRAGMENT = 0;
     private static final int NEW_INQUIRY = 12350;
@@ -174,7 +181,73 @@ public class PimInquiriesFragment extends BaseFragmentActivity implements ListIt
                 Toast.makeText(this, getResources().getString(R.string.menu_refreshing), Toast.LENGTH_SHORT).show();
                 INQ.inquiry.syncInquiries();
                 break;
+            case R.id.menu_new_inquiry:
+                createNewInquiry();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void createNewInquiry() {
+//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+//        if (prev != null) {
+//            ft.remove(prev);
+//        }
+//        ft.addToBackStack(null);
+//
+//        dialog = new InquiryDialogFragment();
+//        dialog.show(getSupportFragmentManager(), "dialog");
+
+
+        // DialogFragment.show() will take care of adding the fragment
+        // in a transaction.  We also want to remove any currently showing
+        // dialog, so make our own transaction and take care of that here.
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment newFragment = InquiryDialogFragment.newInstance();
+        newFragment.show(ft, "dialog");
+
+
+// /        FragmentTransaction ft = getFragmentManager().beginTransaction();
+//        DialogFragment newFragment = new InquiryDialogFragment();
+//        ft.add(R.id.content, newFragment);
+//        ft.commit();
+
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+            case DIALOG_FRAGMENT:
+
+                if (resultCode == Activity.RESULT_OK) {
+                    // After Ok code.
+                    Log.e(TAG, "OK code");
+                } else if (resultCode == Activity.RESULT_CANCELED){
+                    // After Cancel code.
+                    Log.e(TAG, "cancel code");
+                }
+                break;
+        }
+    }
+
+    public void doPositiveClick() {
+
+    }
+
+    public void doNegativeClick() {
+
+    }
+
+    private class CreateInquiryObject {
+        public InquiryLocalObject inquiry;
     }
 }

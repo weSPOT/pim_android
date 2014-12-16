@@ -67,4 +67,14 @@ public class TextInputCollectionActivityImpl extends TextInputCollectionActivity
     public int getDataCollectionSubmit() {
         return R.id.dataCollectionSubmit;
     }
+
+    @Override
+    public int getCancelButton() {
+        return 0;
+    }
+
+    @Override
+    public int getSubmitButton() {
+        return 0;
+    }
 }

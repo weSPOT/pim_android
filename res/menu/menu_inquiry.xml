@@ -34,6 +34,12 @@
               android:title="@string/menu_refresh"
               android:showAsAction="always"
               android:icon="@drawable/ic_action_refresh_white"
+              android:orderInCategory="1"
+              Inquiries:showAsAction="always"/>
+        <item android:id="@+id/menu_new_inquiry"
+              android:title="@string/inquiry_title_new"
+              android:showAsAction="always"
+              android:icon="@drawable/ic_action_new"
               android:orderInCategory="2"
               Inquiries:showAsAction="always"/>
     </group>
