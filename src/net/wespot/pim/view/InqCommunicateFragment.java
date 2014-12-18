@@ -189,9 +189,9 @@ public class InqCommunicateFragment extends Fragment {
             messageLocalObjectList_newMessages.removeAll(messageLocalObjectList);
             for (MessageLocalObject messageLocalObject : messageLocalObjectList_newMessages) {
 //                if(!INQ.accounts.getLoggedInAccount().getFullId().equals(messageLocalObject.getAuthor())){
-                if (!messages.){
+//                if (!messages.){
                     messages.add(new Message(messageLocalObject.getBody(), messageLocalObject.getAuthor(), messageLocalObject.getTime(), messageLocalObject.getSynced()));
-                }
+//                }
 
 //                }
                 messageLocalObjectList.add(messageLocalObject);
