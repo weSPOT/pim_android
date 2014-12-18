@@ -77,6 +77,10 @@ public class ChatAdapter extends BaseAdapter {
         messageTextView.setText(message.getMessage());
         timestampTextView.setText(message.getDateTime());
 
+//        if(!message.isSync()){
+//            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.background_message_chat_not_sync));
+//        }
+
         return convertView;
     }
 }

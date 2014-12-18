@@ -16,6 +16,7 @@ import daoBase.DaoConfiguration;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.RemindTask;
 import net.wespot.pim.utils.TimeEvent;
+import net.wespot.pim.utils.generic.Connectivity;
 import net.wespot.pim.utils.generic.NetworkHandle;
 import net.wespot.pim.utils.layout.ActionBarCurrent;
 import net.wespot.pim.utils.layout.ButtonManager;
@@ -159,6 +160,9 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
         myFriends = buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_MAIN_FRIENDS,
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS),
                 Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS), String.valueOf(numberFriends), true);
+
+        Toast.makeText(this, "Mobile "+Connectivity.isConnectedMobile(this)+"", Toast.LENGTH_LONG).show();
+        Toast.makeText(this,"Wifi "+Connectivity.isConnectedWifi(this)+"", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -189,7 +193,6 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
 
     @Override
     public void onBackPressed() {
-        // Avoid re-login
         super.onBackPressed();
     }
 
@@ -210,8 +213,6 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
 
     private void onEventBackgroundThread(TimeEvent inquiryEvent){
         Log.i(TAG, "time's up");
-
-
 
         if (!queueInqDatCol.isEmpty()){
             INQ.inquiry.syncDataCollectionTasks(queueInqDatCol.remove());
@@ -236,8 +237,6 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
         ((TextView)myInquiryView.findViewById(R.id.notificationText)).setText(String.valueOf(numberInquiries));
 
         Log.i(TAG, "onEventMainThread. Number of inquiries: " + numberInquiries);
-
-
     }
 
     public void onEventMainThread(BadgeEvent event) {
@@ -262,7 +261,7 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
 
         INQ.friendsDelegator.syncFriends();
 
-        timer.schedule(new RemindTask(), 30 * 1000);
+//        timer.schedule(new RemindTask(), 30 * 1000);
     }
 
     @Override

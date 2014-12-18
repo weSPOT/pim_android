@@ -77,4 +77,9 @@ public class TextInputCollectionActivityImpl extends TextInputCollectionActivity
     public int getSubmitButton() {
         return 0;
     }
+
+    @Override
+    public int getHeaderTextView() {
+        return 0;
+    }
 }

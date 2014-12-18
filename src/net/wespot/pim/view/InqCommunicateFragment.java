@@ -102,7 +102,7 @@ public class InqCommunicateFragment extends Fragment {
         listViewMessages = (ListView) rootView.findViewById(R.id.list_messages);
         listViewMessages.setAdapter(chatAdapter);
 
-        send.requestFocus();
+//        send.requestFocus();
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,17 +118,15 @@ public class InqCommunicateFragment extends Fragment {
                     DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
                     INQ.messages.postMessagesToServer();
 
-                    messages.add(new Message(messageLocalObject.getBody(),messageLocalObject.getAuthor(), messageLocalObject.getTime() ));
+                    messages.add(new Message(messageLocalObject.getBody(),messageLocalObject.getAuthor(), messageLocalObject.getTime(), messageLocalObject.getSynced() ));
                     message.setText("");
 //                    new SendMessage().execute();
                     chatAdapter.notifyDataSetChanged();
                 }
             }
         });
-
         return rootView;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -154,9 +152,7 @@ public class InqCommunicateFragment extends Fragment {
         timer.schedule(new RetrieveMessageTask(), INTERVAL * 1000, INTERVAL * 1000);
         Log.e(TAG, "timer");
 
-
         for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
-
 //            if (!accountNamesID.containsKey(messageLocalObject.getAuthor())){
 //                AccountLocalObject accountLocalObject = INQ.accounts.getAccount(messageLocalObject.getAuthor());
 //                if (accountLocalObject!=null){
@@ -171,11 +167,50 @@ public class InqCommunicateFragment extends Fragment {
 //            if (INQ.accounts.getLoggedInAccount().getFullId().equals(messageLocalObject.getAuthor()) ) {
 //                isMine = true;
 //            }
-            messages.add(new Message(messageLocalObject.getBody(),messageLocalObject.getAuthor(), messageLocalObject.getTime()));
+            messages.add(new Message(messageLocalObject.getBody(),messageLocalObject.getAuthor(), messageLocalObject.getTime(), messageLocalObject.getSynced()));
         }
 
         chatAdapter = new ChatAdapter(getActivity(), messages);
 
+    }
+
+    public synchronized void onEventMainThread(TimeMessageEvent timeMessageEvent) {
+        Log.i(TAG, "retrieve messages");
+
+        INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
+
+        messageLocalObjectList_newMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
+                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
+                .orderAsc(MessageLocalObjectDao.Properties.Time)
+                .list();
+
+        if (messageLocalObjectList_newMessages.size() != messageLocalObjectList.size()){
+
+            messageLocalObjectList_newMessages.removeAll(messageLocalObjectList);
+            for (MessageLocalObject messageLocalObject : messageLocalObjectList_newMessages) {
+//                if(!INQ.accounts.getLoggedInAccount().getFullId().equals(messageLocalObject.getAuthor())){
+                if (!messages.){
+                    messages.add(new Message(messageLocalObject.getBody(), messageLocalObject.getAuthor(), messageLocalObject.getTime(), messageLocalObject.getSynced()));
+                }
+
+//                }
+                messageLocalObjectList.add(messageLocalObject);
+                messageLocalObjectList_newMessages.remove(messageLocalObject);
+            }
+
+            chatAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void onEventBackgroundThread(MessageEvent messageEvent) {
+        Log.e(TAG, "message synced: " + messageEvent.getRunId());
+    }
+
+    @Override
+    public void onDestroy() {
+        ARL.eventBus.unregister(this);
+        timer.cancel();
+        super.onDestroy();
     }
 
     private class SendMessage extends AsyncTask<Void, String, String>
@@ -223,46 +258,6 @@ public class InqCommunicateFragment extends Fragment {
                 messages.remove(messages.size()-1);
             }
         }
-    }
-
-    public synchronized void onEventMainThread(TimeMessageEvent timeMessageEvent) {
-        Log.i(TAG, "retrieve messages");
-
-//        Toast.makeText(getActivity(),"Retrieving messages",Toast.LENGTH_SHORT).show();
-
-
-        INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
-
-        messageLocalObjectList_newMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
-                .orderAsc(MessageLocalObjectDao.Properties.Time)
-                .list();
-
-        if (messageLocalObjectList_newMessages.size() != messageLocalObjectList.size()){
-
-            messageLocalObjectList_newMessages.removeAll(messageLocalObjectList);
-
-            for (MessageLocalObject messageLocalObject : messageLocalObjectList_newMessages) {
-                if(!INQ.accounts.getLoggedInAccount().getFullId().equals(messageLocalObject.getAuthor())){
-                    messages.add(new Message(messageLocalObject.getBody(), messageLocalObject.getAuthor(), messageLocalObject.getTime()));
-                }
-                messageLocalObjectList.add(messageLocalObject);
-                messageLocalObjectList_newMessages.remove(messageLocalObject);
-            }
-
-            chatAdapter.notifyDataSetChanged();
-        }
-    }
-
-    public void onEventBackgroundThread(MessageEvent messageEvent) {
-        Log.e(TAG, "message synced: " + messageEvent.getRunId());
-    }
-
-    @Override
-    public void onDestroy() {
-        ARL.eventBus.unregister(this);
-        timer.cancel();
-        super.onDestroy();
     }
 }
 
