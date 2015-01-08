@@ -217,7 +217,7 @@ public class InqMyMediaDataCollectionTaskCompatFragment extends ActionBarCompat 
         INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
     }
 
-    private void onEventBackgroundThread(ResponseEvent responseEvent){
+    public void onEventBackgroundThread(ResponseEvent responseEvent){
         Log.e(TAG, " response for "+responseEvent.getRunId());
     }
 

@@ -185,13 +185,13 @@ public class MainActivityCompat extends ActionBarCompat implements ListItemClick
         numberInquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
     }
 
-    private void onEventMainThread(GeneralItemEvent generalItemEvent){
+    public void onEventMainThread(GeneralItemEvent generalItemEvent){
         numberDataCollections = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().loadAll().size();
         ((TextView)myMediaView.findViewById(R.id.notificationText)).setText(String.valueOf(numberDataCollections));
 
     }
 
-    private void onEventBackgroundThread(TimeEvent inquiryEvent){
+    public void onEventBackgroundThread(TimeEvent inquiryEvent){
         Log.e(TAG, "time's up");
 
         if (!queueInqDatCol.isEmpty()){
@@ -200,7 +200,7 @@ public class MainActivityCompat extends ActionBarCompat implements ListItemClick
         }
     }
 
-    private void onEventBackgroundThread(InquiryEvent inquiryEvent){
+    public void onEventBackgroundThread(InquiryEvent inquiryEvent){
 
         if (DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size() != numberInquiries){
             InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(inquiryEvent.getInquiryId());
@@ -245,7 +245,7 @@ public class MainActivityCompat extends ActionBarCompat implements ListItemClick
         Log.e(TAG, "onEventMainThread. Number of friends: " + numberFriends);
     }
 
-    private void onEventBackgroundThread(MyAccount myAccount){
+    public void onEventBackgroundThread(MyAccount myAccount){
         INQ.inquiry.syncInquiries();
         INQ.badges.syncBadges();
         INQ.friendsDelegator.syncFriends();

@@ -96,7 +96,7 @@ public class InqRequestSentFragment extends BaseFragmentActivity {
     }
 
 
-    private void onEventMainThread(SentFriendRequestsEvent elggUsersEvent){
+    public void onEventMainThread(SentFriendRequestsEvent elggUsersEvent){
         sent_request_listView.setAlpha(0f);
         sent_request_listView.setVisibility(View.VISIBLE);
 

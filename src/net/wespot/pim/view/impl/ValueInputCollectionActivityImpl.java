@@ -48,7 +48,7 @@ public class ValueInputCollectionActivityImpl extends ValueInputCollectionActivi
 
     @Override
     public int getHeaderTextView() {
-        return 0;
+        return 0; //TODO
     }
 
     @Override
@@ -63,7 +63,7 @@ public class ValueInputCollectionActivityImpl extends ValueInputCollectionActivi
 
     @Override
     public int getCancelButton() {
-        return 0;
+        return 0; //TODO
     }
 
     @Override

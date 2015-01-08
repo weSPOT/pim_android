@@ -29,7 +29,7 @@ public class RetrieveMessageTask extends TimerTask{
     }
 
 
-    private void onEventAsync(doSomeWorkClass sge) {
+    public void onEventAsync(doSomeWorkClass sge) {
 
         ARL.eventBus.post(new TimeMessageEvent());
     }

@@ -80,6 +80,6 @@ public class TextInputCollectionActivityImpl extends TextInputCollectionActivity
 
     @Override
     public int getHeaderTextView() {
-        return 0;
+        return 0; //TODO
     }
 }

@@ -104,7 +104,7 @@ public class InqUsersiteFragment extends BaseFragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void onEventMainThread(ElggUsersEvent elggUsersEvent){
+    public void onEventMainThread(ElggUsersEvent elggUsersEvent){
         listView.setAlpha(0f);
         listView.setVisibility(View.VISIBLE);
 
