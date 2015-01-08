@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+    <LinearLayout
+            android:background="@drawable/background_message_chat_not_sync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="15dp"
+            android:padding="8dp"
+            android:orientation="vertical" >
+
+        <TextView
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5sp"
+                android:shadowColor="@color/app.base.white"
+                android:text="Medium Text"
+                android:textColor="@color/app.base.black"
+                />
+        <TextView
+                android:id="@+id/notificationTextInquiry"
+                style="@style/CustomTheme.NotificationText"
+                android:text="Notification"/>
+        <TextView
+                android:id="@+id/timeStampMessage"
+                android:layout_below="@id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_gravity="right"
+                android:background="@drawable/pim_listitem_notification_text"
+                android:textColor="@color/app.base.white"
+                android:textSize="8dp"
+                android:text="7:12"/>
+
+    </LinearLayout>
+</RelativeLayout>

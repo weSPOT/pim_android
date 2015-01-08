@@ -7,9 +7,14 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import net.wespot.pim.R;
-import net.wespot.pim.utils.Message;
+import org.celstec.arlearn.delegators.INQ;
+import org.celstec.dao.gen.MessageLocalObject;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
 /**
  * ****************************************************************************
@@ -36,13 +41,19 @@ import java.util.ArrayList;
 public class ChatAdapter extends BaseAdapter {
 
     private Context mContext;
-    private ArrayList<Message> messages;
+    private ArrayList<MessageLocalObject> messages;
 
-    public ChatAdapter(Context context, ArrayList<Message> messages) {
+    private HashMap<MessageLocalObject, View> messages_views = new HashMap<MessageLocalObject, View>();
+
+    public ChatAdapter(Context context, ArrayList<MessageLocalObject> messages, HashMap<MessageLocalObject, View> messages_views) {
         mContext = context;
         this.messages = messages;
+        this.messages_views = messages_views;
     }
 
+    public View getViewFromMessage( MessageLocalObject message){
+        return messages_views.get(message);
+    }
 
 
     @Override
@@ -62,11 +73,14 @@ public class ChatAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Message message = (Message) this.getItem(position);
+        MessageLocalObject message = (MessageLocalObject) this.getItem(position);
 
-        if(message.isMine()){
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages, parent, false);
-
+        if(INQ.accounts.getLoggedInAccount().getFullId().equals(message.getAuthor())){
+            if (!message.getSynced()){
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages_not_sync, parent, false);
+            }else{
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages, parent, false);
+            }
         }else{
             convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages_others, parent, false);
             ((TextView) convertView.findViewById(R.id.author_entry_list)).setText(message.getAuthor());
@@ -74,12 +88,19 @@ public class ChatAdapter extends BaseAdapter {
 
         TextView messageTextView = (TextView) convertView.findViewById(R.id.message);
         TextView timestampTextView = (TextView) convertView.findViewById(R.id.timeStampMessage);
-        messageTextView.setText(message.getMessage());
-        timestampTextView.setText(message.getDateTime());
 
-//        if(!message.isSync()){
-//            convertView.setBackground(mContext.getResources().getDrawable(R.drawable.background_message_chat_not_sync));
-//        }
+        convertView.setId((int) (long) message.getTime());
+
+        messageTextView.setText(message.getBody());
+
+        Date date = new Date(message.getTime());
+        Format format = new SimpleDateFormat("HH:mm:ss");
+
+        timestampTextView.setText(format.format(date));
+
+        if (messages_views.get(message) == null){
+            messages_views.put(message, convertView);
+        }
 
         return convertView;
     }

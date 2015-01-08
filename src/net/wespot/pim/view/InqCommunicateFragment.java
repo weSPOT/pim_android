@@ -21,20 +21,23 @@ package net.wespot.pim.view;
  * ****************************************************************************
  */
 
-import android.os.AsyncTask;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.ChatAdapter;
-import net.wespot.pim.utils.Message;
 import net.wespot.pim.utils.RetrieveMessageTask;
 import net.wespot.pim.utils.TimeMessageEvent;
 import org.celstec.arlearn.delegators.INQ;
@@ -50,11 +53,13 @@ public class InqCommunicateFragment extends Fragment {
     private static final String TAG = "InqCommunicateFragment";
     private EditText message;
     private ImageButton send;
+    private View rootView;
 
     private ListView listViewMessages;
 
     ChatAdapter chatAdapter;
-    ArrayList<Message> messages;
+    private HashMap<MessageLocalObject, View> messages_views = new HashMap<MessageLocalObject, View>();
+    ArrayList<MessageLocalObject> messages;
 
     public static Timer timer;
 
@@ -95,7 +100,7 @@ public class InqCommunicateFragment extends Fragment {
 
         super.onCreateView(inflater, container, savedInstanceState);
 
-        final View rootView = inflater.inflate(R.layout.fragment_section_communicate, container, false);
+        rootView = inflater.inflate(R.layout.fragment_section_communicate, container, false);
 
         message = (EditText) rootView.findViewById(R.id.communication_enter_message);
         send = (ImageButton) rootView.findViewById(R.id.communication_enter_message_button);
@@ -103,6 +108,33 @@ public class InqCommunicateFragment extends Fragment {
         listViewMessages.setAdapter(chatAdapter);
 
 //        send.requestFocus();
+
+//        disableSoftKeyboard(message);
+//
+//
+//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(yourEditText.getWindowToken(), 0);
+//
+//        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(message.getWindowToken(), 0);
+
+//        InputMethodService keyboard = new InputMethodService();
+//        keyboard.hideWindow();
+
+
+        message.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.onTouchEvent(event);
+                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+                return true;
+            }
+        });
+
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,7 +150,9 @@ public class InqCommunicateFragment extends Fragment {
                     DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
                     INQ.messages.postMessagesToServer();
 
-                    messages.add(new Message(messageLocalObject.getBody(),messageLocalObject.getAuthor(), messageLocalObject.getTime(), messageLocalObject.getSynced() ));
+                    messages.add(messageLocalObject);
+                    messages_views.put(messageLocalObject, null);
+
                     message.setText("");
 //                    new SendMessage().execute();
                     chatAdapter.notifyDataSetChanged();
@@ -126,6 +160,17 @@ public class InqCommunicateFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    public static void disableSoftKeyboard(final EditText v) {
+        v.setInputType(InputType.TYPE_NULL);
+        if (Build.VERSION.SDK_INT >= 11) {
+            v.setRawInputType(InputType.TYPE_CLASS_TEXT);
+            v.setTextIsSelectable(true);
+        } else {
+            v.setRawInputType(InputType.TYPE_NULL);
+            v.setFocusable(true);
+        }
     }
 
     @Override
@@ -138,7 +183,7 @@ public class InqCommunicateFragment extends Fragment {
             INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(savedInstanceState.getLong("currentInquiry")));
         }
 
-        messages = new ArrayList<Message>();
+        messages = new ArrayList<MessageLocalObject>();
 
         ARL.eventBus.register(this);
         INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
@@ -153,25 +198,10 @@ public class InqCommunicateFragment extends Fragment {
         Log.e(TAG, "timer");
 
         for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
-//            if (!accountNamesID.containsKey(messageLocalObject.getAuthor())){
-//                AccountLocalObject accountLocalObject = INQ.accounts.getAccount(messageLocalObject.getAuthor());
-//                if (accountLocalObject!=null){
-//                    accountNamesID.put(accountLocalObject.getFullId(), accountLocalObject.getName());
-//                }else{
-//                    accountNamesID.put(messageLocalObject.getAuthor(),"-");
-//                }
-//            }
-
-//            boolean isMine = false;
-//
-//            if (INQ.accounts.getLoggedInAccount().getFullId().equals(messageLocalObject.getAuthor()) ) {
-//                isMine = true;
-//            }
-            messages.add(new Message(messageLocalObject.getBody(),messageLocalObject.getAuthor(), messageLocalObject.getTime(), messageLocalObject.getSynced()));
+            messages.add(messageLocalObject);
         }
 
-        chatAdapter = new ChatAdapter(getActivity(), messages);
-
+        chatAdapter = new ChatAdapter(getActivity(), messages, messages_views);
     }
 
     public synchronized void onEventMainThread(TimeMessageEvent timeMessageEvent) {
@@ -188,12 +218,16 @@ public class InqCommunicateFragment extends Fragment {
 
             messageLocalObjectList_newMessages.removeAll(messageLocalObjectList);
             for (MessageLocalObject messageLocalObject : messageLocalObjectList_newMessages) {
-//                if(!INQ.accounts.getLoggedInAccount().getFullId().equals(messageLocalObject.getAuthor())){
-//                if (!messages.){
-                    messages.add(new Message(messageLocalObject.getBody(), messageLocalObject.getAuthor(), messageLocalObject.getTime(), messageLocalObject.getSynced()));
-//                }
 
-//                }
+                if (!messages_views.containsKey(messageLocalObject)){
+                    messages.add(messageLocalObject);
+                }else{
+                    ViewGroup viewUpdate = (ViewGroup) chatAdapter.getViewFromMessage(messageLocalObject);
+                    if (viewUpdate != null){
+                        viewUpdate.inflate(getActivity(),R.layout.entry_messages, null);
+                        viewUpdate.invalidate();
+                    }
+                }
                 messageLocalObjectList.add(messageLocalObject);
                 messageLocalObjectList_newMessages.remove(messageLocalObject);
             }
@@ -213,51 +247,51 @@ public class InqCommunicateFragment extends Fragment {
         super.onDestroy();
     }
 
-    private class SendMessage extends AsyncTask<Void, String, String>
-    {
-        @Override
-        protected String doInBackground(Void... params) {
-            try {
-                Thread.sleep(2000); //simulate a network call
-            }catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            this.publishProgress(String.format("%s started writing", INQ.accounts.getLoggedInAccount().getFullId()));
-            try {
-                Thread.sleep(2000); //simulate a network call
-            }catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            this.publishProgress(String.format("%s has entered text", INQ.accounts.getLoggedInAccount().getFullId()));
-            try {
-                Thread.sleep(3000);//simulate a network call
-            }catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            return "";
-        }
-        @Override
-        public void onProgressUpdate(String... v) {
-
-            if(messages.get(messages.size()-1).isStatusMessage)//check wether we have already added a status message
-            {
-                messages.get(messages.size()-1).setMessage(v[0]); //update the status for that
-                chatAdapter.notifyDataSetChanged();
-//                getListView().setSelection(messages.size()-1);
-            }
-            else{
-//                addNewMessage(new Message(true,v[0])); //add new message, if there is no existing status message
-            }
-        }
-        @Override
-        protected void onPostExecute(String text) {
-            if(messages.get(messages.size()-1).isStatusMessage)//check if there is any status message, now remove it.
-            {
-                messages.remove(messages.size()-1);
-            }
-        }
-    }
+//    private class SendMessage extends AsyncTask<Void, String, String>
+//    {
+//        @Override
+//        protected String doInBackground(Void... params) {
+//            try {
+//                Thread.sleep(2000); //simulate a network call
+//            }catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//            this.publishProgress(String.format("%s started writing", INQ.accounts.getLoggedInAccount().getFullId()));
+//            try {
+//                Thread.sleep(2000); //simulate a network call
+//            }catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            this.publishProgress(String.format("%s has entered text", INQ.accounts.getLoggedInAccount().getFullId()));
+//            try {
+//                Thread.sleep(3000);//simulate a network call
+//            }catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//
+//            return "";
+//        }
+//        @Override
+//        public void onProgressUpdate(String... v) {
+//
+//            if(messages.get(messages.size()-1).isStatusMessage)//check wether we have already added a status message
+//            {
+//                messages.get(messages.size()-1).setMessage(v[0]); //update the status for that
+//                chatAdapter.notifyDataSetChanged();
+////                getListView().setSelection(messages.size()-1);
+//            }
+//            else{
+////                addNewMessage(new Message(true,v[0])); //add new message, if there is no existing status message
+//            }
+//        }
+//        @Override
+//        protected void onPostExecute(String text) {
+//            if(messages.get(messages.size()-1).isStatusMessage)//check if there is any status message, now remove it.
+//            {
+//                messages.remove(messages.size()-1);
+//            }
+//        }
+//    }
 }
 

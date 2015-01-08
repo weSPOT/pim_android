@@ -14,7 +14,8 @@
                   android:layout_height="wrap_content"
                   android:hint="@string/communication_enter_message"
                   android:textColorHint="@color/app.base.grey_soft"
-                  android:singleLine="false"/>
+                  android:singleLine="false"
+                />
         <ImageButton android:id="@+id/communication_enter_message_button"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"

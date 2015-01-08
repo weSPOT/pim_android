@@ -16,7 +16,6 @@ import daoBase.DaoConfiguration;
 import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.RemindTask;
 import net.wespot.pim.utils.TimeEvent;
-import net.wespot.pim.utils.generic.Connectivity;
 import net.wespot.pim.utils.generic.NetworkHandle;
 import net.wespot.pim.utils.layout.ActionBarCurrent;
 import net.wespot.pim.utils.layout.ButtonManager;
@@ -161,8 +160,8 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
                 Constants.INQUIRY_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS),
                 Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_MAIN_FRIENDS), String.valueOf(numberFriends), true);
 
-        Toast.makeText(this, "Mobile "+Connectivity.isConnectedMobile(this)+"", Toast.LENGTH_LONG).show();
-        Toast.makeText(this,"Wifi "+Connectivity.isConnectedWifi(this)+"", Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "Mobile "+Connectivity.isConnectedMobile(this)+"", Toast.LENGTH_LONG).show();
+//        Toast.makeText(this,"Wifi "+Connectivity.isConnectedWifi(this)+"", Toast.LENGTH_LONG).show();
     }
 
     @Override

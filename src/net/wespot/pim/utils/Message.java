@@ -3,9 +3,6 @@ package net.wespot.pim.utils;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.dao.gen.AccountLocalObject;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,16 +30,18 @@ import java.util.Map;
 
 public class Message {
     String author;
+    Long id;
     String message;
-    String dateTime;
+    long dateTime;
     boolean isMine;
     boolean sync;
     public boolean isStatusMessage;
     Map<String, String> accountNamesID = new HashMap<String, String>();
 
 
-    public Message(String message, String author, long dateTime, boolean sync ){
+    public Message(Long id, String message, String author, long dateTime, boolean sync ){
         super();
+        this.id = id;
         this.message = message;
         this.isMine = isMine;
         this.author = author;
@@ -66,9 +65,7 @@ public class Message {
 
         this.author = accountNamesID.get(this.author);
 
-        Date date = new Date(dateTime);
-        Format format = new SimpleDateFormat("HH:mm:ss");
-        this.dateTime = format.format(date);
+        this.dateTime = dateTime;
         this.isStatusMessage = false;
     }
 
@@ -88,11 +85,11 @@ public class Message {
         this.message = message;
     }
 
-    public String getDateTime() {
+    public long getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(String dateTime) {
+    public void setDateTime(long dateTime) {
         this.dateTime = dateTime;
     }
 
@@ -118,6 +115,15 @@ public class Message {
 
     public void setSync(boolean sync) {
         this.sync = sync;
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
 }
