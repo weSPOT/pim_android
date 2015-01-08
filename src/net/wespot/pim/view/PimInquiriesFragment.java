@@ -115,7 +115,7 @@ public class PimInquiriesFragment extends BaseFragmentActivity implements ListIt
         setTitle(R.string.common_title);
     }
 
-    private void onEventAsync(InquiryEvent inquiryObject){
+    public void onEventAsync(InquiryEvent inquiryObject){
 //        Toast.makeText(getApplicationContext(), "Loaded: "+DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size()+" inquiries",Toast.LENGTH_SHORT).show();
     }
 

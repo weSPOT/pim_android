@@ -232,7 +232,7 @@ public class InqCreateInquiryFragment extends Fragment{
         }
     }
 
-    private void onEventBackgroundThread(CreateInquiryObject inquiryObject){
+    public void onEventBackgroundThread(CreateInquiryObject inquiryObject){
         // * int $vis (Visibility: 0 -> Inquiry members only, 1 -> logged in users, 2 -> Public)
         // int $membership (Membership: 0 -> Closed, 2 -> Open)
         // public void createInquiry(InquiryLocalObject inquiry, AccountLocalObject account, int visibility, int membership)

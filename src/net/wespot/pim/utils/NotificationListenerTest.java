@@ -1,4 +1,9 @@
-package net.wespot.pim;
+package net.wespot.pim.utils;
+
+
+import org.celstec.arlearn2.android.gcm.NotificationListenerInterface;
+
+import java.util.HashMap;
 
 /**
  * ****************************************************************************
@@ -17,9 +22,17 @@ package net.wespot.pim;
  * You should have received a copy of the GNU Lesser General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  * <p/>
- * Contributors: Angel Suarez
+ * Contributors: Stefaan Ternier
  * ****************************************************************************
  */
-public class GCMIntentService extends org.celstec.arlearn2.android.GCMIntentService {
+public class NotificationListenerTest implements NotificationListenerInterface {
+    @Override
+    public boolean acceptNotificationType(String notificationType) {
+         return true;
+    }
 
+    @Override
+    public void handleNotification(HashMap map) {
+
+    }
 }

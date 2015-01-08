@@ -302,7 +302,7 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
         INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
     }
 
-    private void onEventMainThread(ResponseEvent responseEvent){
+    public void onEventMainThread(ResponseEvent responseEvent){
 
     }
 

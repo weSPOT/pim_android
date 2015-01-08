@@ -99,7 +99,7 @@ public class UserSiteAdapter extends ArrayAdapter<User> {
         return convertView;
     }
 
-    private void onEventMainThread(FriendInviteResultEvent friendInviteResultEvent){
+    public void onEventMainThread(FriendInviteResultEvent friendInviteResultEvent){
          Toast.makeText(getContext(), friendInviteResultEvent.getResult(), Toast.LENGTH_SHORT).show();
     }
 

@@ -217,7 +217,7 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
         }
     }
 
-    private void onEventMainThread(GeneralItemEvent generalItem){
+    public void onEventMainThread(GeneralItemEvent generalItem){
         Log.i(TAG, "Adding data collection in background");
 
         addContentValidation();
@@ -225,7 +225,7 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
     }
 
 
-    private void onEventBackgroundThread(ResponseEvent responseEvent){
+    public void onEventBackgroundThread(ResponseEvent responseEvent){
         Log.i(TAG, " response for "+responseEvent.getRunId());
 
     }

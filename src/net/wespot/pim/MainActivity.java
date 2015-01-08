@@ -202,13 +202,13 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
         numberInquiries = DaoConfiguration.getInstance().getInquiryLocalObjectDao().loadAll().size();
     }
 
-    private void onEventMainThread(GeneralItemEvent generalItemEvent){
+    public void onEventMainThread(GeneralItemEvent generalItemEvent){
         numberDataCollections = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().loadAll().size();
         ((TextView)myMediaView.findViewById(R.id.notificationText)).setText(String.valueOf(numberDataCollections));
 
     }
 
-    private void onEventBackgroundThread(TimeEvent inquiryEvent){
+    public void onEventBackgroundThread(TimeEvent inquiryEvent){
         Log.i(TAG, "time's up");
 
 
@@ -219,7 +219,7 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
         }
     }
 
-    private void onEventBackgroundThread(InquiryEvent inquiryEvent){
+    public void onEventBackgroundThread(InquiryEvent inquiryEvent){
 
         InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(inquiryEvent.getInquiryId());
 
@@ -256,7 +256,7 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
         Log.i(TAG, "onEventMainThread. Number of friends: " + numberFriends);
     }
 
-    private void onEventBackgroundThread(MyAccount myAccount){
+    public void onEventBackgroundThread(MyAccount myAccount){
         INQ.inquiry.syncInquiries();
         INQ.badges.syncBadges();
 
@@ -317,7 +317,7 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
     }
 
 
-    private void onEventAsync(NetworkHandle networkTest) {
+    public void onEventAsync(NetworkHandle networkTest) {
         networkTest.executeTest();
     }
 

@@ -47,6 +47,11 @@ public class ValueInputCollectionActivityImpl extends ValueInputCollectionActivi
     }
 
     @Override
+    public int getHeaderTextView() {
+        return 0; //TODO
+    }
+
+    @Override
     public int getGameGeneralItemDcNumberInput() {
         return R.layout.game_general_item_dc_number_input;
     }
@@ -54,6 +59,11 @@ public class ValueInputCollectionActivityImpl extends ValueInputCollectionActivi
     @Override
     public int getDataCollectionSubmit() {
         return R.id.dataCollectionSubmit;
+    }
+
+    @Override
+    public int getCancelButton() {
+        return 0; //TODO
     }
 
     @Override
