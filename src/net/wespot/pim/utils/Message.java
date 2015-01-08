@@ -36,14 +36,17 @@ public class Message {
     String message;
     String dateTime;
     boolean isMine;
+    boolean sync;
     public boolean isStatusMessage;
     Map<String, String> accountNamesID = new HashMap<String, String>();
 
-    public Message(String message, String author, long dateTime ){
+
+    public Message(String message, String author, long dateTime, boolean sync ){
         super();
         this.message = message;
         this.isMine = isMine;
         this.author = author;
+        this.sync = sync;
 
         if (!accountNamesID.containsKey(this.author)){
             AccountLocalObject accountLocalObject = INQ.accounts.getAccount(this.author);
@@ -108,4 +111,13 @@ public class Message {
     public void setStatusMessage(boolean isStatusMessage) {
         this.isStatusMessage = isStatusMessage;
     }
+
+    public boolean isSync() {
+        return sync;
+    }
+
+    public void setSync(boolean sync) {
+        this.sync = sync;
+    }
+
 }
