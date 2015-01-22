@@ -69,6 +69,7 @@ public class PimInquiriesFragment extends BaseFragmentActivity implements ListIt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         ARL.eventBus.register(this);
         if (savedInstanceState != null) {
             INQ.init(this);

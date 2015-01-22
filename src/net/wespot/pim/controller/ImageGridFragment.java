@@ -32,15 +32,18 @@ import android.widget.*;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.BuildConfig;
 import net.wespot.pim.R;
-import net.wespot.pim.utils.images.ImageCache.ImageCacheParams;
+import net.wespot.pim.utils.images.ImageCache;
 import net.wespot.pim.utils.images.ImageFetcher;
 import net.wespot.pim.utils.images.Utils;
 import net.wespot.pim.utils.layout.RecyclingImageView;
+import net.wespot.pim.view.InqDataCollectionTaskFragment;
+import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.delegators.ResponseDelegator;
 import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GeneralItemLocalObject;
+import org.celstec.dao.gen.InquiryLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
 
 import java.util.Collections;
@@ -57,6 +60,8 @@ import java.util.List;
 public class ImageGridFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, ListItemClickInterface<ResponseLocalObject> {
     private static final String TAG = "ImageGridFragment";
     private static final String IMAGE_CACHE_DIR = "thumbs";
+    private static final String GENERAL_ITEM = "generalItemId";
+    private static final String RUN_ID = "runId";
 
     private int mImageThumbSize;
     private int mImageThumbSpacing;
@@ -79,6 +84,14 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(GENERAL_ITEM, giLocalObject.getId());
+        outState.putLong(RUN_ID, INQ.inquiry.getCurrentInquiry().getRunId());
+
+    }
+
     public GridView getmGridView() {
         return mGridView;
     }
@@ -96,7 +109,20 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
         Bundle extras = getArguments();
 
-        giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(extras.getLong("generalItemId"));
+        if (savedInstanceState != null){
+            INQ.init(this.getActivity());
+            INQ.accounts.syncMyAccountDetails();
+            giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(savedInstanceState.getLong(GENERAL_ITEM));
+            InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(savedInstanceState.getLong(RUN_ID));
+//            INQ.inquiry.setCurrentInquiry(inquiryLocalObject);
+            Log.e(TAG, savedInstanceState.getLong(GENERAL_ITEM) + " - General Item ");
+            Log.e(TAG, savedInstanceState.getLong(RUN_ID) + " - Run ");
+        }else{
+            if (extras != null) {
+                giLocalObject = DaoConfiguration.getInstance(getActivity()).getGeneralItemLocalObjectDao().load(extras.getLong(InqDataCollectionTaskFragment.GENERAL_ITEM));
+            }
+        }
+
         mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
         mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
 
@@ -104,14 +130,13 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
         Collections.sort(responseLocalObjectList, responseLocalObjectComparator);
 
-        ImageCacheParams cacheParams = new ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
+        ImageCache.ImageCacheParams cacheParams = new ImageCache.ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
 
         cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
 
         mImageFetcher = new ImageFetcher(getActivity(), mImageThumbSize);
         mImageFetcher.setLoadingImage(R.drawable.ic_taks_photo);
         mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
-
     }
 
     @Override

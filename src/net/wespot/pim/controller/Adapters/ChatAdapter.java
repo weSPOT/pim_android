@@ -1,13 +1,17 @@
 package net.wespot.pim.controller.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import org.celstec.arlearn.delegators.INQ;
+import org.celstec.dao.gen.AccountLocalObject;
+import org.celstec.dao.gen.AccountLocalObjectDao;
 import org.celstec.dao.gen.MessageLocalObject;
 
 import java.text.Format;
@@ -15,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * ****************************************************************************
@@ -40,10 +45,12 @@ import java.util.HashMap;
 
 public class ChatAdapter extends BaseAdapter {
 
+    private static final String TAG = "ChatAdapter";
     private Context mContext;
     private ArrayList<MessageLocalObject> messages;
 
     private HashMap<MessageLocalObject, View> messages_views = new HashMap<MessageLocalObject, View>();
+    private HashMap<String, AccountLocalObject> accounts = new HashMap<String, AccountLocalObject>();
 
     public ChatAdapter(Context context, ArrayList<MessageLocalObject> messages, HashMap<MessageLocalObject, View> messages_views) {
         mContext = context;
@@ -74,16 +81,19 @@ public class ChatAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         MessageLocalObject message = (MessageLocalObject) this.getItem(position);
-
+        Log.e(TAG, message.getBody()+"");
+        Log.e(TAG, message.getAuthor()+"");
+        Log.e(TAG, position+"");
+        Log.e(TAG, INQ.accounts.getLoggedInAccount()+"");
         if(INQ.accounts.getLoggedInAccount().getFullId().equals(message.getAuthor())){
-            if (!message.getSynced()){
-                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages_not_sync, parent, false);
-            }else{
+//            if (!message.getRead()){
+//                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages_not_sync, parent, false);
+//            }else{
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages, parent, false);
-            }
+//            }
         }else{
             convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages_others, parent, false);
-            ((TextView) convertView.findViewById(R.id.author_entry_list)).setText(message.getAuthor());
+            ((TextView) convertView.findViewById(R.id.author_entry_list)).setText(getNameUser(message.getAuthor()));
         }
 
         TextView messageTextView = (TextView) convertView.findViewById(R.id.message);
@@ -103,5 +113,27 @@ public class ChatAdapter extends BaseAdapter {
         }
 
         return convertView;
+    }
+
+    public String getNameUser(String author) {
+        if (accounts.containsKey(author)){
+            return accounts.get(author).getName();
+        }else {
+            List<AccountLocalObject> list = DaoConfiguration.getInstance().getAccountLocalObjectDao().queryBuilder()
+                    .where(AccountLocalObjectDao.Properties.FullId.eq(author)).list();
+
+            if (list.size() > 0){
+                if (list.get(0) != null){
+                    accounts.put(author, list.get(0) );
+                    return list.get(0).getName();
+                }else{
+                    return author;
+                }
+            }else{
+                return author;
+            }
+
+
+        }
     }
 }

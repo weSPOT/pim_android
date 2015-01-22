@@ -26,13 +26,16 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import net.wespot.pim.R;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class AudioManagerView extends Activity {
 
@@ -67,12 +70,26 @@ public class AudioManagerView extends Activity {
         Intent i = getIntent();
         String filePath = i.getStringExtra("filePath");
 
-        Uri myUri = Uri.parse(filePath); // initialize Uri here
+        Uri myUri1 = null;
+        String myUri = null;
+
+        if (filePath.contains(".m4a")){
+            myUri = filePath; // initialize Uri here
+
+        }else{
+            myUri1 = Uri.parse(filePath); // initialize Uri here
+        }
 
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_SYSTEM);
         try {
-            mediaPlayer.setDataSource(getApplicationContext(), myUri);
+            if (filePath.contains(".m4a")){
+//                mediaPlayer.setDataSource(myUri);
+                playAudio(filePath);
+                return;
+            }else{
+                mediaPlayer.setDataSource(getApplicationContext(), myUri1);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -84,6 +101,51 @@ public class AudioManagerView extends Activity {
 
         play(playButton);
 
+    }
+    private File mediaFile;
+
+    private void playAudio(String mediaUrl) {
+        try {
+            URLConnection cn = new URL(mediaUrl).openConnection();
+            InputStream is = cn.getInputStream();
+
+            // create file to store audio
+            mediaFile = new File(this.getCacheDir(),"mediafile");
+            FileOutputStream fos = new FileOutputStream(mediaFile);
+            byte buf[] = new byte[16 * 1024];
+            Log.i("FileOutputStream", "Download");
+
+            // write to file until complete
+            do {
+                int numread = is.read(buf);
+                if (numread <= 0)
+                    break;
+                fos.write(buf, 0, numread);
+            } while (true);
+            fos.flush();
+            fos.close();
+            Log.i("FileOutputStream", "Saved");
+            MediaPlayer mp = new MediaPlayer();
+
+            // create listener to tidy up after playback complete
+            MediaPlayer.OnCompletionListener listener = new MediaPlayer.OnCompletionListener() {
+                public void onCompletion(MediaPlayer mp) {
+                    // free up media player
+                    mp.release();
+                    Log.i("MediaPlayer.OnCompletionListener", "MediaPlayer Released");
+                }
+            };
+            mp.setOnCompletionListener(listener);
+
+            FileInputStream fis = new FileInputStream(mediaFile);
+            // set mediaplayer data source to file descriptor of input stream
+            mp.setDataSource(fis.getFD());
+            mp.prepare();
+            Log.i("MediaPlayer", "Start Player");
+            mp.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)

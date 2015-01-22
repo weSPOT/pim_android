@@ -58,6 +58,11 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
 
     private DataCollectionLazyListAdapter datAdapter;
 
+    private static final String RUN_ID = "runId";
+    private static final String GENERAL_ITEM = "generalItem";
+
+    private GeneralItemLocalObject generalItemLocalObject;
+
     public InqDataCollectionFragment() {
     }
 
@@ -232,13 +237,13 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
 
     @Override
     public void onListItemClick(View v, int position, GeneralItemLocalObject object) {
-        Intent intent = null;
+        Intent intent;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             intent = new Intent(getActivity(), InqDataCollectionTaskFragment.class);
         } else {
             intent = new Intent(getActivity(), InqDataCollectionTaskCompatFragment.class);
         }
-        intent.putExtra("DataCollectionTask", object.getId());
+        intent.putExtra(InqDataCollectionTaskFragment.DATA_COLLECTION_TASK_ID, object.getId());
 
         startActivity(intent);
     }

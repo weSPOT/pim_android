@@ -39,13 +39,18 @@ import net.wespot.pim.utils.Constants;
 import net.wespot.pim.utils.images.BitmapWorkerTask;
 import net.wespot.pim.utils.layout.BaseFragmentActivity;
 import net.wespot.pim.utils.layout.ButtonManager;
+import net.wespot.pim.view.InqCommunicateFragment;
 import org.celstec.arlearn.delegators.INQ;
+import org.celstec.arlearn2.android.events.MessageEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GameLocalObject;
+import org.celstec.dao.gen.MessageLocalObjectDao;
 
-public class InquiryPhasesActivity extends BaseFragmentActivity implements ListItemClickInterface<View>{
+public class InquiryPhasesActivity extends BaseFragmentActivity implements ListItemClickInterface<View> {
 
     private static final String TAG = "InquiryActivity";
+    private static int numberMessages;
+    private View chatView;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -60,8 +65,12 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        INQ.init(this);
+        INQ.eventBus.register(this);
+
         if (savedInstanceState != null) {
-            INQ.init(this);
+//            INQ.init(this);
+//            INQ.eventBus.register(this);
             INQ.accounts.syncMyAccountDetails();
             INQ.inquiry.setCurrentInquiry(
                     DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(
@@ -79,8 +88,18 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
             Log.e(TAG, "go through savedInstanceState currentInquiry" + savedInstanceState + " " + INQ.inquiry.getCurrentInquiry());
         }
 
-        INQ.inquiry.syncDataCollectionTasks(INQ.inquiry.getCurrentInquiry());
+        ////////////////////////////////////
+        // When coming from notification bar
+        ////////////////////////////////////
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            Long inquiry_id = extras.getLong(InqCommunicateFragment.INQUIRY_ID);
 
+            INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(inquiry_id));
+
+        }
+
+        INQ.inquiry.syncDataCollectionTasks(INQ.inquiry.getCurrentInquiry());
         INQ.threads.syncThreads(INQ.inquiry.getCurrentInquiry().getRunId());
 
         setContentView(R.layout.activity_phases);
@@ -104,6 +123,9 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
 
         inquiry_description_title.setText(INQ.inquiry.getCurrentInquiry().getTitle());
 
+        numberMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
+            .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()), MessageLocalObjectDao.Properties.Read.isNull())
+                .list().size();
 
         LinearLayout listPhasesContainer = (LinearLayout) findViewById(R.id.list_phases);
 
@@ -135,10 +157,10 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
                 R.drawable.ic_data, "", false);
 
         // Messaging button
-        buttonManager.generateButton(listPhasesContainer, zeroLayoutParams,
+        chatView = buttonManager.generateButton(listPhasesContainer, zeroLayoutParams,
                 Constants.ID_COMMUNICATE,
                 R.string.inquiry_title_communicate,
-                R.drawable.ic_communicate, "", true);
+                R.drawable.ic_communicate, String.valueOf(numberMessages), true);
 
         // Invite friends button_old
 //        buttonManager.generateButton(listPhasesContainer, separatorLayoutParams, Constants.ID_FRIENDS,
@@ -149,6 +171,19 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    public void onEventMainThread(MessageEvent messageEvent){
+        numberMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
+                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()), MessageLocalObjectDao.Properties.Read.isNull())
+                .list().size();
+        ((TextView)chatView.findViewById(R.id.notificationText)).setText(String.valueOf(numberMessages));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        INQ.eventBus.unregister(this);
     }
 
     @Override

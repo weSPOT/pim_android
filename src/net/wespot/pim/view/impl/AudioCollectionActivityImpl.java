@@ -4,7 +4,6 @@ import android.app.ActionBar;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import net.wespot.pim.R;
-import org.celstec.arlearn2.android.dataCollection.activities.AudioCollectionActivity;
 
 /**
  * ****************************************************************************
@@ -26,7 +25,7 @@ import org.celstec.arlearn2.android.dataCollection.activities.AudioCollectionAct
  * Contributors: Stefaan Ternier
  * ****************************************************************************
  */
-public class AudioCollectionActivityImpl extends AudioCollectionActivity{
+public class AudioCollectionActivityImpl extends AudioTest{
 
     private ActionBar mActionBar;
 

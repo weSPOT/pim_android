@@ -214,8 +214,8 @@ public class InqDataCollectionTaskCompatFragment extends ActionBarCompat impleme
                 man_val.setGeneralItem(genObject);
                 man_val.takeDataSample(ValueInputCollectionActivityImpl.class);
                 break;
-
         }
+
         return super.onOptionsItemSelected(item);
     }
 

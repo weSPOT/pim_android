@@ -70,16 +70,16 @@ public class TextInputCollectionActivityImpl extends TextInputCollectionActivity
 
     @Override
     public int getCancelButton() {
-        return 0;
+        return R.id.dataCollectionCancel;
     }
 
     @Override
     public int getSubmitButton() {
-        return 0;
+        return R.id.dataCollectionSubmit;
     }
 
     @Override
     public int getHeaderTextView() {
-        return 0; //TODO
+        return R.id.head_list_phases; //TODO
     }
 }

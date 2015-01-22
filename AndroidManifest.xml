@@ -68,7 +68,7 @@
                     android:value=".view.InqMyMediaDataCollectionTaskFragment" />
                   </activity>
         <activity android:name=".view.impl.TextInputCollectionActivityImpl" android:label="@string/app_name"
-                  android:screenOrientation="portrait" >
+                  android:screenOrientation="portrait" android:windowSoftInputMode="adjustResize|stateUnspecified" >
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="net.wespot.pim.view.InqMyMediaDataCollectionTaskFragment" />
@@ -169,6 +169,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
 
 
 

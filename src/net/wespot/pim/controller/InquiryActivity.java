@@ -26,28 +26,28 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.InquiryPagerAdapter;
-import net.wespot.pim.controller.Adapters.NewInquiryPagerAdapter;
 import net.wespot.pim.utils.layout.BaseFragmentActivity;
 import net.wespot.pim.view.InqCreateInquiryFragment;
 import org.celstec.arlearn.delegators.INQ;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class InquiryActivity extends BaseFragmentActivity implements ActionBar.TabListener{
+public class InquiryActivity extends BaseFragmentActivity implements ActionBar.TabListener, ViewPager.OnPageChangeListener{
 
     private static final String TAG = "InquiryActivity";
     public static final String PHASE = "num_phase";
-    private int mStackLevel = 0;
 
-    private NewInquiryPagerAdapter mNewInquiryPagerAdapter;
+    private static final String CURRENT_INQUIRY = "currentInquiry";
+    private static final String CURRENT_INQUIRY_RUN = "currentInquiryRun";
+
 
     /**
      * The {@link android.support.v4.view.ViewPager} that will display the object collection.
      */
     private ViewPager mViewPager;
-    private long num_phase;
 
     public InquiryActivity() {
     }
@@ -63,17 +63,14 @@ public class InquiryActivity extends BaseFragmentActivity implements ActionBar.T
         }
     }
 
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if(INQ.inquiry.getCurrentInquiry() != null){
-            outState.putLong("currentInquiry", INQ.inquiry.getCurrentInquiry().getId());
+        outState.putLong(CURRENT_INQUIRY, INQ.inquiry.getCurrentInquiry().getId());
+        outState.putLong(CURRENT_INQUIRY_RUN, INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
 
-            if(INQ.inquiry.getCurrentInquiry().getRunLocalObject()!=null){
-                outState.putLong("currentInquiryRunLocalObject", INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
-            }
-        }
     }
 
     public void onCreate(Bundle savedInstanceState) {
@@ -83,28 +80,16 @@ public class InquiryActivity extends BaseFragmentActivity implements ActionBar.T
         if (savedInstanceState != null) {
             INQ.init(this);
             INQ.accounts.syncMyAccountDetails();
-            INQ.inquiry.setCurrentInquiry(
-                    DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(
-                            savedInstanceState.getLong("currentInquiry")
-                    )
-            );
-            if(savedInstanceState.getLong("currentInquiryRunLocalObject")!=0){
-                INQ.inquiry.getCurrentInquiry().setRunLocalObject(
-                        DaoConfiguration.getInstance().getRunLocalObjectDao().load(
-                                savedInstanceState.getLong("currentInquiryRunLocalObject")
-                        )
-                );
-                Log.e(TAG, "go through savedInstanceState currentInquiryRunLocalObject" + savedInstanceState + " " + DaoConfiguration.getInstance().getRunLocalObjectDao());
-            }
-            Log.e(TAG, "go through savedInstanceState currentInquiry" + savedInstanceState + " " + INQ.inquiry.getCurrentInquiry());
-        }
+            INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(
+                            savedInstanceState.getLong(CURRENT_INQUIRY) ));
 
-//        if (savedInstanceState != null) {
-//            INQ.init(this);
-//            INQ.accounts.syncMyAccountDetails();
-//            INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(savedInstanceState.getLong("currentInquiry")));
-//            Log.e(TAG, "recover INQ.inquiry is needed in InquiryActivity."+savedInstanceState.getLong("currentInquiry"));
-//        }
+            INQ.inquiry.getCurrentInquiry().setRunLocalObject(DaoConfiguration.getInstance().getRunLocalObjectDao().load(
+                            savedInstanceState.getLong(CURRENT_INQUIRY_RUN) ));
+
+            Log.e(TAG, "go through savedInstanceState currentInquiryRunLocalObject" + savedInstanceState + " " + DaoConfiguration.getInstance().getRunLocalObjectDao());
+            Log.e(TAG, "go through savedInstanceState currentInquiry" + savedInstanceState + " " + INQ.inquiry.getCurrentInquiry());
+
+        }
 
         if (INQ.inquiry.getCurrentInquiry() == null){
             Log.e(TAG, "New inquiry");
@@ -143,15 +128,8 @@ public class InquiryActivity extends BaseFragmentActivity implements ActionBar.T
             // Set up the ViewPager, attaching the adapter.
             mViewPager = (ViewPager) findViewById(R.id.pager);
             mViewPager.setAdapter(mInquiryPagerAdapter);
-            mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-                @Override
-                public void onPageSelected(int position) {
-                    // When swiping between different app sections, select the corresponding tab.
-                    // We can also use ActionBar.Tab#select() to do this if we have a reference to the
-                    // Tab.
-//                    getmActionBarHelper().setSelectedNavigationItem(position);
-                }
-            });
+            mViewPager.setOnPageChangeListener(this);
+
 
             // For each of the sections in the app, add a tab to the action bar.
             for (int i = 0; i < mInquiryPagerAdapter.getCount(); i++) {
@@ -203,5 +181,30 @@ public class InquiryActivity extends BaseFragmentActivity implements ActionBar.T
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 
+    }
+
+
+    @Override
+    public void onPageScrolled(int i, float v, int i1) {
+        Log.e(TAG, "");
+    }
+
+    @Override
+    public void onPageSelected(int i) {
+        Log.e(TAG, "");
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        Log.e(TAG, "");
+        if (state == ViewPager.SCROLL_STATE_IDLE)
+        {
+            if (mViewPager.getCurrentItem() == 2)
+            {
+                // Hide the keyboard.
+                ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE))
+                        .hideSoftInputFromWindow(mViewPager.getWindowToken(), 0);
+            }
+        }
     }
 }

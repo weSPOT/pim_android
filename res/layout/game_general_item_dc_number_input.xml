@@ -119,11 +119,25 @@
 
 
         </LinearLayout>
-        <Button
-                android:id="@+id/dataCollectionSubmit"
-                style="@style/pim.dataCollection.submit"
-                android:text="Submit"
-                />
+        <LinearLayout
+                android:id="@+id/row8"
+                android:orientation="horizontal"
+                style="@style/pim.dataCollection.row" >
+            <Button
+                    android:id="@+id/dataCollectionSubmit"
+                    style="@style/pim.dataCollection.submit"
+                    android:text="Submit"
+                    android:visibility="gone"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"/>
+            <Button
+                    android:id="@+id/dataCollectionCancel"
+                    style="@style/pim.dataCollection.submit"
+                    android:text="Cancel"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"/>
+          </LinearLayout>
+
 
     </LinearLayout>
 </LinearLayout>

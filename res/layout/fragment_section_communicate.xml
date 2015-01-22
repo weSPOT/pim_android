@@ -9,6 +9,7 @@
                   android:orientation="horizontal"
                   android:layout_alignParentBottom="true"
                   android:id="@+id/linearLayout">
+
         <EditText android:id="@+id/communication_enter_message"
                   android:layout_width="304dp"
                   android:layout_height="wrap_content"

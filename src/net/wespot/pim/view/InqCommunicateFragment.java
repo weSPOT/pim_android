@@ -21,10 +21,7 @@ package net.wespot.pim.view;
  * ****************************************************************************
  */
 
-import android.app.ActivityManager;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
+import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,16 +29,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import daoBase.DaoConfiguration;
-import net.wespot.pim.MainActivity;
 import net.wespot.pim.R;
+import net.wespot.pim.SplashActivity;
 import net.wespot.pim.controller.Adapters.ChatAdapter;
 import net.wespot.pim.controller.InquiryPhasesActivity;
 import org.celstec.arlearn.delegators.INQ;
@@ -53,12 +48,13 @@ import org.celstec.dao.gen.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class InqCommunicateFragment extends Fragment implements NotificationListenerInterface {
 
     private static final String TAG = "InqCommunicateFragment";
     private static final String NUMBER = "0123";
+    public static final String INQUIRY_ID = "runId";
+    private static final String COME_FROM_NOTIFICATION = "comeFromNotification";
     private EditText message;
     private ImageButton send;
     private View rootView;
@@ -70,23 +66,24 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     private NotificationManager mNotificationManager;
     private NotificationCompat.InboxStyle mNotificationStyle;
 
+    private HashMap<String, AccountLocalObject> accounts = new HashMap<String, AccountLocalObject>();
 
-    ChatAdapter chatAdapter;
+    private ChatAdapter chatAdapter;
     private HashMap<MessageLocalObject, View> messages_views = new HashMap<MessageLocalObject, View>();
     ArrayList<MessageLocalObject> messages;
 
-//    public static Timer timer;
-
-//    private ViewGroup mContainerView;
-//    private static final long INTERVAL = 5; /* seconds */
-
     private List<MessageLocalObject> messageLocalObjectList;
-    private List<MessageLocalObject> messageLocalObjectList_newMessages;
 
-    Map<String, String> accountNamesID = new HashMap<String, String>();
-
+    private static final String CURRENT_INQUIRY = "currentInquiry";
+    private static final String CURRENT_INQUIRY_RUN = "currentInquiryRun";
+    private static final String CURRENT_MESSAGES = "currentMessages";
 
     public InqCommunicateFragment() {
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     @Override
@@ -102,16 +99,16 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong("currentInquiry", INQ.inquiry.getCurrentInquiry().getId());
-        if(INQ.inquiry.getCurrentInquiry().getRunLocalObject()!=null){
-            outState.putLong("currentInquiryRunLocalObject", INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
-            Log.i(TAG, "Recover in InqCommunicateFragment > onSaveInstanceState & current inq = null");
-        }
+
+        outState.putLong(CURRENT_INQUIRY, INQ.inquiry.getCurrentInquiry().getId());
+        outState.putLong(CURRENT_INQUIRY_RUN, INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
+        Log.e(TAG, "entering communication fragment onCreateView");
         super.onCreateView(inflater, container, savedInstanceState);
 
         rootView = inflater.inflate(R.layout.fragment_section_communicate, container, false);
@@ -120,34 +117,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         send = (ImageButton) rootView.findViewById(R.id.communication_enter_message_button);
         listViewMessages = (ListView) rootView.findViewById(R.id.list_messages);
         listViewMessages.setAdapter(chatAdapter);
-
-//        send.requestFocus();
-
-//        disableSoftKeyboard(message);
-//
-//
-//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.hideSoftInputFromWindow(yourEditText.getWindowToken(), 0);
-//
-//        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.hideSoftInputFromWindow(message.getWindowToken(), 0);
-
-//        InputMethodService keyboard = new InputMethodService();
-//        keyboard.hideWindow();
-
-
-        message.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                v.onTouchEvent(event);
-                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                }
-                return true;
-            }
-        });
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,7 +137,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                     messages_views.put(messageLocalObject, null);
 
                     message.setText("");
-//                    new SendMessage().execute();
                     chatAdapter.notifyDataSetChanged();
                 }
             }
@@ -180,10 +148,20 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        INQ.init(ARL.getContext());
+        INQ.accounts.syncMyAccountDetails();
+
+        Log.e(TAG, INQ.accounts.getLoggedInAccount().getGivenName());
+
+
         if (savedInstanceState != null) {
-            INQ.init(getActivity());
-            INQ.accounts.syncMyAccountDetails();
-            INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(savedInstanceState.getLong("currentInquiry")));
+            INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(
+                    savedInstanceState.getLong(CURRENT_INQUIRY)));
+
+            INQ.inquiry.getCurrentInquiry().setRunLocalObject(DaoConfiguration.getInstance().getRunLocalObjectDao().load(
+                    savedInstanceState.getLong(CURRENT_INQUIRY_RUN) ));
+
+            Log.e(TAG, "recovery from InqCommunicateFragment");
         }
 
         messages = new ArrayList<MessageLocalObject>();
@@ -198,140 +176,128 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
 
         for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
             messages.add(messageLocalObject);
+            messageLocalObject.setRead(true);
+            DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
         }
 
+        numMessages = 0;
+        mBuilder = null;
+
         chatAdapter = new ChatAdapter(getActivity(), messages, messages_views);
+    }
+
+    @Override
+    public boolean acceptNotificationType(String notificationType) {
+        return true;
+    }
+
+    @Override
+    public void handleNotification(HashMap<String, String> map) {
+        if (map.containsKey("type")) {
+            if (map.containsValue("org.celstec.arlearn2.beans.notification.MessageNotification")) {
+                Log.i(TAG, "retrieve messages");
+                if (!ARL.eventBus.isRegistered(this)){
+                    ARL.eventBus.register(this);
+                }
+                Long runId = Long.parseLong(map.get("runId"));
+                INQ.runs.syncRun(runId);
+                INQ.messages.syncMessagesForDefaultThread(runId);
+            }
+        }
     }
 
     public void onEventMainThread(MessageEvent messageEvent) {
         Log.e(TAG, "message synced: " + messageEvent.getRunId());
 
         receiveMessage(messageEvent.getRunId());
-
-
-
-//                            ActivityManager activityManager = (ActivityManager) ARL.getContext().getSystemService(Context.ACTIVITY_SERVICE);
-//                            List<ActivityManager.RunningTaskInfo> services = activityManager
-//                                    .getRunningTasks(Integer.MAX_VALUE);
-//                            boolean isActivityFound = false;
-
-//                            if (services.get(0).topActivity.getPackageName().toString()
-//                                    .equalsIgnoreCase(ARL.getContext().getPackageName().toString())) {
-//                                isActivityFound = true;
-//                            }
-//
-//                            if (isActivityFound) {
-//                                Log.e(TAG, "pim opened");
-////                    if (!messages_views.containsKey(messageLocalObject)){
-////                        messages.add(messageLocalObject);
-////                    }else{
-////                        ViewGroup viewUpdate = (ViewGroup) chatAdapter.getViewFromMessage(messageLocalObject);
-////                        if (viewUpdate != null){
-////                            viewUpdate.inflate(getActivity(),R.layout.entry_messages, null);
-////                            viewUpdate.invalidate();
-////                        }
-////                    }
-//                            } else {
-//                                Log.e(TAG, "pim closed");
-//                                // int number_messages_before = messageLocalObjectList.size();
-////                                createNotification(messageLocalObject.getBody());
-//                            }
-//            }
-//        }
-
-//                    chatAdapter.notifyDataSetChanged();
-
-
-//
-//
-//
-//                    messageLocalObjectList_newMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-//                            .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
-//                            .orderAsc(MessageLocalObjectDao.Properties.Time)
-//                            .list();
-//
-//                    if (messageLocalObjectList_newMessages.size() != num){
-//
-//
-//
-//                        // To know if the PIM is running or not
-//                        ActivityManager activityManager = (ActivityManager) ARL.getContext().getSystemService(Context.ACTIVITY_SERVICE);
-//                        List<ActivityManager.RunningTaskInfo> services = activityManager
-//                                .getRunningTasks(Integer.MAX_VALUE);
-//                        boolean isActivityFound = false;
-//
-//                        if (services.get(0).topActivity.getPackageName().toString()
-//                                .equalsIgnoreCase(ARL.getContext().getPackageName().toString())) {
-//                            isActivityFound = true;
-//                        }
-////
-//                        messageLocalObjectList_newMessages.removeAll(messageLocalObjectList);
-//                        for (MessageLocalObject messageLocalObject : messageLocalObjectList_newMessages) {
-//                            // If it is running we don't show the notification
-//                            if (isActivityFound) {
-//                                Log.e(TAG, "si");
-//                        //                    if (!messages_views.containsKey(messageLocalObject)){
-//                        //                        messages.add(messageLocalObject);
-//                        //                    }else{
-//                        //                        ViewGroup viewUpdate = (ViewGroup) chatAdapter.getViewFromMessage(messageLocalObject);
-//                        //                        if (viewUpdate != null){
-//                        //                            viewUpdate.inflate(getActivity(),R.layout.entry_messages, null);
-//                        //                            viewUpdate.invalidate();
-//                        //                        }
-//                        //                    }
-//                            } else {
-//                                // int number_messages_before = messageLocalObjectList.size();
-//                                createNotification(messageLocalObject.getBody());
-//                            }
-//
-//                            messageLocalObjectList.add(messageLocalObject);
-//                            messageLocalObjectList_newMessages.remove(messageLocalObject);
-//                        }
-//                        chatAdapter.notifyDataSetChanged();
-//                    }
-
     }
 
     private void receiveMessage(Long runId) {
-        InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().queryBuilder().where(
-                InquiryLocalObjectDao.Properties.RunId.eq(runId)
-        ).list().get(0);
-
-        if (!inquiryLocalObject.equals(null)){
-            INQ.inquiry.setCurrentInquiry(inquiryLocalObject);
-        }
-
         messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
+                .where(MessageLocalObjectDao.Properties.RunId.eq(runId))
                 .orderAsc(MessageLocalObjectDao.Properties.Time)
                 .list();
 
+        ////////////////////////////////////
+        // First check if the PIM is running
+        ////////////////////////////////////
         if (isPimRunning()){
-            for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
-                if (messageLocalObject.getRead() == null) {
 
-                    // No notification but we need to update the view
-                    if (!messages_views.containsKey(messageLocalObject)){
-                        messages.add(messageLocalObject);
-                    }else{
-                        ViewGroup viewUpdate = (ViewGroup) chatAdapter.getViewFromMessage(messageLocalObject);
-                        if (viewUpdate != null){
-                            viewUpdate.inflate(getActivity(),R.layout.entry_messages, null);
-                            viewUpdate.invalidate();
+            //////////////////////////////////////////
+            // If there is no INQ.inquiry we create it
+            //////////////////////////////////////////
+            if (INQ.inquiry.getCurrentInquiry() == null){
+
+                InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().queryBuilder().where(
+                    InquiryLocalObjectDao.Properties.RunId.eq(runId)
+                ).list().get(0);
+
+                if (!inquiryLocalObject.equals(null)) {
+                    INQ.inquiry.setCurrentInquiry(inquiryLocalObject);
+                }
+            }
+
+            /////////////////////////////////////////////////////
+            // If the current run is the same as the that belongs
+            // to the message display messages
+            /////////////////////////////////////////////////////
+            if (INQ.inquiry.getCurrentInquiry().getRunId() == runId){
+
+                for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
+                    /////////////////////////////////////////////////////
+                    // For those messages that are not shown process them
+                    /////////////////////////////////////////////////////
+                    if (messageLocalObject.getRead() == null) {
+                        // No notification but we need to update the view
+                        //////////////////
+                        // If the message
+                        //////////////////
+                        ///////////////////////////////////////////////////////////////////////
+                        // We are inside the inquiry but maybe we need an internal notification
+                        ///////////////////////////////////////////////////////////////////////
+
+
+
+
+                        if (!messages_views.containsKey(messageLocalObject)){
+                            if (messages != null){
+                                messages.add(messageLocalObject);
+                            }
+                        }else{
+                            ViewGroup viewUpdate = (ViewGroup) chatAdapter.getViewFromMessage(messageLocalObject);
+                            if (viewUpdate != null){
+                                viewUpdate.inflate(getActivity(),R.layout.entry_messages, null);
+                                viewUpdate.invalidate();
+                            }
                         }
+                        if (chatAdapter != null){
+                            chatAdapter.notifyDataSetChanged();
+                        }
+
+
+
+                        messageLocalObject.setRead(true);
+                        DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
                     }
+                }
+            }else{
+                for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
+                    if (messageLocalObject.getRead() == null) {
 
-                    chatAdapter.notifyDataSetChanged();
+                        createNotification(messageLocalObject, runId);
 
-                    messageLocalObject.setRead(true);
-                    DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
+                        messageLocalObject.setRead(true);
+
+                        DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
+                    }
                 }
             }
         }else{
+
             for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
                 if (messageLocalObject.getRead() == null) {
 
-                    createNotification(messageLocalObject);
+                    createNotification(messageLocalObject, runId);
 
                     messageLocalObject.setRead(true);
 
@@ -341,11 +307,62 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         }
     }
 
-    @Override
-    public void onDestroy() {
-        ARL.eventBus.unregister(this);
-        super.onDestroy();
+    private void createNotification(MessageLocalObject messageLocalObject, Long runId) {
+
+        if (mBuilder == null){
+
+            if (mNotificationStyle == null){
+                mNotificationStyle = new NotificationCompat.InboxStyle();
+            }
+
+            InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().queryBuilder().where(
+                    InquiryLocalObjectDao.Properties.RunId.eq(runId)
+            ).list().get(0);
+
+            mBuilder = new NotificationCompat.Builder(ARL.getContext())
+                    .setSmallIcon(R.drawable.ic_launcher)
+                    .setContentTitle(inquiryLocalObject.getTitle())
+                    .setAutoCancel(true)
+                    .setSortKey("0")
+                    .setDefaults(Notification.DEFAULT_SOUND)
+                    .setStyle(mNotificationStyle
+                            .addLine(getNameUser(messageLocalObject.getAuthor()) + ": " + messageLocalObject.getBody())
+                            .setSummaryText(++numMessages != 1 ? numMessages + " new messages" : numMessages + " new message"));
+
+            // Creates an explicit intent for an Activity in your app
+            Intent resultIntent = new Intent(ARL.getContext(), InquiryPhasesActivity.class);
+            resultIntent.putExtra(INQUIRY_ID, inquiryLocalObject.getId());
+//            resultIntent.putExtra(COME_FROM_NOTIFICATION, inquiryLocalObject.getId());
+            // The stack builder object will contain an artificial back stack for the
+            // started Activity.
+            // This ensures that navigating backward from the Activity leads out of
+            // your application to the Home screen.
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(ARL.getContext());
+            // Adds the back stack for the Intent (but not the Intent itself)
+            stackBuilder.addParentStack(SplashActivity.class);
+            // Adds the Intent that starts the Activity to the top of the stack
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(
+                            0,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                    );
+            mBuilder.setContentIntent(resultPendingIntent);
+        }else{
+
+            mNotificationStyle
+                    .addLine(getNameUser(messageLocalObject.getAuthor()) + ": " + messageLocalObject.getBody())
+                    .setSummaryText(++numMessages!= 1?numMessages + " new messages":numMessages + " new message");
+        }
+
+        if (mNotificationManager == null){
+            mNotificationManager = (NotificationManager) ARL.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+
+        // mId allows you to update the notification later on.
+        mNotificationManager.notify(Integer.parseInt(NUMBER), mBuilder.build());
     }
+
 
     public boolean isPimRunning(){
         ActivityManager activityManager = (ActivityManager) ARL.getContext().getSystemService(Context.ACTIVITY_SERVICE);
@@ -363,81 +380,36 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     }
 
 
-    @Override
-    public boolean acceptNotificationType(String notificationType) {
-        return true;
-    }
 
-    @Override
-    public void handleNotification(HashMap<String, String> map) {
-        if (map.containsKey("type")) {
-            if (map.containsValue("org.celstec.arlearn2.beans.notification.MessageNotification")) {
-                Log.i(TAG, "retrieve messages");
-                if (!ARL.eventBus.isRegistered(this)){
-                    ARL.eventBus.register(this);
+    public String getNameUser(String author) {
+        if (accounts.containsKey(author)){
+            return accounts.get(author).getName();
+        }else {
+            List<AccountLocalObject> list = DaoConfiguration.getInstance().getAccountLocalObjectDao().queryBuilder()
+                    .where(AccountLocalObjectDao.Properties.FullId.eq(author)).list();
+
+            if (list.size() > 0){
+                if (list.get(0) != null){
+                    accounts.put(author, list.get(0) );
+                    return list.get(0).getName();
+                }else{
+                    return author;
                 }
-
-                INQ.runs.syncRun(Long.parseLong(map.get("runId")));
-                RunLocalObject runLocalObject = null;
-                do {
-                    runLocalObject  = DaoConfiguration.getInstance().getRunLocalObjectDao().load( Long.parseLong(map.get("runId")) );
-                }while(runLocalObject == null);
-
-                INQ.messages.syncMessagesForDefaultThread(runLocalObject.getId());
+            }else{
+                return author;
             }
+
+
         }
     }
 
-    private void createNotification(MessageLocalObject messageLocalObject) {
 
-        if (mBuilder == null){
-
-            if (mNotificationStyle == null){
-                mNotificationStyle = new NotificationCompat.InboxStyle();
-            }
-            mBuilder = new NotificationCompat.Builder(ARL.getContext())
-                    .setSmallIcon(R.drawable.ic_launcher)
-                    .setContentTitle("My notification")
-                    .setAutoCancel(true)
-                    .setSortKey("0")
-                    .setStyle(mNotificationStyle
-                                    .addLine(messageLocalObject.getAuthor()+": "+messageLocalObject.getBody())
-                                    .setSummaryText(++numMessages + " new messages")
-                    )
-            ;
-            // Creates an explicit intent for an Activity in your app
-            Intent resultIntent = new Intent(ARL.getContext(), InquiryPhasesActivity.class);
-
-
-            // The stack builder object will contain an artificial back stack for the
-            // started Activity.
-            // This ensures that navigating backward from the Activity leads out of
-            // your application to the Home screen.
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(ARL.getContext());
-            // Adds the back stack for the Intent (but not the Intent itself)
-            stackBuilder.addParentStack(MainActivity.class);
-            // Adds the Intent that starts the Activity to the top of the stack
-            stackBuilder.addNextIntent(resultIntent);
-            PendingIntent resultPendingIntent =
-                    stackBuilder.getPendingIntent(
-                            0,
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                    );
-            mBuilder.setContentIntent(resultPendingIntent);
-        }else{
-            mNotificationStyle
-                    .addLine(messageLocalObject.getAuthor() + ": " + messageLocalObject.getBody())
-                    .setSummaryText(++numMessages + " new messages");
-        }
-
-        if (mNotificationManager == null){
-            mNotificationManager = (NotificationManager) ARL.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        }
-
-        // mId allows you to update the notification later on.
-        mNotificationManager.notify(Integer.parseInt(NUMBER), mBuilder.build());
+    @Override
+    public void onDestroy() {
+        ARL.eventBus.unregister(this);
+        mBuilder = null;
+        super.onDestroy();
     }
-
 
 //    public synchronized void onEventMainThread(TimeMessageEvent timeMessageEvent) {
 ////        Log.i(TAG, "retrieve messages");

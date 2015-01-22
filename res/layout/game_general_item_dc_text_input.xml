@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical"
                 android:background="#99000000"
                 android:layout_gravity="center_vertical"
@@ -26,42 +26,52 @@
                   android:textColor="@color/app.base.white"
                   android:textAlignment="center"
                   android:gravity="center"
+                  android:layout_margin="10dp"
                   android:textStyle="italic"
                   android:layout_marginTop="10dp"
                   android:textSize="22dp"/>
+
         <EditText
                 android:id="@+id/dataCollectionText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginLeft="20dp"
                 android:hint="Type your text..."
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="25dp"
+                android:cursorVisible="true"
+                android:gravity="top"
                 android:background="@drawable/background_edittext"
-                android:gravity="top|left"
                 android:textStyle="italic"
                 android:textColor="@color/app.base.grey_soft"
                 android:padding="15dp"
-                android:layout_marginBottom="20dp"/>
+                android:layout_margin="20dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/text"/>
 
-        <Button
-                android:id="@+id/dataCollectionSubmit"
-                style="@style/pim.dataCollection.submit.text"
-                android:text="Submit"
-                android:layout_weight="3"
-                android:layout_gravity="bottom"
-                />
+        <LinearLayout
+                android:id="@+id/row8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="10dp"
+                android:layout_below="@id/dataCollectionText">
 
-        <Button
-                android:id="@+id/dataCollectionCancel"
-                style="@style/pim.dataCollection.submit.text"
-                android:text="Cancel"
-                android:layout_weight="3"
-                android:layout_gravity="bottom"
-                />
+            <Button
+                    android:id="@+id/dataCollectionSubmit"
+                    style="@style/pim.dataCollection.submit"
+                    android:text="Submit"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    android:layout_marginLeft="31dp" />
+
+            <Button
+                    android:id="@+id/dataCollectionCancel"
+                    style="@style/pim.dataCollection.submit"
+                    android:text="Cancel"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_toRightOf="@+id/dataCollectionSubmit"/>
+
+        </LinearLayout>
     </LinearLayout>
-
-
-
-</LinearLayout>
+</RelativeLayout>

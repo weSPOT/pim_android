@@ -17,7 +17,8 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+        android:id="@+id/fragment_detail_image">
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
@@ -47,5 +48,111 @@
             android:gravity="center"
             android:textSize="30sp"
             android:padding="32dp"/>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/mediaBar"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="6dip"
+                    android:visibility="gone"
+                    android:layout_gravity="center">
+
+        <ImageButton
+                android:id="@+id/playPauseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="24dp"
+                android:layout_margin="10dip"
+                android:src="@android:drawable/ic_media_play" />
+
+
+        <ImageView
+                android:id="@+id/deleteRecordingButton"
+                android:layout_width="40dip"
+                android:layout_height="40dip"
+                android:visibility="gone"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="4dip"
+                android:src="@android:drawable/ic_media_play" />
+
+
+        <SeekBar
+                android:id="@+id/seekbar"
+                android:layout_toRightOf="@id/playPauseButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="14dp"
+                android:layout_centerVertical="true"
+                android:progressDrawable="@drawable/game_general_item_seekbar_progress_theme1"
+                android:thumb="@drawable/game_general_item_seekbar_thumb_theme1"
+                />
+
+
+
+
+    </RelativeLayout>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/mediaBarVideo"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="6dip"
+                    android:visibility="gone"
+                    android:layout_marginBottom="40dp"
+                    android:layout_gravity="center_horizontal|bottom">
+
+        <VideoView
+                android:id="@+id/videoView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/relativeLayout2"/>
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|bottom" android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
+                    android:id="@+id/relativeLayout2">
+
+
+        <ImageButton
+                    android:id="@+id/playPauseButtonVideo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="24dp"
+                    android:layout_margin="10dip"
+                    android:src="@android:drawable/ic_media_play" />
+
+
+            <ImageView
+                    android:id="@+id/deleteRecordingButtonVideo"
+                    android:layout_width="40dip"
+                    android:layout_height="40dip"
+                    android:visibility="gone"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:padding="4dip"
+                    android:src="@android:drawable/ic_media_play" />
+
+
+
+            <SeekBar
+                    android:id="@+id/seekbarVideo"
+                    android:layout_toRightOf="@id/playPauseButtonVideo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="14dp"
+                    android:layout_centerVertical="true"
+                    android:progressDrawable="@drawable/game_general_item_seekbar_progress_theme1"
+                    android:thumb="@drawable/game_general_item_seekbar_thumb_theme1"
+                    />
+
+
+
+
+        </RelativeLayout>
+    </RelativeLayout>
 
 </FrameLayout>

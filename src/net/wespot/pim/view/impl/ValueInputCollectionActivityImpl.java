@@ -31,6 +31,7 @@ public class ValueInputCollectionActivityImpl extends ValueInputCollectionActivi
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         mActionBar = getActionBar();
         mActionBar.setHomeButtonEnabled(false);
@@ -40,6 +41,8 @@ public class ValueInputCollectionActivityImpl extends ValueInputCollectionActivi
         mActionBar.setDisplayShowTitleEnabled(true);
 
         setTitle("Numeric data collection");
+
+
     }
     @Override
     public int getTextView() {
@@ -48,7 +51,7 @@ public class ValueInputCollectionActivityImpl extends ValueInputCollectionActivi
 
     @Override
     public int getHeaderTextView() {
-        return 0; //TODO
+        return R.id.head_list_phases; //TODO
     }
 
     @Override
@@ -63,7 +66,7 @@ public class ValueInputCollectionActivityImpl extends ValueInputCollectionActivi
 
     @Override
     public int getCancelButton() {
-        return 0; //TODO
+        return R.id.dataCollectionCancel; //TODO
     }
 
     @Override

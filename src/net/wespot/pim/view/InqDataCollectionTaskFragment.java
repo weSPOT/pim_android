@@ -23,12 +23,12 @@ package net.wespot.pim.view;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.*;
@@ -43,8 +43,6 @@ import net.wespot.pim.view.impl.TextInputCollectionActivityImpl;
 import net.wespot.pim.view.impl.ValueInputCollectionActivityImpl;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.dataCollection.*;
-import org.celstec.arlearn2.android.delegators.ARL;
-import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.arlearn2.android.util.MediaFolders;
 import org.celstec.dao.gen.GeneralItemLocalObject;
@@ -60,6 +58,13 @@ import java.io.File;
 public class InqDataCollectionTaskFragment extends BaseFragmentActivity implements ListItemClickInterface<ResponseLocalObject> {
 
     private static final String TAG = "InqDataCollectionTaskFragment";
+    private static final String CURRENT_INQUIRY = "current_inquiry";
+    private static final String FRAGMENT_CONTENT = "fragment_content";
+
+    private static final String RUN_ID = "runId";
+    public static final String GENERAL_ITEM = "generalItem";
+    private static final String PREFS_NAME = "sharedPreferences";
+    public static final String DATA_COLLECTION_TASK_ID = "dataCollectionTask";
     private long generalItemId;
 
     private GeneralItemLocalObject genObject;
@@ -70,15 +75,13 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     private boolean isDataCollectionValue;
     private boolean isDataCollectionText;
 
-    private PictureManager man_pic = new PictureManager(this);
-    private VideoManager man_vid = new VideoManager(this);
-    private AudioInputManager man_aud = new AudioInputManager(this);
-    private ValueInputManager man_val = new ValueInputManager(this);
-    private TextInputManager man_tex = new TextInputManager(this);
+    private PictureManager man_pic;
+    private VideoManager man_vid;
+    private AudioInputManager man_aud;
+    private ValueInputManager man_val;
+    private TextInputManager man_tex;
 
     public static final Object PICTURE_RESULT = 0;
-
-    private Context context;
 
     private File bitmapFile;
 
@@ -89,80 +92,92 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     public InqDataCollectionTaskFragment() {
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-        context = this;
-        ARL.eventBus.register(this);
-
-        if (savedInstanceState != null) {
-            INQ.init(this);
-            INQ.accounts.syncMyAccountDetails();
-            INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(savedInstanceState.getLong("currentInquiry")));
-        }
-
-        setContentView(R.layout.fragment_data_collection_task);
-
-        Bundle extras = getIntent().getExtras();
-        if (extras != null){
-            Log.i(TAG,"Entering in data collection number: "+extras.getLong("DataCollectionTask")+"");
-
-            generalItemId = extras.getLong("DataCollectionTask");
-
-            genObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(generalItemId);
-
-            JSONObject json = null;
-            try {
-                json = new JSONObject(genObject.getBean());
-                JSONObject openQuestionJson = json.getJSONObject("openQuestion");
-
-                isDataCollectionAudio = openQuestionJson.getBoolean("withAudio");
-                isDataCollectionText = openQuestionJson.getBoolean("withText");
-                isDataCollectionPicture = openQuestionJson.getBoolean("withPicture");
-                isDataCollectionValue = openQuestionJson.getBoolean("withValue");
-                isDataCollectionVideo = openQuestionJson.getBoolean("withVideo");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            genObject.getResponses();
-
-            TextView data_collection_tasks_description = (TextView) findViewById(R.id.data_collection_tasks_description_list);
-            TextView data_collection_tasks_title = (TextView) findViewById(R.id.data_collection_tasks_title_list);
-
-            data_collection_tasks_title.setText(genObject.getTitle());
-            data_collection_tasks_description.setText(genObject.getDescription());
-
-            if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
-
-                Bundle data = new Bundle();
-                data.putLong("generalItemId", generalItemId);
-
-                frag = new ImageGridFragment();
-                frag.setArguments(data);
-
-                ft.add(R.id.content_images, frag, TAG);
-                ft.commit();
-            }
-
-            getActionBar().setTitle(getResources().getString(R.string.actionbar_list_data_collection_task));
-        }
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putLong(GENERAL_ITEM, generalItemId);
     }
-
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ARL.eventBus.unregister(this);
+//        INQ.eventBus.unregister(this);
     }
     @Override
     protected void onResume() {
         super.onResume();
     }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.fragment_data_collection_task);
+
+        if (savedInstanceState != null) {
+            INQ.init(this);
+            INQ.accounts.syncMyAccountDetails();
+        }
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null){
+
+            Log.i(TAG,"Entering in data collection number: "+extras.getLong("DataCollectionTask")+"");
+
+            generalItemId = extras.getLong(GENERAL_ITEM);
+            genObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(generalItemId);
+
+        }else{
+            Log.i(TAG, "Failed because there is no extra parameter");
+        }
+
+
+        defineValueInputManager();
+        definePictureInputManager();
+        defineAudioInputManager();
+        defineTextInputManager();
+        defineVideoInputManager();
+
+        JSONObject json = null;
+        try {
+            json = new JSONObject(genObject.getBean());
+            JSONObject openQuestionJson = json.getJSONObject("openQuestion");
+
+            isDataCollectionAudio = openQuestionJson.getBoolean("withAudio");
+            isDataCollectionText = openQuestionJson.getBoolean("withText");
+            isDataCollectionPicture = openQuestionJson.getBoolean("withPicture");
+            isDataCollectionValue = openQuestionJson.getBoolean("withValue");
+            isDataCollectionVideo = openQuestionJson.getBoolean("withVideo");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        genObject.getResponses();
+
+        TextView data_collection_tasks_description = (TextView) findViewById(R.id.data_collection_tasks_description_list);
+        TextView data_collection_tasks_title = (TextView) findViewById(R.id.data_collection_tasks_title_list);
+
+        data_collection_tasks_title.setText(genObject.getTitle());
+        data_collection_tasks_description.setText(genObject.getDescription());
+
+        if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
+
+            Bundle data = new Bundle();
+            data.putLong(GENERAL_ITEM, generalItemId);
+
+            frag = new ImageGridFragment();
+            frag.setArguments(data);
+
+            ft.add(R.id.content_images, frag, TAG);
+            ft.commit();
+        }
+
+        getActionBar().setTitle(getResources().getString(R.string.actionbar_list_data_collection_task));
+    }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -193,28 +208,23 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
         switch (item.getItemId()) {
             case R.id.menu_data_collection_image:
 //                chooseCapturingPicture();
-                man_pic.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
-                man_pic.setGeneralItem(genObject);
+                definePictureInputManager();
                 man_pic.takeDataSample(null);
                 break;
             case R.id.menu_data_collection_video:
-                man_vid.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
-                man_vid.setGeneralItem(genObject);
+                defineVideoInputManager();
                 man_vid.takeDataSample(null);
                 break;
             case R.id.menu_data_collection_audio:
-                man_aud.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
-                man_aud.setGeneralItem(genObject);
+                defineAudioInputManager();
                 man_aud.takeDataSample(AudioCollectionActivityImpl.class);
                 break;
             case R.id.menu_data_collection_text:
-                man_tex.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
-                man_tex.setGeneralItem(genObject);
+                defineTextInputManager();
                 man_tex.takeDataSample(TextInputCollectionActivityImpl.class);
                 break;
             case R.id.menu_data_collection_numeric:
-                man_val.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
-                man_val.setGeneralItem(genObject);
+                defineValueInputManager();
                 man_val.takeDataSample(ValueInputCollectionActivityImpl.class);
                 break;
 
@@ -274,13 +284,6 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-//        public static final int PICTURE_RESULT = 1;
-//        public static final int AUDIO_RESULT = 2;
-//        public static final int VIDEO_RESULT = 3;
-//        public static final int TEXT_RESULT = 4;
-//        public static final int VALUE_RESULT = 5;
-
         switch (requestCode){
             case DataCollectionManager.PICTURE_RESULT:
                 man_pic.onActivityResult(requestCode, resultCode, data);
@@ -302,9 +305,34 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
         INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
     }
 
-    public void onEventMainThread(ResponseEvent responseEvent){
-
+    private void defineAudioInputManager() {
+        man_aud = new AudioInputManager(this);
+        man_aud.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+        man_aud.setGeneralItem(genObject);
     }
 
+    private void defineTextInputManager() {
+        man_tex = new TextInputManager(this);
+        man_tex.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+        man_tex.setGeneralItem(genObject);
+    }
 
+    private void defineVideoInputManager() {
+        man_vid = new VideoManager(this);
+        man_vid.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+        man_vid.setGeneralItem(genObject);
+    }
+
+    private void defineValueInputManager() {
+        man_val = new ValueInputManager(this);
+        Log.e(TAG, man_val.toString()+" ");
+        man_val.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+        man_val.setGeneralItem(genObject);
+    }
+
+    private void definePictureInputManager() {
+        man_pic = new PictureManager(this);
+        man_pic.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+        man_pic.setGeneralItem(genObject);
+    }
 }
