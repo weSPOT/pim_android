@@ -53,9 +53,9 @@ public class ButtonManager {
         view.setLayoutParams(firstLayoutParams);
 
         if (lastbutton){
-            view.setBackground(context.getResources().getDrawable(R.drawable.btn_background_last));
+            view.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_background_last));
         }else{
-            view.setBackground(context.getResources().getDrawable(R.drawable.btn_background));
+            view.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.btn_background));
         }
 
         ((TextView) view.findViewById(R.id.message)).setText(context.getResources().getString(phases_invite_new_friend));

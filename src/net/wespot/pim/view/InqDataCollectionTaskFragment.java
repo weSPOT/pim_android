@@ -125,7 +125,7 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
 
             Log.i(TAG,"Entering in data collection number: "+extras.getLong("DataCollectionTask")+"");
 
-            generalItemId = extras.getLong(GENERAL_ITEM);
+            generalItemId = extras.getLong(DATA_COLLECTION_TASK_ID);
             genObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(generalItemId);
 
         }else{
