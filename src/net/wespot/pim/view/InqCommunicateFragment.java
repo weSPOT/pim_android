@@ -149,10 +149,9 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         super.onCreate(savedInstanceState);
 
         INQ.init(ARL.getContext());
+        ARL.eventBus.register(this);
         INQ.accounts.syncMyAccountDetails();
-
-        Log.e(TAG, INQ.accounts.getLoggedInAccount().getGivenName());
-
+        INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
 
         if (savedInstanceState != null) {
             INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(
@@ -165,9 +164,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         }
 
         messages = new ArrayList<MessageLocalObject>();
-
-        ARL.eventBus.register(this);
-        INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
 
         messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
                 .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
@@ -206,7 +202,7 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         }
     }
 
-    public void onEventMainThread(MessageEvent messageEvent) {
+    public synchronized void onEventMainThread(MessageEvent messageEvent) {
         Log.e(TAG, "message synced: " + messageEvent.getRunId());
 
         receiveMessage(messageEvent.getRunId());
@@ -221,7 +217,7 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         ////////////////////////////////////
         // First check if the PIM is running
         ////////////////////////////////////
-        if (isPimRunning()){
+//        if (isPimRunning()){
 
             //////////////////////////////////////////
             // If there is no INQ.inquiry we create it
@@ -272,12 +268,13 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                         }
                         if (chatAdapter != null){
                             chatAdapter.notifyDataSetChanged();
+                            messageLocalObject.setRead(true);
+                            DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
                         }
 
 
 
-                        messageLocalObject.setRead(true);
-                        DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
+
                     }
                 }
             }else{
@@ -292,19 +289,19 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                     }
                 }
             }
-        }else{
-
-            for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
-                if (messageLocalObject.getRead() == null) {
-
-                    createNotification(messageLocalObject, runId);
-
-                    messageLocalObject.setRead(true);
-
-                    DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
-                }
-            }
-        }
+//        }else{
+//
+//            for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
+//                if (messageLocalObject.getRead() == null) {
+//
+//                    createNotification(messageLocalObject, runId);
+//
+//                    messageLocalObject.setRead(true);
+//
+//                    DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
+//                }
+//            }
+//        }
     }
 
     private void createNotification(MessageLocalObject messageLocalObject, Long runId) {
@@ -324,7 +321,7 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                     .setContentTitle(inquiryLocalObject.getTitle())
                     .setAutoCancel(true)
                     .setSortKey("0")
-                    .setDefaults(Notification.DEFAULT_SOUND)
+                    .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE)
                     .setStyle(mNotificationStyle
                             .addLine(getNameUser(messageLocalObject.getAuthor()) + ": " + messageLocalObject.getBody())
                             .setSummaryText(++numMessages != 1 ? numMessages + " new messages" : numMessages + " new message"));

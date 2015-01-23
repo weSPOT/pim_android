@@ -171,7 +171,7 @@ public class InqQuestionFragment extends Fragment implements ListItemClickInterf
         }
     }
 
-    private synchronized void onEventBackgroundThread(CreateQuestionObject questionObject){
+    public synchronized void onEventBackgroundThread(CreateQuestionObject questionObject){
         PropertiesAdapter pa = PropertiesAdapter.getInstance();
         if (pa != null) {
             String token = pa.getAuthToken();

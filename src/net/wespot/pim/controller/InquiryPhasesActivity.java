@@ -66,11 +66,9 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
         super.onCreate(savedInstanceState);
 
         INQ.init(this);
-        INQ.eventBus.register(this);
+//        INQ.eventBus.register(this);
 
         if (savedInstanceState != null) {
-//            INQ.init(this);
-//            INQ.eventBus.register(this);
             INQ.accounts.syncMyAccountDetails();
             INQ.inquiry.setCurrentInquiry(
                     DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(
@@ -160,7 +158,9 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
         chatView = buttonManager.generateButton(listPhasesContainer, zeroLayoutParams,
                 Constants.ID_COMMUNICATE,
                 R.string.inquiry_title_communicate,
-                R.drawable.ic_communicate, String.valueOf(numberMessages), true);
+                R.drawable.ic_communicate, "", true);
+
+//        String.valueOf(numberMessages)
 
         // Invite friends button_old
 //        buttonManager.generateButton(listPhasesContainer, separatorLayoutParams, Constants.ID_FRIENDS,
@@ -174,16 +174,16 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
     }
 
     public void onEventMainThread(MessageEvent messageEvent){
-        numberMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()), MessageLocalObjectDao.Properties.Read.isNull())
-                .list().size();
-        ((TextView)chatView.findViewById(R.id.notificationText)).setText(String.valueOf(numberMessages));
+//        numberMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
+//                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()), MessageLocalObjectDao.Properties.Read.isNull())
+//                .list().size();
+//        ((TextView)chatView.findViewById(R.id.notificationText)).setText(String.valueOf(numberMessages));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        INQ.eventBus.unregister(this);
+//        INQ.eventBus.unregister(this);
     }
 
     @Override

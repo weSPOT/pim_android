@@ -195,7 +195,8 @@ public class InqCreateInquiryFragment extends Fragment{
     }
 
     private void save_inquiry() {
-        new_inquiry.setDescription(getResources().getString(R.string.wonder_moment_placeholder_description));
+//        new_inquiry.setDescription(getResources().getString(R.string.wonder_moment_placeholder_description));
+        new_inquiry.setDescription(wm_content.getText().toString());
         new_inquiry.setTitle(wm_title.getText().toString());
 
         switch ((int)wm_visibility.getSelectedItemId()){

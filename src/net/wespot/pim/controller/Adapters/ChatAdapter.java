@@ -1,7 +1,6 @@
 package net.wespot.pim.controller.Adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,10 +80,6 @@ public class ChatAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         MessageLocalObject message = (MessageLocalObject) this.getItem(position);
-        Log.e(TAG, message.getBody()+"");
-        Log.e(TAG, message.getAuthor()+"");
-        Log.e(TAG, position+"");
-        Log.e(TAG, INQ.accounts.getLoggedInAccount()+"");
         if(INQ.accounts.getLoggedInAccount().getFullId().equals(message.getAuthor())){
 //            if (!message.getRead()){
 //                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages_not_sync, parent, false);

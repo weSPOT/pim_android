@@ -182,9 +182,9 @@ public class PimInquiriesFragment extends BaseFragmentActivity implements ListIt
                 Toast.makeText(this, getResources().getString(R.string.menu_refreshing), Toast.LENGTH_SHORT).show();
                 INQ.inquiry.syncInquiries();
                 break;
-            case R.id.menu_new_inquiry:
-                createNewInquiry();
-                break;
+//            case R.id.menu_new_inquiry:
+//                createNewInquiry();
+//                break;
         }
         return super.onOptionsItemSelected(item);
     }

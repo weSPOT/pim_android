@@ -10,7 +10,6 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 import net.wespot.pim.R;
 
 /**
@@ -70,17 +69,17 @@ public class QuestionDialogFragment extends DialogFragment {
         dialog_description = (EditText)view.findViewById(R.id.new_question_description_dialog);
         dialog_tags = (EditText)view.findViewById(R.id.new_question_tags_dialog);
 
-        dialog_title.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (countWords(dialog_title.getText().toString()) < 5){
-                    Toast.makeText(getActivity(), "Question should be longer", Toast.LENGTH_SHORT).show();
-                }
-                dialog_title.setFocusable(true);
-                dialog_title.setFocusableInTouchMode(true);
-                dialog_title.requestFocus();
-            }
-        });
+//        dialog_title.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View view, boolean b) {
+//                if (countWords(dialog_title.getText().toString()) < 5){
+//                    Toast.makeText(getActivity(), "Question should be longer", Toast.LENGTH_SHORT).show();
+//                }
+//                dialog_title.setFocusable(true);
+//                dialog_title.setFocusableInTouchMode(true);
+//                dialog_title.requestFocus();
+//            }
+//        });
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
