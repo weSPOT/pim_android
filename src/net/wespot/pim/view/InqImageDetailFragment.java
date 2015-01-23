@@ -79,7 +79,7 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
     private double startTime = 0;
     private double finalTime = 0;
     public static int oneTimeOnly = 0;
-
+    private View v;
     private Handler playHandler = new Handler();
 
 
@@ -121,7 +121,7 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
     /**
      * Empty constructor as per the Fragment documentation
      */
-    private InqImageDetailFragment() {}
+    public InqImageDetailFragment() {}
 
     /**
      * Populate image using a url from extras, use the convenience factory method
@@ -142,7 +142,7 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         // Inflate and locate the main ImageView
-        final View v = inflater.inflate(R.layout.fragment_detail_image, container, false);
+        v = inflater.inflate(R.layout.fragment_detail_image, container, false);
         mImageView = (ImageView) v.findViewById(R.id.imageView);
         mediaBar = (RelativeLayout) v.findViewById(R.id.mediaBar);
         mediaBarVideo = (RelativeLayout) v.findViewById(R.id.mediaBarVideo);
@@ -174,6 +174,7 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
         seekbarVideo = (SeekBar) v.findViewById(R.id.seekbarVideo);
         seekbar.setOnSeekBarChangeListener(this);
         seekbarVideo.setOnSeekBarChangeListener(this);
+
         return v;
     }
 
@@ -228,7 +229,11 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
 //            mPlayButtonView.setVisibility(View.VISIBLE);
             mediaBar.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
-            preparePlayer();
+            try {
+                preparePlayer();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             playPauseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -259,46 +264,47 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
 
 
 
-    public void preparePlayer() {
+    public void preparePlayer() throws IOException {
         if (mediaPlayer == null) {
             mediaPlayer = new MediaPlayer();
         }
         mediaPlayer.reset();
         oneTimeOnly = 0;
         status = PAUSE;
-        try {
-//            if (recording != null) {
-            if (mAudioUrl != null) {
+
+        if (mAudioUrl != null) {
 //                Uri uri = Uri.fromFile(recording);
 
-                if (mAudioUrl.contains(".ma4")) {
-                    URL url = new URL(mAudioUrl);
-                    InputStream inputStream = url.openStream();
+            if (mAudioUrl.contains(".ma4")) {
+                URL url = new URL(mAudioUrl);
+                InputStream inputStream = url.openStream();
 
-                    File outputSource = null;
-                    FileOutputStream fileOutputStream = new FileOutputStream(outputSource);
+                File outputSource = null;
 
-                    int c;
+                FileOutputStream fileOutputStream;
+                fileOutputStream = new FileOutputStream(outputSource);
 
-                    int bytesRead = 0;
-                    while ((c = inputStream.read()) != -1) {
-                        fileOutputStream.write(c);
+                int c;
 
-                        bytesRead++;
-                    }
+                int bytesRead = 0;
+                while ((c = inputStream.read()) != -1) {
+                    fileOutputStream.write(c);
 
-                    mediaPlayer.setDataSource(String.valueOf(outputSource));
-
-                }else{
-                    Uri uri = Uri.parse(mAudioUrl);
-                    mediaPlayer.setDataSource(getActivity(), uri);
-                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_RING);
-                    mediaPlayer.prepare();
+                    bytesRead++;
                 }
 
+                inputStream.close();
+                fileOutputStream.close();
+
+                mediaPlayer.setDataSource(String.valueOf(outputSource));
+
+            }else{
+                Uri uri = Uri.parse(mAudioUrl);
+                mediaPlayer.setDataSource(getActivity(), uri);
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_RING);
+                mediaPlayer.prepare();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
         }
     }
 
@@ -432,6 +438,10 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mediaPlayer != null){
+            mediaPlayer.release();
+        }
+
         if (mImageView != null) {
             // Cancel any pending image work
             ImageWorker.cancelWork(mImageView);

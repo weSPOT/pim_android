@@ -148,6 +148,9 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // TODO issue here when resuming the application
+        // It seems that the ARL.getContext() is null
+
         INQ.init(ARL.getContext());
         ARL.eventBus.register(this);
         INQ.accounts.syncMyAccountDetails();

@@ -62,6 +62,8 @@ public class InqMyMediaDataCollectionTaskFragment extends BaseFragmentActivity i
     private ListView data_collection_tasks_items;
     private InquiryLocalObject inquiry;
     private long generalItemId;
+    public static final String GENERAL_ITEM = "generalItem";
+
 
     private ResponsesLazyListAdapter datAdapter;
     private GeneralItemLocalObject genObject;
@@ -77,7 +79,6 @@ public class InqMyMediaDataCollectionTaskFragment extends BaseFragmentActivity i
         super.onCreate(savedInstanceState);
 
         ARL.eventBus.register(this);
-
 
         if (savedInstanceState != null) {
             INQ.init(this);
@@ -106,7 +107,7 @@ public class InqMyMediaDataCollectionTaskFragment extends BaseFragmentActivity i
                 final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
                 Bundle data = new Bundle();
-                data.putLong("generalItemId", generalItemId);
+                data.putLong(GENERAL_ITEM, generalItemId);
 
                 ImageGridFragment frag = new ImageGridFragment();
                 frag.setArguments(data);

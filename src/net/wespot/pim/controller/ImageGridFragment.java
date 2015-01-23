@@ -88,8 +88,9 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(GENERAL_ITEM, giLocalObject.getId());
-        outState.putLong(RUN_ID, INQ.inquiry.getCurrentInquiry().getRunId());
-
+        if (INQ.inquiry.getCurrentInquiry() != null){
+            outState.putLong(RUN_ID, INQ.inquiry.getCurrentInquiry().getRunId());
+        }
     }
 
     public GridView getmGridView() {
