@@ -4,4 +4,11 @@
         <item>Take a picture</item>
         <item>From the gallery</item>
     </array>
+    <string-array name="data_collection_type">
+        <item>Audio</item>
+        <item>Video</item>
+        <item>Image</item>
+        <item>Text</item>
+        <item>Number</item>
+    </string-array>
 </resources>

@@ -95,6 +95,28 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
 
             INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(inquiry_id));
 
+//            if (INQ.inquiry.getCurrentInquiry().getRunLocalObject() != null) {
+//                GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
+//                if (gameLocalObject != null) {
+//                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+//                        Intent intent = new Intent(getApplicationContext(), InquiryActivityBack.class);
+//                        intent.putExtra(InquiryActivity.PHASE, Constants.ID_COMMUNICATE);
+//                        startActivity(intent);
+//                    } else {
+//                        Intent intent = new Intent(getApplicationContext(), InquiryActivity.class);
+//                        intent.putExtra(InquiryActivity.PHASE, Constants.ID_COMMUNICATE);
+//                        startActivity(intent);
+//                    }
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "Add data collection task on IWE", Toast.LENGTH_SHORT).show();
+//                }
+//            } else {
+//                Toast.makeText(getApplicationContext(), "Game is not sync yet", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            extras = null;
+//
+//            return;
         }
 
         INQ.inquiry.syncDataCollectionTasks(INQ.inquiry.getCurrentInquiry());

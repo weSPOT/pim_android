@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.*;
 import net.wespot.pim.BuildConfig;
 import net.wespot.pim.R;
@@ -35,6 +34,8 @@ import net.wespot.pim.utils.images.ImageFetcher;
 import net.wespot.pim.utils.images.Utils;
 import net.wespot.pim.utils.layout.RecyclingImageView;
 import org.celstec.arlearn.delegators.INQ;
+import org.celstec.arlearn2.android.listadapter.AbstractResponsesLazyListAdapter;
+import org.celstec.dao.gen.ResponseLocalObject;
 import org.celstec.dao.gen.RunLocalObject;
 
 /**
@@ -198,16 +199,136 @@ public class InqImageGridFragment extends Fragment implements AdapterView.OnItem
      * columns in the GridView is used to create a fake top row of empty views as we use a
      * transparent ActionBar and don't want the real top row of images to start off covered by it.
      */
-    private class ImageAdapter extends BaseAdapter {
+//    private class ImageAdapter extends BaseAdapter {
+//
+//        private final Context mContext;
+//        private int mItemHeight = 0;
+//        private int mNumColumns = 0;
+//        private int mActionBarHeight = 0;
+//        private GridView.LayoutParams mImageViewLayoutParams;
+//
+//        public ImageAdapter(Context context) {
+//            super();
+//            mContext = context;
+////            mImageViewLayoutParams = new GridView.LayoutParams(
+////                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+////            // Calculate ActionBar height
+////            TypedValue tv = new TypedValue();
+////            if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+////                mActionBarHeight = TypedValue.complexToDimensionPixelSize(
+////                        tv.data, context.getResources().getDisplayMetrics());
+////            }
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            // If columns have yet to be determined, return no items
+//            if (getNumColumns() == 0) {
+//                return 0;
+//            }
+//
+//            // Size + number of columns for top empty row
+//            return runLocalObject.getResponses().size()+ mNumColumns;
+//        }
+//
+//        @Override
+//        public Object getItem(int position) {
+//            return position < mNumColumns ?
+//                    null : runLocalObject.getResponses().get(position - mNumColumns);
+//        }
+//
+//        @Override
+//        public long getItemId(int position) {
+//            return position < mNumColumns ? 0 : position - mNumColumns;
+//        }
+//
+//        @Override
+//        public int getViewTypeCount() {
+//            // Two types of views, the normal ImageView and the top row of empty views
+//            return 2;
+//        }
+//
+//        @Override
+//        public int getItemViewType(int position) {
+//            return (position < mNumColumns) ? 1 : 0;
+//        }
+//
+//        @Override
+//        public boolean hasStableIds() {
+//            return true;
+//        }
+//
+//        @Override
+//        public View getView(int position, View convertView, ViewGroup container) {
+//            // First check if this is the top row
+////            if (position < mNumColumns) {
+////                if (convertView == null) {
+////                    convertView = new View(mContext);
+////                }
+////                // Set empty view with height of ActionBar
+////                convertView.setLayoutParams(new AbsListView.LayoutParams(
+////                        LayoutParams.MATCH_PARENT, mActionBarHeight));
+////                return convertView;
+////            }
+//
+//            // Now handle the main ImageView thumbnails
+//            ImageView imageView;
+//            if (convertView == null) { // if it's not recycled, instantiate and initialize
+//                imageView = new RecyclingImageView(mContext);
+//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//                imageView.setLayoutParams(mImageViewLayoutParams);
+//            } else { // Otherwise re-use the converted view
+//                imageView = (ImageView) convertView;
+//            }
+//
+//            // Check the height matches our calculated column width
+//            if (imageView.getLayoutParams().height != mItemHeight) {
+//                imageView.setLayoutParams(mImageViewLayoutParams);
+//            }
+//
+//            Log.e(TAG, "Load async: "+runLocalObject.getResponses().get(position - mNumColumns));
+//
+//            // Finally load the image asynchronously into the ImageView, this also takes care of
+//            // setting a placeholder image while the background thread runs
+//            mImageFetcher.loadImage(runLocalObject.getResponses().get(position - mNumColumns), imageView);
+//            return imageView;
+//        }
+//
+//        /**
+//         * Sets the item height. Useful for when we know the column width so the height can be set
+//         * to match.
+//         *
+//         * @param height
+//         */
+//        public void setItemHeight(int height) {
+//            if (height == mItemHeight) {
+//                return;
+//            }
+//            mItemHeight = height;
+//            mImageViewLayoutParams =
+//                    new GridView.LayoutParams(LayoutParams.MATCH_PARENT, mItemHeight);
+//            mImageFetcher.setImageSize(height);
+//            notifyDataSetChanged();
+//        }
+//
+//        public void setNumColumns(int numColumns) {
+//            mNumColumns = numColumns;
+//        }
+//
+//        public int getNumColumns() {
+//            return mNumColumns;
+//        }
+//    }
 
+    public class ImageAdapter extends AbstractResponsesLazyListAdapter {
         private final Context mContext;
+        private GridView.LayoutParams mImageViewLayoutParams;
         private int mItemHeight = 0;
         private int mNumColumns = 0;
-        private int mActionBarHeight = 0;
-        private GridView.LayoutParams mImageViewLayoutParams;
+        private ImageFetcher mImageFetcher;
 
         public ImageAdapter(Context context) {
-            super();
+            super(getActivity());
             mContext = context;
 //            mImageViewLayoutParams = new GridView.LayoutParams(
 //                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
@@ -219,47 +340,28 @@ public class InqImageGridFragment extends Fragment implements AdapterView.OnItem
 //            }
         }
 
-        @Override
-        public int getCount() {
-            // If columns have yet to be determined, return no items
-            if (getNumColumns() == 0) {
-                return 0;
-            }
+//        public ImageAdapter(Context context, ImageFetcher imageFetcher, GeneralItemLocalObject giLocalObject, Context mContext) {
+//            super(context, giLocalObject.getId());
+//            mImageFetcher = imageFetcher;
+//            this.mContext = mContext;
+//            mImageViewLayoutParams = new GridView.LayoutParams(
+//                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        }
 
-            // Size + number of columns for top empty row
-            return runLocalObject.getResponses().size()+ mNumColumns;
+        @Override
+        public View newView(Context context, ResponseLocalObject item, ViewGroup parent) {
+
+            if (item == null) return null;
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            mImageViewLayoutParams = new GridView.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            return inflater.inflate(R.layout.entry_data_collection_response, parent, false);
         }
 
         @Override
-        public Object getItem(int position) {
-            return position < mNumColumns ?
-                    null : runLocalObject.getResponses().get(position - mNumColumns);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position < mNumColumns ? 0 : position - mNumColumns;
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            // Two types of views, the normal ImageView and the top row of empty views
-            return 2;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return (position < mNumColumns) ? 1 : 0;
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup container) {
-            // First check if this is the top row
+        public void bindView(View convertView, Context mContext, ResponseLocalObject responseLocalObject) {
+             // First check if this is the top row
 //            if (position < mNumColumns) {
 //                if (convertView == null) {
 //                    convertView = new View(mContext);
@@ -285,27 +387,21 @@ public class InqImageGridFragment extends Fragment implements AdapterView.OnItem
                 imageView.setLayoutParams(mImageViewLayoutParams);
             }
 
-            Log.e(TAG, "Load async: "+runLocalObject.getResponses().get(position - mNumColumns));
+            Log.e(TAG, "Load async: "+responseLocalObject);
 
             // Finally load the image asynchronously into the ImageView, this also takes care of
             // setting a placeholder image while the background thread runs
-            mImageFetcher.loadImage(runLocalObject.getResponses().get(position - mNumColumns), imageView);
-            return imageView;
+            mImageFetcher.loadImage(responseLocalObject, imageView);
+            return;
         }
 
-        /**
-         * Sets the item height. Useful for when we know the column width so the height can be set
-         * to match.
-         *
-         * @param height
-         */
         public void setItemHeight(int height) {
             if (height == mItemHeight) {
                 return;
             }
             mItemHeight = height;
             mImageViewLayoutParams =
-                    new GridView.LayoutParams(LayoutParams.MATCH_PARENT, mItemHeight);
+                    new GridView.LayoutParams(GridLayout.LayoutParams.MATCH_PARENT, mItemHeight);
             mImageFetcher.setImageSize(height);
             notifyDataSetChanged();
         }
@@ -316,6 +412,44 @@ public class InqImageGridFragment extends Fragment implements AdapterView.OnItem
 
         public int getNumColumns() {
             return mNumColumns;
+        }
+
+        @Override
+        public int getCount() {
+            // If columns have yet to be determined, return no items
+            if (getNumColumns() == 0) {
+                return 0;
+            }
+
+            // Size + number of columns for top empty row
+            return runLocalObject.getResponses().size()+ mNumColumns;
+        }
+
+        @Override
+        public ResponseLocalObject getItem(int position) {
+            return position < mNumColumns ?
+                    null : runLocalObject.getResponses().get(position - mNumColumns);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position < mNumColumns ? 0 : position - mNumColumns;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            // Two types of views, the normal ImageView and the top row of empty views
+            return 2;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return (position < mNumColumns) ? 1 : 0;
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return true;
         }
     }
 }

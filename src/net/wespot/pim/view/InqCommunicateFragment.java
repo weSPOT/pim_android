@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import daoBase.DaoConfiguration;
+import net.wespot.pim.MainActivity;
 import net.wespot.pim.R;
 import net.wespot.pim.SplashActivity;
 import net.wespot.pim.controller.Adapters.ChatAdapter;
@@ -55,6 +56,7 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     private static final String NUMBER = "0123";
     public static final String INQUIRY_ID = "runId";
     private static final String COME_FROM_NOTIFICATION = "comeFromNotification";
+    private static final String NO_ENTER = "no_enter";
     private EditText message;
     private ImageButton send;
     private View rootView;
@@ -220,7 +222,7 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         ////////////////////////////////////
         // First check if the PIM is running
         ////////////////////////////////////
-//        if (isPimRunning()){
+        if (isPimRunning()){
 
             //////////////////////////////////////////
             // If there is no INQ.inquiry we create it
@@ -286,25 +288,28 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
 
                         createNotification(messageLocalObject, runId);
 
+                        ///////////////////////////////////////////////////////
+                        // We need to mark them read when click on notification
+                        ///////////////////////////////////////////////////////
                         messageLocalObject.setRead(true);
 
                         DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
                     }
                 }
             }
-//        }else{
-//
-//            for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
-//                if (messageLocalObject.getRead() == null) {
-//
-//                    createNotification(messageLocalObject, runId);
-//
-//                    messageLocalObject.setRead(true);
-//
-//                    DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
-//                }
-//            }
-//        }
+        }else{
+
+            for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
+                if (messageLocalObject.getRead() == null) {
+
+                    createNotification(messageLocalObject, runId);
+
+                    messageLocalObject.setRead(true);
+
+                    DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
+                }
+            }
+        }
     }
 
     private void createNotification(MessageLocalObject messageLocalObject, Long runId) {
@@ -332,14 +337,21 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
             // Creates an explicit intent for an Activity in your app
             Intent resultIntent = new Intent(ARL.getContext(), InquiryPhasesActivity.class);
             resultIntent.putExtra(INQUIRY_ID, inquiryLocalObject.getId());
-//            resultIntent.putExtra(COME_FROM_NOTIFICATION, inquiryLocalObject.getId());
+
+            Intent parent = new Intent(ARL.getContext(), PimInquiriesFragment.class);
+            Intent parent1 = new Intent(ARL.getContext(), MainActivity.class);
+            Intent parent2 = new Intent(ARL.getContext(), SplashActivity.class);
+
             // The stack builder object will contain an artificial back stack for the
             // started Activity.
             // This ensures that navigating backward from the Activity leads out of
             // your application to the Home screen.
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(ARL.getContext());
             // Adds the back stack for the Intent (but not the Intent itself)
-            stackBuilder.addParentStack(SplashActivity.class);
+            stackBuilder.addNextIntentWithParentStack(parent2);
+            stackBuilder.addNextIntentWithParentStack(parent1);
+            stackBuilder.addNextIntentWithParentStack(parent);
+
             // Adds the Intent that starts the Activity to the top of the stack
             stackBuilder.addNextIntent(resultIntent);
             PendingIntent resultPendingIntent =
@@ -347,6 +359,7 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                             0,
                             PendingIntent.FLAG_UPDATE_CURRENT
                     );
+
             mBuilder.setContentIntent(resultPendingIntent);
         }else{
 
@@ -398,8 +411,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
             }else{
                 return author;
             }
-
-
         }
     }
 

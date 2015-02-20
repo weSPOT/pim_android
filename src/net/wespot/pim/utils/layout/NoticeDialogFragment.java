@@ -9,7 +9,10 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import net.wespot.pim.R;
 
 /**
@@ -33,10 +36,12 @@ import net.wespot.pim.R;
  * ****************************************************************************
  */
 
-public class NoticeDialogFragment extends DialogFragment {
+public class NoticeDialogFragment extends DialogFragment implements AdapterView.OnItemSelectedListener {
 
     public static final String TITLE = "title";
     public static final String DESCRIPTION = "description";
+
+
 
     public interface NoticeDialogListener {
         public void onDialogPositiveClick(DialogFragment dialog);
@@ -47,9 +52,16 @@ public class NoticeDialogFragment extends DialogFragment {
 
     private EditText dialog_title;
     private EditText dialog_description;
+    private Spinner dialog_type_dc;
 
     private String title;
     private String description;
+
+    private boolean audio;
+    private boolean image;
+    private boolean video;
+    private boolean text;
+    private boolean number;
 
 
 
@@ -66,6 +78,16 @@ public class NoticeDialogFragment extends DialogFragment {
 
         dialog_title = (EditText)view.findViewById(R.id.data_collection_dialog_title);
         dialog_description = (EditText)view.findViewById(R.id.data_collection_dialog_description);
+
+        dialog_type_dc = (Spinner) view.findViewById(R.id.data_collection_dialog_type);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.data_collection_type, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(R.layout.spinner_layout);
+        // Apply the adapter to the spinner
+        dialog_type_dc.setAdapter(adapter);
+
+        dialog_type_dc.setOnItemSelectedListener(this);
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
@@ -91,6 +113,31 @@ public class NoticeDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        parent.getItemAtPosition(position);
+
+        if (parent.getSelectedItem().equals("Audio")){
+            audio = true;
+        }
+        if (parent.getSelectedItem().equals("Video")){
+            video = true;
+        }
+        if (parent.getSelectedItem().equals("Image")){
+            image = true;
+        }
+        if (parent.getSelectedItem().equals("Text")){
+            text = true;
+        }
+        if (parent.getSelectedItem().equals("Number")){
+            number = true;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 
     public String getTitle() {
         return title;
@@ -102,6 +149,47 @@ public class NoticeDialogFragment extends DialogFragment {
 
     public String getDescription() {
         return description;
+    }
+
+
+    public boolean isNumber() {
+        return number;
+    }
+
+    public void setNumber(boolean number) {
+        this.number = number;
+    }
+
+    public boolean isAudio() {
+        return audio;
+    }
+
+    public void setAudio(boolean audio) {
+        this.audio = audio;
+    }
+
+    public boolean isImage() {
+        return image;
+    }
+
+    public void setImage(boolean image) {
+        this.image = image;
+    }
+
+    public boolean isVideo() {
+        return video;
+    }
+
+    public void setVideo(boolean video) {
+        this.video = video;
+    }
+
+    public boolean isText() {
+        return text;
+    }
+
+    public void setText(boolean text) {
+        this.text = text;
     }
 
     public void setDescription(String description) {

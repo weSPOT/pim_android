@@ -62,6 +62,7 @@
                 android:layout_below="@+id/loginGoogle"
                 android:src="@drawable/login_button_facebook"
                 android:contentDescription="@string/splash_login_button"
+                android:visibility="gone"
                 android:text="@string/splash_login_button_facebook"
                 android:layout_margin="10dp"/>
     </RelativeLayout>

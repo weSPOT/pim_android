@@ -16,10 +16,15 @@
         <item name="android:padding">3dp</item>
     </style>
 
+    <style name="mySpinnerItemStyle" parent="Widget.AppCompat.Base.Spinner">
+        <item name="android:textColor">@color/app.base.white</item>
+    </style>
 
     <!-- New style -->
 
-    <style name="pim"></style>
+    <style name="pim">
+        <item name="android:spinnerDropDownItemStyle">@style/mySpinnerItemStyle</item>
+    </style>
     <style name="pim.dataCollection"></style>
 
     <style name="pim.dataCollection.row">

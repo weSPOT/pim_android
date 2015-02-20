@@ -207,11 +207,18 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
                     // After Ok code.
                     Log.i(TAG, "ok code");
 
+                    // TODO add booleans for type of data collection
                     INQ.dataCollection.createDataCollectionTask(
                             INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject().getId(),
                             dialog.getTitle(),
                             dialog.getDescription()
                     );
+
+//                    dialog.isAudio();
+//                    dialog.isVideo();
+//                    dialog.isImage();
+//                    dialog.isText();
+//                    dialog.isNumber();
 
                     Toast.makeText(getActivity(), getResources().getString(R.string.data_collection_dialog_creating), Toast.LENGTH_SHORT).show();
                 } else if (resultCode == Activity.RESULT_CANCELED){

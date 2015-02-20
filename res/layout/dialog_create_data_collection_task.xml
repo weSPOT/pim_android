@@ -33,4 +33,11 @@
             android:layout_marginBottom="16dp"
             android:fontFamily="sans-serif"
             android:hint="@string/data_collection_dialog_description"/>
+
+        <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/data_collection_dialog_type" android:layout_margin="4dp"
+                style="@style/pim"/>
+
 </LinearLayout>
