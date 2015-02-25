@@ -20,3 +20,6 @@ build/*
 assets/config.properties
 ./project.properties
 local.properties
+gradle/
+gradlew
+gradlew.bat
