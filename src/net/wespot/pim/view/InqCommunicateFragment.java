@@ -257,9 +257,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                         // We are inside the inquiry but maybe we need an internal notification
                         ///////////////////////////////////////////////////////////////////////
 
-
-
-
                         if (!messages_views.containsKey(messageLocalObject)){
                             if (messages != null){
                                 messages.add(messageLocalObject);
@@ -276,10 +273,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                             messageLocalObject.setRead(true);
                             DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
                         }
-
-
-
-
                     }
                 }
             }else{

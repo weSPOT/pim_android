@@ -120,8 +120,8 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
             giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(savedInstanceState.getLong(GENERAL_ITEM));
             InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(savedInstanceState.getLong(RUN_ID));
 //            INQ.inquiry.setCurrentInquiry(inquiryLocalObject);
-            Log.e(TAG, savedInstanceState.getLong(GENERAL_ITEM) + " - General Item ");
-            Log.e(TAG, savedInstanceState.getLong(RUN_ID) + " - Run ");
+            Log.e(TAG, "[onCreate] "+savedInstanceState.getLong(GENERAL_ITEM) + " - General Item ");
+            Log.e(TAG, "[onCreate] "+savedInstanceState.getLong(RUN_ID) + " - Run ");
         }else{
             if (extras != null) {
                 giLocalObject = DaoConfiguration.getInstance(getActivity()).getGeneralItemLocalObjectDao().load(extras.getLong(InqDataCollectionTaskFragment.GENERAL_ITEM));
@@ -133,11 +133,11 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
         responseLocalObjectList = giLocalObject.getResponses();
 
-        Log.e(TAG, "GI-ID:"+giLocalObject.getId()+
-                " GI-Title:"+giLocalObject.getTitle()+
-                " Number responses:"+responseLocalObjectList.size());
+        Log.e(TAG, "[onCreate] GI-ID:"+giLocalObject.getId()+
+                " [onCreate] GI-Title:"+giLocalObject.getTitle()+
+                " [onCreate] Number responses:"+responseLocalObjectList.size());
         for(ResponseLocalObject r : responseLocalObjectList){
-            Log.e(TAG,"RESPONSE ID:"+r.getId());
+            Log.e(TAG,"[onCreate] RESPONSE ID:"+r.getId());
         }
 
         Collections.sort(responseLocalObjectList, responseLocalObjectComparator);
@@ -585,8 +585,9 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         }
 
         public ImageAdapter(Context context, ImageFetcher imageFetcher, GeneralItemLocalObject giLocalObject) {
-//            super(context, giLocalObject.getId());
-            super(context);
+            super(context, giLocalObject.getId());
+//            super(context);
+
 //            mImageFetcher = imageFetcher;
             gi = giLocalObject;
             mImageViewLayoutParams = new GridView.LayoutParams(
@@ -598,6 +599,8 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
             if (item == null) return null;
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            Log.e(TAG, "[newView] Response:"+item.getId());
 
             mImageViewLayoutParams = new GridView.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
