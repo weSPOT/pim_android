@@ -40,7 +40,6 @@ import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.delegators.ARL;
 import org.celstec.arlearn2.android.delegators.ResponseDelegator;
 import org.celstec.arlearn2.android.events.ResponseEvent;
-import org.celstec.arlearn2.android.listadapter.AbstractResponsesLazyListAdapter;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.InquiryLocalObject;
@@ -148,7 +147,8 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
         cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
 
-        mAdapter = new ImageAdapter(getActivity(), mImageFetcher, giLocalObject);
+        mAdapter = new ImageAdapter(getActivity());
+//        mAdapter = new ImageAdapter(getActivity(), mImageFetcher, giLocalObject);
         mImageFetcher = new ImageFetcher(getActivity(), mImageThumbSize);
         mImageFetcher.setLoadingImage(R.drawable.ic_taks_photo);
         mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
@@ -396,247 +396,88 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
      * columns in the GridView is used to create a fake top row of empty views as we use a
      * transparent ActionBar and don't want the real top row of images to start off covered by it.
      */
-//    public class ImageAdapter extends BaseAdapter {
-//
-//        private final Context mContext;
-//        private int mItemHeight = 0;
-//        private int mNumColumns = 0;
-//        private GridView.LayoutParams mImageViewLayoutParams;
-//
-//        public ImageAdapter(Context context) {
-//            super();
-//            mContext = context;
-//            mImageViewLayoutParams = new GridView.LayoutParams(
-//                    GridLayout.LayoutParams.MATCH_PARENT, GridLayout.LayoutParams.MATCH_PARENT);
-//        }
-//
-//        @Override
-//        public int getCount() {
-//
-//            if (getNumColumns() == 0) {
-//                return 0;
-//            }
-//            return responseLocalObjectList.size();
-//        }
-//
-//        @Override
-//        public Object getItem(int position) {
-//            return responseLocalObjectList.get(position).getThumbnailUriAsString();
-//        }
-//
-//        @Override
-//        public long getItemId(int position) {
-//            return position;
-//        }
-//
-//        @Override
-//        public int getViewTypeCount() {
-//            // Two types of views, the normal ImageView and the top row of empty views
-//            return 2;
-//        }
-//
-//        @Override
-//        public int getItemViewType(int position) {
-//            return 0;
-//        }
-//
-//        @Override
-//        public boolean hasStableIds() {
-//            return true;
-//        }
-//
-//        @Override
-//        public View getView(int position, View convertView, ViewGroup container) {
-//
-//            ResponseLocalObject responseLocalObject = responseLocalObjectList.get(position);
-//
-//            ImageView imageView;
-//
-//
-////            if (convertView == null) {
-////                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_data_collection_response, null);
-////
-////                final ImageView[] imageView = new ImageView[]{
-////                        (ImageView) convertView.findViewById(R.id.filtered_image)};
-////
-////                final VideoView[] videos = new VideoView[]{
-////                        (VideoView) convertView.findViewById(R.id.video)};
-//
-//
-//    //            ImageView imageView;
-//    //            if (convertView == null) { // if it's not recycled, instantiate and initialize
-//    //                imageView = new RecyclingImageView(mContext);
-//    //                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//    //                imageView.setLayoutParams(mImageViewLayoutParams);
-//    //            } else { // Otherwise re-use the converted view
-//    //                imageView = (ImageView) convertView;
-//    //            }
-//    //
-//    //            // Check the height matches our calculated column width
-//    //            if (imageView.getLayoutParams().height != mItemHeight) {
-//    //                imageView.setLayoutParams(mImageViewLayoutParams);
-//    //            }
-//
-//            if (responseLocalObject.isAudio()) {
-//                imageView = new RecyclingImageView(mContext);
-//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//                imageView.setLayoutParams(mImageViewLayoutParams);
-//
-//                if (imageView.getLayoutParams().height != mItemHeight) {
-//                    imageView.setLayoutParams(mImageViewLayoutParams);
-//                }
-//
-//                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_task_record));
-//                return imageView;
-//            } else if (responseLocalObject.isPicture()) {
-//                imageView = new RecyclingImageView(mContext);
-//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//                imageView.setLayoutParams(mImageViewLayoutParams);
-//
-//                if (imageView.getLayoutParams().height != mItemHeight) {
-//                    imageView.setLayoutParams(mImageViewLayoutParams);
-//                }
-//
-//                mImageFetcher.loadImage(responseLocalObject.getThumbnailUriAsString(), imageView);
-//                return imageView;
-//            } else if (responseLocalObject.isVideo()) {
-//                imageView = new RecyclingImageView(mContext);
-//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//                imageView.setLayoutParams(mImageViewLayoutParams);
-//
-//                if (imageView.getLayoutParams().height != mItemHeight) {
-//                    imageView.setLayoutParams(mImageViewLayoutParams);
-//                }
-//
-//                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_task_video));
-//                return imageView;
-//            } else if (responseLocalObject.getValue() != null ) {
-////                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_data_collection_response, null);
-////
-////                final TextView[] views = new TextView[]{
-////                        (TextView) convertView.findViewById(R.id.caption)};
-////                views[0].setText(responseLocalObject.getValue().toString());
-////                views[0].setVisibility(View.VISIBLE);
-////                return convertView;
-//
-//                imageView = new RecyclingImageView(mContext);
-//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//                imageView.setLayoutParams(mImageViewLayoutParams);
-//
-//                if (imageView.getLayoutParams().height != mItemHeight) {
-//                    imageView.setLayoutParams(mImageViewLayoutParams);
-//                }
-//
-//                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_description));
-//
-//                return imageView;
-//            } else {
-//                imageView = new RecyclingImageView(mContext);
-//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//                imageView.setLayoutParams(mImageViewLayoutParams);
-//
-//                if (imageView.getLayoutParams().height != mItemHeight) {
-//                    imageView.setLayoutParams(mImageViewLayoutParams);
-//                }
-//
-//                imageView.setImageDrawable(getResources().getDrawable(R.drawable.empty_photo));
-//                return imageView;
-//            }
-//        }
-//
-//
-//        /**
-//         * Sets the item height. Useful for when we know the column width so the height can be set
-//         * to match.
-//         *
-//         * @param height
-//         */
-//        public void setItemHeight(int height) {
-//            if (height == mItemHeight) {
-//                return;
-//            }
-//            mItemHeight = height;
-//            mImageViewLayoutParams =
-//                    new GridView.LayoutParams(GridLayout.LayoutParams.MATCH_PARENT, mItemHeight);
-//            mImageFetcher.setImageSize(height);
-//            notifyDataSetChanged();
-//        }
-//
-//        public void setNumColumns(int numColumns) {
-//            mNumColumns = numColumns;
-//        }
-//
-//        public int getNumColumns() {
-//            return mNumColumns;
-//        }
-//    }
+    public class ImageAdapter extends BaseAdapter {
 
-
-    public class ImageAdapter extends AbstractResponsesLazyListAdapter {
-
-        private GridView.LayoutParams mImageViewLayoutParams;
+        private final Context mContext;
         private int mItemHeight = 0;
         private int mNumColumns = 0;
-        private GeneralItemLocalObject gi;
-//        private ImageFetcher mImageFetcher;
+        private GridView.LayoutParams mImageViewLayoutParams;
 
         public ImageAdapter(Context context) {
-            super(context);
-        }
-
-        public ImageAdapter(Context context, ImageFetcher imageFetcher, GeneralItemLocalObject giLocalObject) {
-//            super(context, giLocalObject.getId());
-            super(context);
-//            mImageFetcher = imageFetcher;
-            gi = giLocalObject;
+            super();
+            mContext = context;
             mImageViewLayoutParams = new GridView.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    GridLayout.LayoutParams.MATCH_PARENT, GridLayout.LayoutParams.MATCH_PARENT);
         }
 
         @Override
-        public View newView(Context context, ResponseLocalObject item, ViewGroup parent) {
+        public int getCount() {
 
-            if (item == null) return null;
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-            mImageViewLayoutParams = new GridView.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            return inflater.inflate(R.layout.entry_data_collection_response, parent, false);
+            if (getNumColumns() == 0) {
+                return 0;
+            }
+            return responseLocalObjectList.size();
         }
 
         @Override
-        public void bindView(View convertView, Context mContext, ResponseLocalObject responseLocalObject) {
-//            if (position < mNumColumns) {
-//                if (convertView == null) {
-//                    convertView = new View(mContext);
-//                }
-//                // Set empty view with height of ActionBar
-//                convertView.setLayoutParams(new AbsListView.LayoutParams(
-//                        LayoutParams.MATCH_PARENT, mActionBarHeight));
-//                return convertView;
-//            }
+        public Object getItem(int position) {
+            return responseLocalObjectList.get(position).getThumbnailUriAsString();
+        }
 
-            // Now handle the main ImageView thumbnails
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            // Two types of views, the normal ImageView and the top row of empty views
+            return 2;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return 0;
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return true;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup container) {
+
+            ResponseLocalObject responseLocalObject = responseLocalObjectList.get(position);
+
             ImageView imageView;
-            if (convertView == null) { // if it's not recycled, instantiate and initialize
-                imageView = new RecyclingImageView(mContext);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                imageView.setLayoutParams(mImageViewLayoutParams);
-            } else { // Otherwise re-use the converted view
-                imageView = (ImageView) convertView;
-            }
 
-            // Check the height matches our calculated column width
-            if (imageView.getLayoutParams().height != mItemHeight) {
-                imageView.setLayoutParams(mImageViewLayoutParams);
-            }
 
-            Log.e(TAG, "GI-ID:"+responseLocalObject.getGeneralItemLocalObject().getId()+
-                    " RES-ID:"+responseLocalObject.getId()+"" +
-                    " GI-Title:"+responseLocalObject.getGeneralItemLocalObject().getTitle());
+//            if (convertView == null) {
+//                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_data_collection_response, null);
+//
+//                final ImageView[] imageView = new ImageView[]{
+//                        (ImageView) convertView.findViewById(R.id.filtered_image)};
+//
+//                final VideoView[] videos = new VideoView[]{
+//                        (VideoView) convertView.findViewById(R.id.video)};
+
+
+    //            ImageView imageView;
+    //            if (convertView == null) { // if it's not recycled, instantiate and initialize
+    //                imageView = new RecyclingImageView(mContext);
+    //                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+    //                imageView.setLayoutParams(mImageViewLayoutParams);
+    //            } else { // Otherwise re-use the converted view
+    //                imageView = (ImageView) convertView;
+    //            }
+    //
+    //            // Check the height matches our calculated column width
+    //            if (imageView.getLayoutParams().height != mItemHeight) {
+    //                imageView.setLayoutParams(mImageViewLayoutParams);
+    //            }
 
             if (responseLocalObject.isAudio()) {
-//                Log.e(TAG, "is audio");
                 imageView = new RecyclingImageView(mContext);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setLayoutParams(mImageViewLayoutParams);
@@ -646,9 +487,8 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
                 }
 
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_task_record));
+                return imageView;
             } else if (responseLocalObject.isPicture()) {
-//                Log.e(TAG, "is image");
-
                 imageView = new RecyclingImageView(mContext);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setLayoutParams(mImageViewLayoutParams);
@@ -657,9 +497,9 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
                     imageView.setLayoutParams(mImageViewLayoutParams);
                 }
 
+                mImageFetcher.loadImage(responseLocalObject.getThumbnailUriAsString(), imageView);
+                return imageView;
             } else if (responseLocalObject.isVideo()) {
-//                Log.e(TAG, "is video");
-
                 imageView = new RecyclingImageView(mContext);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setLayoutParams(mImageViewLayoutParams);
@@ -669,9 +509,8 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
                 }
 
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_task_video));
+                return imageView;
             } else if (responseLocalObject.getValue() != null ) {
-//                Log.e(TAG, "is value");
-
 //                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_data_collection_response, null);
 //
 //                final TextView[] views = new TextView[]{
@@ -690,9 +529,8 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_description));
 
+                return imageView;
             } else {
-//                Log.e(TAG, "is text");
-
                 imageView = new RecyclingImageView(mContext);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setLayoutParams(mImageViewLayoutParams);
@@ -702,20 +540,17 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
                 }
 
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.empty_photo));
+                return imageView;
             }
-
-
-//            Log.e(TAG, "Load async: "+runLocalObject.getResponses().get(position - mNumColumns));
-
-            // Finally load the image asynchronously into the ImageView, this also takes care of
-            // setting a placeholder image while the background thread runs
-//            mImageFetcher.loadImage(runLocalObject.getResponses().get(position - mNumColumns), imageView);
-            mImageFetcher.loadImage(responseLocalObject, imageView);
-            return;
         }
 
 
-
+        /**
+         * Sets the item height. Useful for when we know the column width so the height can be set
+         * to match.
+         *
+         * @param height
+         */
         public void setItemHeight(int height) {
             if (height == mItemHeight) {
                 return;
@@ -734,44 +569,209 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         public int getNumColumns() {
             return mNumColumns;
         }
-
-        @Override
-        public int getCount() {
-            // If columns have yet to be determined, return no items
-            if (getNumColumns() == 0) {
-                return 0;
-            }
-
-            // Size + number of columns for top empty row
-            return gi.getResponses().size()+ mNumColumns;
-        }
-
-        @Override
-        public ResponseLocalObject getItem(int position) {
-            return position < mNumColumns ?
-                    null : gi.getResponses().get(position - mNumColumns);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position < mNumColumns ? 0 : position - mNumColumns;
-        }
-
-        @Override
-        public int getViewTypeCount() {
-            // Two types of views, the normal ImageView and the top row of empty views
-            return 2;
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return (position < mNumColumns) ? 1 : 0;
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
     }
+
+
+//    public class ImageAdapter extends AbstractResponsesLazyListAdapter {
+//
+//        private GridView.LayoutParams mImageViewLayoutParams;
+//        private int mItemHeight = 0;
+//        private int mNumColumns = 0;
+//        private GeneralItemLocalObject gi;
+////        private ImageFetcher mImageFetcher;
+//
+//        public ImageAdapter(Context context) {
+//            super(context);
+//        }
+//
+//        public ImageAdapter(Context context, ImageFetcher imageFetcher, GeneralItemLocalObject giLocalObject) {
+////            super(context, giLocalObject.getId());
+//            super(context);
+////            mImageFetcher = imageFetcher;
+//            gi = giLocalObject;
+//            mImageViewLayoutParams = new GridView.LayoutParams(
+//                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//        }
+//
+//        @Override
+//        public View newView(Context context, ResponseLocalObject item, ViewGroup parent) {
+//
+//            if (item == null) return null;
+//            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//
+//            mImageViewLayoutParams = new GridView.LayoutParams(
+//                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//            return inflater.inflate(R.layout.entry_data_collection_response, parent, false);
+//        }
+//
+//        @Override
+//        public void bindView(View convertView, Context mContext, ResponseLocalObject responseLocalObject) {
+////            if (position < mNumColumns) {
+////                if (convertView == null) {
+////                    convertView = new View(mContext);
+////                }
+////                // Set empty view with height of ActionBar
+////                convertView.setLayoutParams(new AbsListView.LayoutParams(
+////                        LayoutParams.MATCH_PARENT, mActionBarHeight));
+////                return convertView;
+////            }
+//
+//            // Now handle the main ImageView thumbnails
+//            ImageView imageView;
+//            if (convertView == null) { // if it's not recycled, instantiate and initialize
+//                imageView = new RecyclingImageView(mContext);
+//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//                imageView.setLayoutParams(mImageViewLayoutParams);
+//            } else { // Otherwise re-use the converted view
+//                imageView = (ImageView) convertView;
+//            }
+//
+//            // Check the height matches our calculated column width
+//            if (imageView.getLayoutParams().height != mItemHeight) {
+//                imageView.setLayoutParams(mImageViewLayoutParams);
+//            }
+//
+//            Log.e(TAG, "GI-ID:"+responseLocalObject.getGeneralItemLocalObject().getId()+
+//                    " RES-ID:"+responseLocalObject.getId()+"" +
+//                    " GI-Title:"+responseLocalObject.getGeneralItemLocalObject().getTitle());
+//
+//            if (responseLocalObject.isAudio()) {
+////                Log.e(TAG, "is audio");
+//                imageView = new RecyclingImageView(mContext);
+//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//                imageView.setLayoutParams(mImageViewLayoutParams);
+//
+//                if (imageView.getLayoutParams().height != mItemHeight) {
+//                    imageView.setLayoutParams(mImageViewLayoutParams);
+//                }
+//
+//                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_task_record));
+//            } else if (responseLocalObject.isPicture()) {
+////                Log.e(TAG, "is image");
+//
+//                imageView = new RecyclingImageView(mContext);
+//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//                imageView.setLayoutParams(mImageViewLayoutParams);
+//
+//                if (imageView.getLayoutParams().height != mItemHeight) {
+//                    imageView.setLayoutParams(mImageViewLayoutParams);
+//                }
+//
+//            } else if (responseLocalObject.isVideo()) {
+////                Log.e(TAG, "is video");
+//
+//                imageView = new RecyclingImageView(mContext);
+//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//                imageView.setLayoutParams(mImageViewLayoutParams);
+//
+//                if (imageView.getLayoutParams().height != mItemHeight) {
+//                    imageView.setLayoutParams(mImageViewLayoutParams);
+//                }
+//
+//                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_task_video));
+//            } else if (responseLocalObject.getValue() != null ) {
+////                Log.e(TAG, "is value");
+//
+////                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_data_collection_response, null);
+////
+////                final TextView[] views = new TextView[]{
+////                        (TextView) convertView.findViewById(R.id.caption)};
+////                views[0].setText(responseLocalObject.getValue().toString());
+////                views[0].setVisibility(View.VISIBLE);
+////                return convertView;
+//
+//                imageView = new RecyclingImageView(mContext);
+//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//                imageView.setLayoutParams(mImageViewLayoutParams);
+//
+//                if (imageView.getLayoutParams().height != mItemHeight) {
+//                    imageView.setLayoutParams(mImageViewLayoutParams);
+//                }
+//
+//                imageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_description));
+//
+//            } else {
+////                Log.e(TAG, "is text");
+//
+//                imageView = new RecyclingImageView(mContext);
+//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//                imageView.setLayoutParams(mImageViewLayoutParams);
+//
+//                if (imageView.getLayoutParams().height != mItemHeight) {
+//                    imageView.setLayoutParams(mImageViewLayoutParams);
+//                }
+//
+//                imageView.setImageDrawable(getResources().getDrawable(R.drawable.empty_photo));
+//            }
+//
+//
+////            Log.e(TAG, "Load async: "+runLocalObject.getResponses().get(position - mNumColumns));
+//
+//            // Finally load the image asynchronously into the ImageView, this also takes care of
+//            // setting a placeholder image while the background thread runs
+////            mImageFetcher.loadImage(runLocalObject.getResponses().get(position - mNumColumns), imageView);
+//            mImageFetcher.loadImage(responseLocalObject, imageView);
+//            return;
+//        }
+//
+//
+//
+//        public void setItemHeight(int height) {
+//            if (height == mItemHeight) {
+//                return;
+//            }
+//            mItemHeight = height;
+//            mImageViewLayoutParams =
+//                    new GridView.LayoutParams(GridLayout.LayoutParams.MATCH_PARENT, mItemHeight);
+//            mImageFetcher.setImageSize(height);
+//            notifyDataSetChanged();
+//        }
+//
+//        public void setNumColumns(int numColumns) {
+//            mNumColumns = numColumns;
+//        }
+//
+//        public int getNumColumns() {
+//            return mNumColumns;
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            // If columns have yet to be determined, return no items
+//            if (getNumColumns() == 0) {
+//                return 0;
+//            }
+//
+//            // Size + number of columns for top empty row
+//            return gi.getResponses().size()+ mNumColumns;
+//        }
+//
+//        @Override
+//        public ResponseLocalObject getItem(int position) {
+//            return position < mNumColumns ?
+//                    null : gi.getResponses().get(position - mNumColumns);
+//        }
+//
+//        @Override
+//        public long getItemId(int position) {
+//            return position < mNumColumns ? 0 : position - mNumColumns;
+//        }
+//
+//        @Override
+//        public int getViewTypeCount() {
+//            // Two types of views, the normal ImageView and the top row of empty views
+//            return 2;
+//        }
+//
+//        @Override
+//        public int getItemViewType(int position) {
+//            return (position < mNumColumns) ? 1 : 0;
+//        }
+//
+//        @Override
+//        public boolean hasStableIds() {
+//            return true;
+//        }
+//    }
 
 }
