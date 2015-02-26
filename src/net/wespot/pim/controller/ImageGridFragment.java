@@ -62,6 +62,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
     private static final String IMAGE_CACHE_DIR = "thumbs";
     private static final String GENERAL_ITEM = "generalItemId";
     private static final String RUN_ID = "runId";
+    private static final String INQUIRY_ID = "inquiryId";
 
     private int mImageThumbSize;
     private int mImageThumbSpacing;
@@ -91,6 +92,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         outState.putLong(GENERAL_ITEM, giLocalObject.getId());
         if (INQ.inquiry.getCurrentInquiry() != null){
             outState.putLong(RUN_ID, INQ.inquiry.getCurrentInquiry().getRunId());
+            outState.putLong(INQUIRY_ID, INQ.inquiry.getCurrentInquiry().getId());
         }
     }
 
@@ -111,14 +113,17 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
         Bundle extras = getArguments();
 
-        runLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject();
 
         if (savedInstanceState != null){
             INQ.init(this.getActivity());
             INQ.accounts.syncMyAccountDetails();
             giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(savedInstanceState.getLong(GENERAL_ITEM));
-            InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(savedInstanceState.getLong(RUN_ID));
-//            INQ.inquiry.setCurrentInquiry(inquiryLocalObject);
+            runLocalObject = DaoConfiguration.getInstance().getRunLocalObjectDao().load(savedInstanceState.getLong(RUN_ID));
+
+            InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(savedInstanceState.getLong(INQUIRY_ID));
+            inquiryLocalObject.setRunLocalObject(runLocalObject);
+
+            INQ.inquiry.setCurrentInquiry(inquiryLocalObject);
             Log.e(TAG, savedInstanceState.getLong(GENERAL_ITEM) + " - General Item ");
             Log.e(TAG, savedInstanceState.getLong(RUN_ID) + " - Run ");
         }else{
@@ -126,6 +131,7 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
                 giLocalObject = DaoConfiguration.getInstance(getActivity()).getGeneralItemLocalObjectDao().load(extras.getLong(InqDataCollectionTaskFragment.GENERAL_ITEM));
             }
         }
+
 
         mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
         mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);

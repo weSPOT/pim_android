@@ -22,6 +22,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -129,6 +130,7 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        enableStrictMode(this);
         super.onCreate(savedInstanceState);
         mImageUrl = getArguments() != null ? getArguments().getString(IMAGE_DATA_EXTRA) : "";
         mVideoUrl = getArguments() != null ? getArguments().getString(VIDEO_DATA_EXTRA) : "";
@@ -142,7 +144,7 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         // Inflate and locate the main ImageView
-        v = inflater.inflate(R.layout.fragment_detail_image, container, false);
+        View v = inflater.inflate(R.layout.fragment_detail_image, container, false);
         mImageView = (ImageView) v.findViewById(R.id.imageView);
         mediaBar = (RelativeLayout) v.findViewById(R.id.mediaBar);
         mediaBarVideo = (RelativeLayout) v.findViewById(R.id.mediaBarVideo);
@@ -176,6 +178,21 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
         seekbarVideo.setOnSeekBarChangeListener(this);
 
         return v;
+    }
+
+    public static void enableStrictMode(InqImageDetailFragment context) {
+        StrictMode.setThreadPolicy(
+                new StrictMode.ThreadPolicy.Builder()
+                        .detectDiskReads()
+                        .detectDiskWrites()
+                        .detectNetwork()
+                        .penaltyLog()
+                        .build());
+        StrictMode.setVmPolicy(
+                new StrictMode.VmPolicy.Builder()
+                        .detectLeakedSqlLiteObjects()
+                        .penaltyLog()
+                        .build());
     }
 
     @Override
