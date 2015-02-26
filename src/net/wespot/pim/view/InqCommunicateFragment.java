@@ -102,9 +102,51 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+
         outState.putLong(CURRENT_INQUIRY, INQ.inquiry.getCurrentInquiry().getId());
         outState.putLong(CURRENT_INQUIRY_RUN, INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
 
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // TODO issue here when resuming the application
+        // It seems that the ARL.getContext() is null
+        if (savedInstanceState != null) {
+            INQ.init(ARL.getContext());
+            ARL.eventBus.register(this);
+            INQ.accounts.syncMyAccountDetails();
+
+            INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(
+                    savedInstanceState.getLong(CURRENT_INQUIRY)));
+
+            INQ.inquiry.getCurrentInquiry().setRunLocalObject(DaoConfiguration.getInstance().getRunLocalObjectDao().load(
+                    savedInstanceState.getLong(CURRENT_INQUIRY_RUN) ));
+
+            INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
+
+            Log.e(TAG, "recovery from InqCommunicateFragment");
+        }
+
+        messages = new ArrayList<MessageLocalObject>();
+
+        messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
+                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
+                .orderAsc(MessageLocalObjectDao.Properties.Time)
+                .list();
+
+        for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
+            messages.add(messageLocalObject);
+            messageLocalObject.setRead(true);
+            DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
+        }
+
+        numMessages = 0;
+        mBuilder = null;
+
+        chatAdapter = new ChatAdapter(getActivity(), messages, messages_views);
     }
 
     @Override
@@ -146,46 +188,7 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         return rootView;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        // TODO issue here when resuming the application
-        // It seems that the ARL.getContext() is null
-
-        INQ.init(ARL.getContext());
-        ARL.eventBus.register(this);
-        INQ.accounts.syncMyAccountDetails();
-        INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
-
-        if (savedInstanceState != null) {
-            INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(
-                    savedInstanceState.getLong(CURRENT_INQUIRY)));
-
-            INQ.inquiry.getCurrentInquiry().setRunLocalObject(DaoConfiguration.getInstance().getRunLocalObjectDao().load(
-                    savedInstanceState.getLong(CURRENT_INQUIRY_RUN) ));
-
-            Log.e(TAG, "recovery from InqCommunicateFragment");
-        }
-
-        messages = new ArrayList<MessageLocalObject>();
-
-        messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
-                .orderAsc(MessageLocalObjectDao.Properties.Time)
-                .list();
-
-        for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
-            messages.add(messageLocalObject);
-            messageLocalObject.setRead(true);
-            DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
-        }
-
-        numMessages = 0;
-        mBuilder = null;
-
-        chatAdapter = new ChatAdapter(getActivity(), messages, messages_views);
-    }
 
     @Override
     public boolean acceptNotificationType(String notificationType) {
@@ -256,9 +259,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                         ///////////////////////////////////////////////////////////////////////
                         // We are inside the inquiry but maybe we need an internal notification
                         ///////////////////////////////////////////////////////////////////////
-
-
-
 
                         if (!messages_views.containsKey(messageLocalObject)){
                             if (messages != null){

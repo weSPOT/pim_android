@@ -17,7 +17,6 @@
 package net.wespot.pim.view;
 
 import android.content.Intent;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,15 +32,10 @@ import net.wespot.pim.R;
 import net.wespot.pim.controller.ImageDetailActivity;
 import net.wespot.pim.controller.VideoFullScreenView;
 import net.wespot.pim.utils.images.ImageFetcher;
-import net.wespot.pim.utils.images.ImageWorker;
 import net.wespot.pim.utils.images.Utils;
 import org.celstec.dao.gen.ResponseLocalObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 /**
  * This fragment will populate the children of the ViewPager from {@link net.wespot.pim.controller.ImageDetailActivity}.
@@ -51,7 +45,6 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
     private static final String VIDEO_DATA_EXTRA = "extra_video_data";
     private static final String TEXT_NUMBER_DATA_EXTRA = "extra_text_data";
     private static final String AUDIO_DATA_EXTRA = "extra_audio_data";
-    private static ResponseLocalObject response;
     private String mImageUrl;
     private String mVideoUrl;
     private String mTextValue;
@@ -69,19 +62,29 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
     ////////////////////////////////////
     // Private object for audio manager.
     ////////////////////////////////////
-    private File recording = null;
+
     private MediaPlayer mediaPlayer;
-    private ImageView playPauseButton;
+    public static int oneTimeOnly = 0;
+    private double startTime = 0;
+    private double finalTime = 0;
     private SeekBar seekbar;
+    private Handler playHandler = new Handler();
+    private ImageView playPauseButton;
     private int status = PAUSE;
     private final static int PAUSE = 0;
     private final static int PLAYING = 1;
 
-    private double startTime = 0;
-    private double finalTime = 0;
-    public static int oneTimeOnly = 0;
-    private View v;
-    private Handler playHandler = new Handler();
+//    private File recording = null;
+//    private MediaPlayer mediaPlayer;
+//    private SeekBar seekbar;
+//    private int status = PAUSE;
+
+//
+//    private double startTime = 0;
+//    private double finalTime = 0;
+//    public static int oneTimeOnly = 0;
+//    private View v;
+//    private Handler playHandler = new Handler();
 
 
     ////////////////////////////////////
@@ -136,14 +139,11 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
         mVideoUrl = getArguments() != null ? getArguments().getString(VIDEO_DATA_EXTRA) : "";
         mTextValue = getArguments() != null ? getArguments().getString(TEXT_NUMBER_DATA_EXTRA) : "";
         mAudioUrl = getArguments() != null ? getArguments().getString(AUDIO_DATA_EXTRA) : "";
-
-
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        // Inflate and locate the main ImageView
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.fragment_detail_image, container, false);
         mImageView = (ImageView) v.findViewById(R.id.imageView);
         mediaBar = (RelativeLayout) v.findViewById(R.id.mediaBar);
@@ -175,7 +175,7 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
         seekbar = (SeekBar) v.findViewById(R.id.seekbar);
         seekbarVideo = (SeekBar) v.findViewById(R.id.seekbarVideo);
         seekbar.setOnSeekBarChangeListener(this);
-        seekbarVideo.setOnSeekBarChangeListener(this);
+//        seekbarVideo.setOnSeekBarChangeListener(this);
 
         return v;
     }
@@ -246,11 +246,7 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
 //            mPlayButtonView.setVisibility(View.VISIBLE);
             mediaBar.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.INVISIBLE);
-            try {
-                preparePlayer();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            preparePlayer();
             playPauseButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -278,90 +274,40 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
         }
     }
 
-
-
-
-    public void preparePlayer() throws IOException {
-        if (mediaPlayer == null) {
-            mediaPlayer = new MediaPlayer();
-        }
-        mediaPlayer.reset();
-        oneTimeOnly = 0;
-        status = PAUSE;
-
-        if (mAudioUrl != null) {
-//                Uri uri = Uri.fromFile(recording);
-
-            if (mAudioUrl.contains(".ma4")) {
-                URL url = new URL(mAudioUrl);
-                InputStream inputStream = url.openStream();
-
-                File outputSource = null;
-
-                FileOutputStream fileOutputStream;
-                fileOutputStream = new FileOutputStream(outputSource);
-
-                int c;
-
-                int bytesRead = 0;
-                while ((c = inputStream.read()) != -1) {
-                    fileOutputStream.write(c);
-
-                    bytesRead++;
-                }
-
-                inputStream.close();
-                fileOutputStream.close();
-
-                mediaPlayer.setDataSource(String.valueOf(outputSource));
-
-            }else{
-                Uri uri = Uri.parse(mAudioUrl);
-                mediaPlayer.setDataSource(getActivity(), uri);
-                mediaPlayer.setAudioStreamType(AudioManager.STREAM_RING);
-                mediaPlayer.prepare();
-            }
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mediaPlayer != null){
+            playHandler.removeCallbacks(UpdateSongTime);
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 
-    public void playPauseButton() {
+//    URL url = new URL(mAudioUrl);
+//    InputStream inputStream = url.openStream();
+//
+//    File outputSource = null;
+//
+//    FileOutputStream fileOutputStream;
+//    fileOutputStream = new FileOutputStream(outputSource);
+//
+//    int c;
+//
+//    int bytesRead = 0;
+//    while ((c = inputStream.read()) != -1) {
+//    fileOutputStream.write(c);
+//
+//    bytesRead++;
+//    }
+//
+//    inputStream.close();
+//    fileOutputStream.close();
+//
+//    mediaPlayer.setDataSource(String.valueOf(outputSource));
 
-        if (status == PAUSE) {
-//            playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
-            playPauseButton.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_play));
-
-            status = PLAYING;
-            mediaPlayer.start();
-//            playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
-            playPauseButton.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_pause));
-            finalTime = mediaPlayer.getDuration();
-            startTime = mediaPlayer.getCurrentPosition();
-            if(oneTimeOnly == 0){
-                seekbar.setMax((int) finalTime);
-                oneTimeOnly = 1;
-            }
-            seekbar.setProgress((int)startTime);
-            playHandler.postDelayed(UpdateSongTime,100);
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    status = PAUSE;
-//                    playPauseButton.setImageResource(android.R.drawable.ic_media_play);
-                    playPauseButton.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_play));
-
-                }
-            });
-        } else {
-//            playPauseButton.setImageResource(android.R.drawable.ic_media_play);
-            playPauseButton.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_play));
-            status = PAUSE;
-            mediaPlayer.pause();
-
-        }
-    }
-
-    public void prepareVideoPlayer() {
+    public void preparePlayer() {
         if (mediaPlayer == null) {
             mediaPlayer = new MediaPlayer();
         }
@@ -369,28 +315,22 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
         oneTimeOnly = 0;
         status = PAUSE;
         try {
-//            if (recording != null) {
-            if (mVideoUrl != null) {
-//                Uri uri = Uri.fromFile(recording);
-                Uri uri = Uri.parse(mVideoUrl);
-                mediaPlayer.setDataSource(getActivity(),Uri.parse(new File(mVideoUrl).toString()));
-                mediaPlayer.prepare();
-            }
+            Uri uri = Uri.parse(mAudioUrl);
+            mediaPlayer.setDataSource(getActivity(), uri);
+            mediaPlayer.prepare();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void playPauseVideoButton() {
-
+    public void playPauseButton() {
         if (status == PAUSE) {
-//            playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
-            playPauseButtonVideo.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_play));
+            playPauseButton.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_pause));
 
             status = PLAYING;
             mediaPlayer.start();
-//            playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
-            playPauseButtonVideo.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_pause));
+
             finalTime = mediaPlayer.getDuration();
             startTime = mediaPlayer.getCurrentPosition();
             if(oneTimeOnly == 0){
@@ -403,12 +343,11 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
                     status = PAUSE;
-                    playPauseButtonVideo.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_play));
-
+                    playPauseButton.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_play));
                 }
             });
         } else {
-            playPauseButtonVideo.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_play));
+            playPauseButton.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_play));
             status = PAUSE;
             mediaPlayer.pause();
         }
@@ -417,21 +356,14 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
     private Runnable UpdateSongTime = new Runnable() {
         public void run() {
             startTime = mediaPlayer.getCurrentPosition();
-
+            if (status == PAUSE) {
+                startTime = 0;
+            }
             seekbar.setProgress((int)startTime);
             playHandler.postDelayed(this, 100);
+
         }
     };
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-    }
-
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-
-    }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
@@ -450,17 +382,65 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mediaPlayer != null){
-            mediaPlayer.release();
-        }
+    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
-        if (mImageView != null) {
-            // Cancel any pending image work
-            ImageWorker.cancelWork(mImageView);
-            mImageView.setImageDrawable(null);
-            mPlayButtonView.setImageDrawable(null);
-        }
     }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+//    public void prepareVideoPlayer() {
+//        if (mediaPlayer == null) {
+//            mediaPlayer = new MediaPlayer();
+//        }
+//        mediaPlayer.reset();
+//        oneTimeOnly = 0;
+//        status = PAUSE;
+//        try {
+////            if (recording != null) {
+//            if (mVideoUrl != null) {
+////                Uri uri = Uri.fromFile(recording);
+//                Uri uri = Uri.parse(mVideoUrl);
+//                mediaPlayer.setDataSource(getActivity(),Uri.parse(new File(mVideoUrl).toString()));
+//                mediaPlayer.prepare();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public void playPauseVideoButton() {
+//
+//        if (status == PAUSE) {
+////            playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+//            playPauseButtonVideo.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_play));
+//
+//            status = PLAYING;
+//            mediaPlayer.start();
+////            playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+//            playPauseButtonVideo.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_pause));
+//            finalTime = mediaPlayer.getDuration();
+//            startTime = mediaPlayer.getCurrentPosition();
+//            if(oneTimeOnly == 0){
+//                seekbar.setMax((int) finalTime);
+//                oneTimeOnly = 1;
+//            }
+//            seekbar.setProgress((int)startTime);
+////            playHandler.postDelayed(UpdateSongTime,100);
+//            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//                @Override
+//                public void onCompletion(MediaPlayer mediaPlayer) {
+//                    status = PAUSE;
+//                    playPauseButtonVideo.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_play));
+//
+//                }
+//            });
+//        } else {
+//            playPauseButtonVideo.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_play));
+//            status = PAUSE;
+//            mediaPlayer.pause();
+//        }
+//    }
 }
