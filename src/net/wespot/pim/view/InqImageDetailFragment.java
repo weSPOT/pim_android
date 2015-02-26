@@ -403,17 +403,14 @@ public class InqImageDetailFragment extends Fragment implements SeekBar.OnSeekBa
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
                     status = PAUSE;
-//                    playPauseButton.setImageResource(android.R.drawable.ic_media_play);
                     playPauseButtonVideo.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_play));
 
                 }
             });
         } else {
-//            playPauseButton.setImageResource(android.R.drawable.ic_media_play);
             playPauseButtonVideo.setImageDrawable(getActivity().getResources().getDrawable(android.R.drawable.ic_media_play));
             status = PAUSE;
             mediaPlayer.pause();
-
         }
     }
 

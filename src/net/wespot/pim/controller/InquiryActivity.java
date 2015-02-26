@@ -196,7 +196,7 @@ public class InquiryActivity extends BaseFragmentActivity implements ActionBar.T
 
     @Override
     public void onPageScrollStateChanged(int state) {
-        Log.e(TAG, "");
+        Log.e(TAG, "onPageScrollStateChanged");
         if (state == ViewPager.SCROLL_STATE_IDLE)
         {
             if (mViewPager.getCurrentItem() == 2)
