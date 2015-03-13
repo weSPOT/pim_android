@@ -106,7 +106,7 @@ public class ChatAdapter extends BaseAdapter {
         messageTextView.setText(message.getBody());
 
         Date date = new Date(message.getTime());
-        Format format = new SimpleDateFormat("HH:mm:ss");
+        Format format = new SimpleDateFormat("HH:mm:ss dd-MMM-y");
 
         timestampTextView.setText(format.format(date));
 

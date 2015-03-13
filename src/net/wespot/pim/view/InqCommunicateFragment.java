@@ -46,7 +46,10 @@ import org.celstec.arlearn2.android.events.MessageEvent;
 import org.celstec.arlearn2.android.gcm.NotificationListenerInterface;
 import org.celstec.dao.gen.*;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -96,15 +99,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     @Override
     public void onResume() {
         super.onResume();
-//        CancelNotification(mContext, safeLongToInt(INQ.inquiry.getCurrentInquiry().getId()));
-
-    }
-
-    public void CancelNotification(Context ctx, int notifyId) {
-        String ns = Context.NOTIFICATION_SERVICE;
-        NotificationManager nMgr = (NotificationManager) ctx
-                .getSystemService(ns);
-        nMgr.cancel(notifyId);
     }
 
     public static int safeLongToInt(long l) {
@@ -159,8 +153,19 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         runIdList.clear();
         notications_queue_messages.clear();
 
+        long two_days_ago_long = (System.currentTimeMillis()/1000 - (24 * 60 * 60))*1000;
+        long now_long = System.currentTimeMillis();
+        Date two_days_ago = new Date(two_days_ago_long * 1000);
+        Date now = new Date(now_long);
+
+        Format format = new SimpleDateFormat("HH:mm:ss dd-MMM-y");
+
+        Log.e(TAG, "Two days ago: "+format.format(two_days_ago)+" "+two_days_ago_long);
+        Log.e(TAG, "Now: "+format.format(now)+" "+now_long);
+
         messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
+                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()),
+                        MessageLocalObjectDao.Properties.Time.gt(two_days_ago_long))
                 .orderAsc(MessageLocalObjectDao.Properties.Time)
                 .list();
 
