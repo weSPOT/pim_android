@@ -20,7 +20,14 @@ build/*
 assets/config.properties
 ./project.properties
 local.properties
+<<<<<<< HEAD
 .gradle/
 gradle/
 gradlew
 gradlew.bat
+=======
+gradle/
+gradlew
+gradlew.bat
+.gradle/
+>>>>>>> b80e9a02166121cc6d6e335a3ca09cd784eb4c6e

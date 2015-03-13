@@ -100,6 +100,11 @@ public class NoticeDialogFragment extends DialogFragment implements AdapterView.
 
                         setTitle(dialog_title.getText().toString());
                         setDescription(dialog_description.getText().toString());
+                        setAudio(audio);
+                        setVideo(video);
+                        setImage(image);
+                        setText(text);
+                        setNumber(number);
 
                         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, a);
                     }
@@ -123,7 +128,7 @@ public class NoticeDialogFragment extends DialogFragment implements AdapterView.
         if (parent.getSelectedItem().equals("Video")){
             video = true;
         }
-        if (parent.getSelectedItem().equals("Image")){
+        if (parent.getSelectedItem().equals("Picture")){
             image = true;
         }
         if (parent.getSelectedItem().equals("Text")){

@@ -106,6 +106,7 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
 
         setContentView(R.layout.main_main);
 
+
         INQ.eventBus.register(this);
         timer = new Timer(true);
 
@@ -151,9 +152,9 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
                 Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_PROFILE), "", false);
 
         // Badges button_old
-        myBadges = buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_BADGES,
-                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_BADGES),
-                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_BADGES), String.valueOf(numberBadges), false);
+//        myBadges = buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_BADGES,
+//                Constants.INQUIRY_MAIN_LIST.get(Constants.ID_BADGES),
+//                Constants.INQUIRY_ICON_MAIN_LIST.get(Constants.ID_BADGES), String.valueOf(numberBadges), false);
 
         // Friends button_old
         myFriends = buttonManager.generateButton(linearLayout, thirdLayoutParams, Constants.ID_MAIN_FRIENDS,
@@ -205,6 +206,9 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
     }
 
     public void onEventMainThread(GeneralItemEvent generalItemEvent){
+
+
+
         numberDataCollections = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().loadAll().size();
         ((TextView)myMediaView.findViewById(R.id.notificationText)).setText(String.valueOf(numberDataCollections));
 
@@ -220,6 +224,8 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
     }
 
     public void onEventBackgroundThread(InquiryEvent inquiryEvent){
+
+
 
         InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(inquiryEvent.getInquiryId());
 
@@ -259,8 +265,6 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
         INQ.badges.syncBadges();
 
         INQ.friendsDelegator.syncFriends();
-
-//        timer.schedule(new RemindTask(), 30 * 1000);
     }
 
     @Override

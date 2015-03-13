@@ -207,20 +207,18 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
                     // After Ok code.
                     Log.i(TAG, "ok code");
 
-                    // TODO add booleans for type of data collection
                     INQ.dataCollection.createDataCollectionTask(
                             INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject().getId(),
                             dialog.getTitle(),
-                            dialog.getDescription()
+                            dialog.getDescription(),
+                            dialog.isImage(),
+                            dialog.isAudio(),
+                            dialog.isText(),
+                            dialog.isVideo(),
+                            dialog.isNumber()
                     );
-
-//                    dialog.isAudio();
-//                    dialog.isVideo();
-//                    dialog.isImage();
-//                    dialog.isText();
-//                    dialog.isNumber();
-
                     Toast.makeText(getActivity(), getResources().getString(R.string.data_collection_dialog_creating), Toast.LENGTH_SHORT).show();
+
                 } else if (resultCode == Activity.RESULT_CANCELED){
                     // After Cancel code.
                     Log.i(TAG, "cancel code");
@@ -231,9 +229,7 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
 
     public void onEventMainThread(GeneralItemEvent generalItem){
         Log.i(TAG, "Adding data collection in background");
-
         addContentValidation();
-//        getActivity().findViewById(R.id.text_default).setVisibility(View.GONE);
     }
 
 

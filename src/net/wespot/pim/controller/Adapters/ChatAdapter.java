@@ -51,11 +51,18 @@ public class ChatAdapter extends BaseAdapter {
     private HashMap<MessageLocalObject, View> messages_views = new HashMap<MessageLocalObject, View>();
     private HashMap<String, AccountLocalObject> accounts = new HashMap<String, AccountLocalObject>();
 
+    public ChatAdapter(Context context) {
+        mContext = context;
+    }
+
+
     public ChatAdapter(Context context, ArrayList<MessageLocalObject> messages, HashMap<MessageLocalObject, View> messages_views) {
         mContext = context;
         this.messages = messages;
         this.messages_views = messages_views;
     }
+
+
 
     public View getViewFromMessage( MessageLocalObject message){
         return messages_views.get(message);
@@ -99,7 +106,7 @@ public class ChatAdapter extends BaseAdapter {
         messageTextView.setText(message.getBody());
 
         Date date = new Date(message.getTime());
-        Format format = new SimpleDateFormat("HH:mm:ss");
+        Format format = new SimpleDateFormat("HH:mm:ss dd-MMM-y");
 
         timestampTextView.setText(format.format(date));
 
@@ -131,4 +138,22 @@ public class ChatAdapter extends BaseAdapter {
 
         }
     }
+
+
+    public HashMap<MessageLocalObject, View> getMessages_views() {
+        return messages_views;
+    }
+
+    public void setMessages_views(HashMap<MessageLocalObject, View> messages_views) {
+        this.messages_views = messages_views;
+    }
+
+    public ArrayList<MessageLocalObject> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(ArrayList<MessageLocalObject> messages) {
+        this.messages = messages;
+    }
+
 }

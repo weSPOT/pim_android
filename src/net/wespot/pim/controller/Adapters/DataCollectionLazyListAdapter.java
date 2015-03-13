@@ -41,6 +41,11 @@ import java.util.Date;
  */
 public class DataCollectionLazyListAdapter extends AbstractGeneralItemsLazyListAdapter {
 
+    private static final String TAG = "DataCollectionLazyListAdapter";
+    private int numberOfResponses;
+    private String dateString;
+
+
     public DataCollectionLazyListAdapter(Context context) {
         super(context);
     }
@@ -52,27 +57,32 @@ public class DataCollectionLazyListAdapter extends AbstractGeneralItemsLazyListA
     public View newView(Context context, GeneralItemLocalObject item, ViewGroup parent) {
         if (item == null) return null;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        return inflater.inflate(R.layout.entry_data_collection_list, parent, false);
-
-    }
-    public void bindView(View view, Context context,  GeneralItemLocalObject item) {
-        TextView firstLineView =(TextView) view.findViewById(R.id.name_entry_data_colletion_list);
-        firstLineView.setText(item.getTitle());
-        TextView secondlineView =(TextView) view.findViewById(R.id.inquiry_entry_data_colletion_list);
+        numberOfResponses = item.getResponses().size();
 
         Date date = new Date(item.getLastModificationDate());
         Format format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        dateString = format.format(date);
+        // Add info from data collection type
 
-        secondlineView.setText(format.format(date));
+        return inflater.inflate(R.layout.entry_data_collection_list, parent, false);
+
+    }
+
+    public void bindView(View view, Context context,  GeneralItemLocalObject item) {
+        TextView firstLineView =(TextView) view.findViewById(R.id.name_entry_data_colletion_list);
+        firstLineView.setText(item.getTitle());
+
+        TextView secondlineView =(TextView) view.findViewById(R.id.inquiry_entry_data_colletion_list);
+        secondlineView.setText(dateString);
+
         ImageView icon = (ImageView) view.findViewById(R.id.inquiry_entry_data_collection_icon);
         icon.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_task_explore));
 
         TextView notificationTextview = (TextView) view.findViewById(R.id.notificationText);
         notificationTextview.setVisibility(View.VISIBLE);
-        notificationTextview.setText(String.valueOf(item.getResponses().size()));
-
-
+        notificationTextview.setText("" + numberOfResponses);
     }
+
 
     @Override
     public long getItemId(int i) {
