@@ -22,35 +22,44 @@ package net.wespot.pim.view;
  */
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
-import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
-import net.wespot.pim.controller.Adapters.QuestionsLazyListAdapter;
+import net.wespot.pim.controller.Adapters.AnswersLazyListAdapter;
 import net.wespot.pim.utils.layout.BaseFragmentActivity;
-import org.celstec.dao.gen.InquiryQuestionLocalObject;
+import org.celstec.arlearn.delegators.INQ;
+import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
+import org.celstec.dao.gen.InquiryQuestionAnswerLocalObject;
 
-public class InqQuestionAnswerFragment extends BaseFragmentActivity {
+public class InqQuestionAnswerFragment extends BaseFragmentActivity implements ListItemClickInterface<InquiryQuestionAnswerLocalObject> {
 
     private ListView listView;
     private TextView questions_title;
-    private TextView questions_description;
+    private TextView answer_description;
 
-    private QuestionsLazyListAdapter questionsLazyListAdapter;
+    private AnswersLazyListAdapter answersLazyListAdapter;
 
     public InqQuestionAnswerFragment() {
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
         Bundle extras = getIntent().getExtras();
-
+//
         String questionId = extras.getString("QuestionId");
-        InquiryQuestionLocalObject questionLocalObject = DaoConfiguration.getInstance().getInquiryQuestionLocalObjectDao().load(questionId);
+        String questionTitle = extras.getString("QuestionTitle");
+        String questionDescription = extras.getString("QuestionDescription");
 
-        questions_title.setText(questionLocalObject.getTitle());
-        questions_description.setText(android.text.Html.fromHtml(questionLocalObject.getDescription()).toString());
+        answersLazyListAdapter =  new AnswersLazyListAdapter(this, INQ.inquiry.getCurrentInquiry(), questionId);
+        answersLazyListAdapter.setOnListItemClickCallback(this);
+        listView.setAdapter(answersLazyListAdapter);
+
+        questions_title.setText(questionTitle);
+//        answer_description.setText(questionDescription);
+        answer_description.setText(android.text.Html.fromHtml(questionDescription).toString());
     }
 
     @Override
@@ -60,6 +69,17 @@ public class InqQuestionAnswerFragment extends BaseFragmentActivity {
 
         listView = (ListView) findViewById(R.id.question_answers);
         questions_title = (TextView) findViewById(R.id.question_title);
-        questions_description = (TextView) findViewById(R.id.question_description);
+        answer_description = (TextView) findViewById(R.id.question_description);
+    }
+
+
+    @Override
+    public void onListItemClick(View v, int position, InquiryQuestionAnswerLocalObject object) {
+
+    }
+
+    @Override
+    public boolean setOnLongClickListener(View v, int position, InquiryQuestionAnswerLocalObject object) {
+        return false;
     }
 }

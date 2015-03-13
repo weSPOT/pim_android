@@ -16,13 +16,14 @@
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_below="@id/question_title"
+              android:text="HOLA"
               style="@style/CustomTheme.TextView.Title4"
               android:background="@drawable/btn_background"
             />
     <ListView android:id="@+id/question_answers"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:dividerHeight="0dp"
+              android:dividerHeight="@dimen/space_between_list_items"
               android:layout_below="@id/question_description"
               />
 </RelativeLayout>

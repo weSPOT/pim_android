@@ -40,6 +40,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import net.wespot.pim.R;
 import net.wespot.pim.compat.controller.InquiryActivityBack;
+import net.wespot.pim.controller.Adapters.Answers.AnswerDelegator;
 import net.wespot.pim.controller.Adapters.InquiryLazyListAdapter;
 import net.wespot.pim.controller.InquiryActivity;
 import net.wespot.pim.controller.InquiryPhasesActivity;
@@ -70,10 +71,12 @@ public class PimInquiriesFragment extends BaseFragmentActivity implements ListIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        INQ.init(this);
+        INQ.accounts.syncMyAccountDetails();
         ARL.eventBus.register(this);
         if (savedInstanceState != null) {
-            INQ.init(this);
-            INQ.accounts.syncMyAccountDetails();
+
+
         }
 
         INQ.inquiry.syncInquiries();
@@ -132,7 +135,7 @@ public class PimInquiriesFragment extends BaseFragmentActivity implements ListIt
         Intent intent = new Intent(getApplicationContext(), InquiryPhasesActivity.class);
         INQ.inquiry.setCurrentInquiry(object);
         QuestionDelegator.getInstance().syncQuestions(object);
-
+        AnswerDelegator.getInstance().syncAnswers(object);
         startActivity(intent);
     }
 

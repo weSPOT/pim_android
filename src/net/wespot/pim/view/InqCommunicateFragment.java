@@ -61,20 +61,25 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     private ImageButton send;
     private View rootView;
 
-    private ListView listViewMessages;
+    private static ListView listViewMessages;
 
-    private int numMessages = 0;
-    private NotificationCompat.Builder mBuilder;
-    private NotificationManager mNotificationManager;
-    private NotificationCompat.InboxStyle mNotificationStyle;
+    private static Context mContext;
+
+    private static int numMessages = 0;
+    private static NotificationCompat.Builder mBuilder;
+    private static NotificationManager mNotificationManager;
+    private static NotificationCompat.InboxStyle mNotificationStyle;
 
     private HashMap<String, AccountLocalObject> accounts = new HashMap<String, AccountLocalObject>();
 
-    private ChatAdapter chatAdapter;
-    private HashMap<MessageLocalObject, View> messages_views = new HashMap<MessageLocalObject, View>();
-    ArrayList<MessageLocalObject> messages;
+    public static ChatAdapter chatAdapter;
+    public static HashMap<MessageLocalObject, View> messages_views = new HashMap<MessageLocalObject, View>();
+    public static ArrayList<MessageLocalObject> messages = new ArrayList<MessageLocalObject>();
+    public static ArrayList<MessageLocalObject> notications_queue_messages = new ArrayList<MessageLocalObject>();
 
     private List<MessageLocalObject> messageLocalObjectList;
+    private static List<Long> runIdList = new ArrayList<Long>();
+
 
     private static final String CURRENT_INQUIRY = "currentInquiry";
     private static final String CURRENT_INQUIRY_RUN = "currentInquiryRun";
@@ -91,6 +96,23 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     @Override
     public void onResume() {
         super.onResume();
+//        CancelNotification(mContext, safeLongToInt(INQ.inquiry.getCurrentInquiry().getId()));
+
+    }
+
+    public void CancelNotification(Context ctx, int notifyId) {
+        String ns = Context.NOTIFICATION_SERVICE;
+        NotificationManager nMgr = (NotificationManager) ctx
+                .getSystemService(ns);
+        nMgr.cancel(notifyId);
+    }
+
+    public static int safeLongToInt(long l) {
+        if (l < Integer.MIN_VALUE || l > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException
+                    (l + " cannot be cast to int without changing its value.");
+        }
+        return (int) l;
     }
 
     @Override
@@ -102,20 +124,20 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-
         outState.putLong(CURRENT_INQUIRY, INQ.inquiry.getCurrentInquiry().getId());
         outState.putLong(CURRENT_INQUIRY_RUN, INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
-
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mContext = getActivity();
+
         // TODO issue here when resuming the application
         // It seems that the ARL.getContext() is null
         if (savedInstanceState != null) {
-            INQ.init(ARL.getContext());
+            INQ.init(mContext);
             ARL.eventBus.register(this);
             INQ.accounts.syncMyAccountDetails();
 
@@ -125,12 +147,17 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
             INQ.inquiry.getCurrentInquiry().setRunLocalObject(DaoConfiguration.getInstance().getRunLocalObjectDao().load(
                     savedInstanceState.getLong(CURRENT_INQUIRY_RUN) ));
 
-            INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
-
             Log.e(TAG, "recovery from InqCommunicateFragment");
         }
 
-        messages = new ArrayList<MessageLocalObject>();
+        INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
+
+        numMessages = 0;
+        mBuilder = null;
+        mNotificationStyle = null;
+        mNotificationManager = null;
+        runIdList.clear();
+        notications_queue_messages.clear();
 
         messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
                 .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
@@ -142,9 +169,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
             messageLocalObject.setRead(true);
             DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
         }
-
-        numMessages = 0;
-        mBuilder = null;
 
         chatAdapter = new ChatAdapter(getActivity(), messages, messages_views);
     }
@@ -188,8 +212,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         return rootView;
     }
 
-
-
     @Override
     public boolean acceptNotificationType(String notificationType) {
         return true;
@@ -216,9 +238,11 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         receiveMessage(messageEvent.getRunId());
     }
 
-    private void receiveMessage(Long runId) {
+    public void receiveMessage(Long runId) {
+
         messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-                .where(MessageLocalObjectDao.Properties.RunId.eq(runId))
+                .where(MessageLocalObjectDao.Properties.RunId.eq(runId),
+                        MessageLocalObjectDao.Properties.Read.isNull())
                 .orderAsc(MessageLocalObjectDao.Properties.Time)
                 .list();
 
@@ -253,9 +277,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                     /////////////////////////////////////////////////////
                     if (messageLocalObject.getRead() == null) {
                         // No notification but we need to update the view
-                        //////////////////
-                        // If the message
-                        //////////////////
                         ///////////////////////////////////////////////////////////////////////
                         // We are inside the inquiry but maybe we need an internal notification
                         ///////////////////////////////////////////////////////////////////////
@@ -263,117 +284,210 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                         if (!messages_views.containsKey(messageLocalObject)){
                             if (messages != null){
                                 messages.add(messageLocalObject);
+                                messages_views.put(messageLocalObject, null);
                             }
                         }else{
                             ViewGroup viewUpdate = (ViewGroup) chatAdapter.getViewFromMessage(messageLocalObject);
                             if (viewUpdate != null){
-                                viewUpdate.inflate(getActivity(),R.layout.entry_messages, null);
+                                viewUpdate.inflate(mContext,R.layout.entry_messages, null);
                                 viewUpdate.invalidate();
                             }
                         }
+
                         if (chatAdapter != null){
                             chatAdapter.notifyDataSetChanged();
                             messageLocalObject.setRead(true);
                             DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
                         }
-
-
-
-
                     }
                 }
             }else{
                 for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
-                    if (messageLocalObject.getRead() == null) {
 
+                    if (!notications_queue_messages.contains(messageLocalObject)){
+                        notications_queue_messages.add(messageLocalObject);
                         createNotification(messageLocalObject, runId);
-
-                        ///////////////////////////////////////////////////////
-                        // We need to mark them read when click on notification
-                        ///////////////////////////////////////////////////////
-                        messageLocalObject.setRead(true);
-
-                        DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
                     }
+
+//                    if (messageLocalObject.getRead() == null) {
+//
+//                        createNotification(messageLocalObject, runId);
+//
+//                        ///////////////////////////////////////////////////////
+//                        // We need to mark them read when click on notification
+//                        ///////////////////////////////////////////////////////
+////                        messageLocalObject.setRead(true);
+//
+//                        DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
+//                    }
                 }
             }
         }else{
 
             for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
-                if (messageLocalObject.getRead() == null) {
-
+                if (!notications_queue_messages.contains(messageLocalObject)){
+                    notications_queue_messages.add(messageLocalObject);
                     createNotification(messageLocalObject, runId);
-
-                    messageLocalObject.setRead(true);
-
-                    DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
                 }
+//                if (messageLocalObject.getRead() == null) {
+//
+//                    createNotification(messageLocalObject, runId);
+//
+////                    messageLocalObject.setRead(true);
+//
+//                    DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
+//                }
             }
         }
     }
 
     private void createNotification(MessageLocalObject messageLocalObject, Long runId) {
 
-        if (mBuilder == null){
+        if (!runIdList.contains(runId)){
+            runIdList.add(runId);
+        }
 
-            if (mNotificationStyle == null){
-                mNotificationStyle = new NotificationCompat.InboxStyle();
+        numMessages = 0;
+        mBuilder = null;
+        mNotificationStyle = null;
+        mNotificationManager = null;
+
+        mNotificationManager = (NotificationManager) ARL.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationStyle = new NotificationCompat.InboxStyle();
+        mBuilder = new NotificationCompat.Builder(ARL.getContext()).setSmallIcon(R.drawable.ic_launcher)
+                .setAutoCancel(true)
+                .setSortKey("0")
+                .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE)
+                .setStyle(mNotificationStyle);
+
+        InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().queryBuilder().where(
+                InquiryLocalObjectDao.Properties.RunId.eq(runId)
+        ).list().get(0);
+
+
+        Intent resultIntent = new Intent(ARL.getContext(), InquiryPhasesActivity.class);
+        resultIntent.putExtra(INQUIRY_ID, inquiryLocalObject.getId());
+
+        Intent parent = new Intent(ARL.getContext(), PimInquiriesFragment.class);
+        Intent parent1 = new Intent(ARL.getContext(), MainActivity.class);
+        Intent parent2 = new Intent(ARL.getContext(), SplashActivity.class);
+
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(ARL.getContext());
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addNextIntentWithParentStack(parent2);
+        stackBuilder.addNextIntentWithParentStack(parent1);
+        stackBuilder.addNextIntentWithParentStack(parent);
+
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(
+                        0,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        mBuilder.setContentIntent(resultPendingIntent);
+
+
+        if (runIdList.size() == 1){
+            // More than 1 inquiries have messages
+
+            mBuilder.setContentTitle(inquiryLocalObject.getTitle());
+            for (MessageLocalObject me : notications_queue_messages){
+                mNotificationStyle
+                        .addLine(getNameUser(me.getAuthor()) + ": " + me.getBody())
+                        .setSummaryText(++numMessages!= 1 ? numMessages + " new messages" : numMessages + " new message");
             }
-
-            InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().queryBuilder().where(
-                    InquiryLocalObjectDao.Properties.RunId.eq(runId)
-            ).list().get(0);
-
-            mBuilder = new NotificationCompat.Builder(ARL.getContext())
-                    .setSmallIcon(R.drawable.ic_launcher)
-                    .setContentTitle(inquiryLocalObject.getTitle())
-                    .setAutoCancel(true)
-                    .setSortKey("0")
-                    .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE)
-                    .setStyle(mNotificationStyle
-                            .addLine(getNameUser(messageLocalObject.getAuthor()) + ": " + messageLocalObject.getBody())
-                            .setSummaryText(++numMessages != 1 ? numMessages + " new messages" : numMessages + " new message"));
-
-            // Creates an explicit intent for an Activity in your app
-            Intent resultIntent = new Intent(ARL.getContext(), InquiryPhasesActivity.class);
-            resultIntent.putExtra(INQUIRY_ID, inquiryLocalObject.getId());
-
-            Intent parent = new Intent(ARL.getContext(), PimInquiriesFragment.class);
-            Intent parent1 = new Intent(ARL.getContext(), MainActivity.class);
-            Intent parent2 = new Intent(ARL.getContext(), SplashActivity.class);
-
-            // The stack builder object will contain an artificial back stack for the
-            // started Activity.
-            // This ensures that navigating backward from the Activity leads out of
-            // your application to the Home screen.
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(ARL.getContext());
-            // Adds the back stack for the Intent (but not the Intent itself)
-            stackBuilder.addNextIntentWithParentStack(parent2);
-            stackBuilder.addNextIntentWithParentStack(parent1);
-            stackBuilder.addNextIntentWithParentStack(parent);
-
-            // Adds the Intent that starts the Activity to the top of the stack
-            stackBuilder.addNextIntent(resultIntent);
-            PendingIntent resultPendingIntent =
-                    stackBuilder.getPendingIntent(
-                            0,
-                            PendingIntent.FLAG_UPDATE_CURRENT
-                    );
-
-            mBuilder.setContentIntent(resultPendingIntent);
-        }else{
-
-            mNotificationStyle
-                    .addLine(getNameUser(messageLocalObject.getAuthor()) + ": " + messageLocalObject.getBody())
-                    .setSummaryText(++numMessages!= 1?numMessages + " new messages":numMessages + " new message");
         }
 
-        if (mNotificationManager == null){
-            mNotificationManager = (NotificationManager) ARL.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        if (runIdList.size() > 1){
+            // More than 1 inquiries have messages
+
+            for (MessageLocalObject me : notications_queue_messages){
+                mBuilder.setContentTitle("Personal Inquiry Manager");
+                InquiryLocalObject a = DaoConfiguration.getInstance().getInquiryLocalObjectDao().queryBuilder().where(
+                        InquiryLocalObjectDao.Properties.RunId.eq(me.getRunId())
+                ).list().get(0);
+
+                mNotificationStyle
+                        .addLine(getNameUser(me.getAuthor()) + " @ "+a.getTitle()+": " + me.getBody())
+                        .setSummaryText(++numMessages != 1 ? numMessages + " new messages from "+runIdList.size()+" conversations" +
+                                " " : numMessages + " new message from "+runIdList.size()+" conversations");
+            }
         }
 
-        // mId allows you to update the notification later on.
+
+
+
         mNotificationManager.notify(Integer.parseInt(NUMBER), mBuilder.build());
+
+
+
+
+//        if (mBuilder == null){
+//
+//            if (mNotificationStyle == null){
+//                mNotificationStyle = new NotificationCompat.InboxStyle();
+//            }
+//
+//            InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().queryBuilder().where(
+//                    InquiryLocalObjectDao.Properties.RunId.eq(runId)
+//            ).list().get(0);
+//
+//            mBuilder = new NotificationCompat.Builder(ARL.getContext())
+//                    .setSmallIcon(R.drawable.ic_launcher)
+//                    .setContentTitle(inquiryLocalObject.getTitle())
+//                    .setAutoCancel(true)
+//                    .setSortKey("0")
+//                    .setDefaults(Notification.DEFAULT_SOUND|Notification.DEFAULT_VIBRATE)
+//                    .setStyle(mNotificationStyle
+//                            .addLine(getNameUser(messageLocalObject.getAuthor()) + ": " + messageLocalObject.getBody())
+//                            .setSummaryText(++numMessages != 1 ? numMessages + " new messages" : numMessages + " new message"));
+//
+//            // Creates an explicit intent for an Activity in your app
+//            Intent resultIntent = new Intent(ARL.getContext(), InquiryPhasesActivity.class);
+//            resultIntent.putExtra(INQUIRY_ID, inquiryLocalObject.getId());
+//
+//            Intent parent = new Intent(ARL.getContext(), PimInquiriesFragment.class);
+//            Intent parent1 = new Intent(ARL.getContext(), MainActivity.class);
+//            Intent parent2 = new Intent(ARL.getContext(), SplashActivity.class);
+//
+//            // The stack builder object will contain an artificial back stack for the
+//            // started Activity.
+//            // This ensures that navigating backward from the Activity leads out of
+//            // your application to the Home screen.
+//            TaskStackBuilder stackBuilder = TaskStackBuilder.create(ARL.getContext());
+//            // Adds the back stack for the Intent (but not the Intent itself)
+//            stackBuilder.addNextIntentWithParentStack(parent2);
+//            stackBuilder.addNextIntentWithParentStack(parent1);
+//            stackBuilder.addNextIntentWithParentStack(parent);
+//
+//            // Adds the Intent that starts the Activity to the top of the stack
+//            stackBuilder.addNextIntent(resultIntent);
+//            PendingIntent resultPendingIntent =
+//                    stackBuilder.getPendingIntent(
+//                            0,
+//                            PendingIntent.FLAG_UPDATE_CURRENT
+//                    );
+//
+//            mBuilder.setContentIntent(resultPendingIntent);
+//        }else{
+//
+//            mNotificationStyle
+//                    .addLine(getNameUser(messageLocalObject.getAuthor()) + ": " + messageLocalObject.getBody())
+//                    .setSummaryText(++numMessages!= 1?numMessages + " new messages":numMessages + " new message");
+//        }
+//
+//        if (mNotificationManager == null){
+//            mNotificationManager = (NotificationManager) ARL.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+//        }
+//
+//        // mId allows you to update the notification later on.
+//        mNotificationManager.notify(Integer.parseInt(NUMBER), mBuilder.build());
     }
 
 
@@ -419,6 +533,8 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     public void onDestroy() {
         ARL.eventBus.unregister(this);
         mBuilder = null;
+        messages.clear();
+        messages_views.clear();
         super.onDestroy();
     }
 

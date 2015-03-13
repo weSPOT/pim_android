@@ -33,6 +33,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import net.wespot.pim.R;
+import net.wespot.pim.controller.Adapters.Answers.AnswerDelegator;
 import net.wespot.pim.controller.Adapters.QuestionsLazyListAdapter;
 import net.wespot.pim.utils.layout.QuestionDialogFragment;
 import org.celstec.arlearn.delegators.INQ;
@@ -95,6 +96,8 @@ public class InqQuestionFragment extends Fragment implements ListItemClickInterf
         Intent intent = null;
         intent = new Intent(getActivity(), InqQuestionAnswerFragment.class);
         intent.putExtra("QuestionId", object.getIdentifier());
+        intent.putExtra("QuestionTitle", object.getTitle());
+        intent.putExtra("QuestionDescription", object.getDescription());
         startActivity(intent);
     }
 
@@ -178,6 +181,7 @@ public class InqQuestionFragment extends Fragment implements ListItemClickInterf
             if (token != null && ARL.isOnline()) {
                 InquiryClient.getInquiryClient().createQuestions(token, questionObject.question.getInquiryId(), questionObject.question.getTitle(), questionObject.question.getDescription(), INQ.accounts.getLoggedInAccount(),questionObject.question.getTags() );
                 INQ.questions.syncQuestions(INQ.inquiry.getCurrentInquiry());
+                AnswerDelegator.getInstance().syncAnswers(INQ.inquiry.getCurrentInquiry());
                 Log.e(TAG, "create and sync question");
 
             }
