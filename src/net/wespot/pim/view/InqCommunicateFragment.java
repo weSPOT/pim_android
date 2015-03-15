@@ -160,9 +160,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
 
         Format format = new SimpleDateFormat("HH:mm:ss dd-MMM-y");
 
-        Log.e(TAG, "Two days ago: "+format.format(two_days_ago)+" "+two_days_ago_long);
-        Log.e(TAG, "Now: "+format.format(now)+" "+now_long);
-
         messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
                 .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()),
                         MessageLocalObjectDao.Properties.Time.gt(two_days_ago_long))
@@ -180,8 +177,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-
-        Log.e(TAG, "entering communication fragment onCreateView");
         super.onCreateView(inflater, container, savedInstanceState);
 
         rootView = inflater.inflate(R.layout.fragment_section_communicate, container, false);
@@ -238,16 +233,19 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     }
 
     public synchronized void onEventMainThread(MessageEvent messageEvent) {
-        Log.e(TAG, "message synced: " + messageEvent.getRunId());
+        Log.d(TAG, "message synced: " + messageEvent.getRunId());
 
         receiveMessage(messageEvent.getRunId());
     }
 
     public void receiveMessage(Long runId) {
 
+        long two_days_ago_long = (System.currentTimeMillis()/1000 - (24 * 60 * 60))*1000;
+
         messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
                 .where(MessageLocalObjectDao.Properties.RunId.eq(runId),
-                        MessageLocalObjectDao.Properties.Read.isNull())
+                        MessageLocalObjectDao.Properties.Read.isNull(),
+                        MessageLocalObjectDao.Properties.Time.gt(two_days_ago_long))
                 .orderAsc(MessageLocalObjectDao.Properties.Time)
                 .list();
 

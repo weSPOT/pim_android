@@ -9,10 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import daoBase.DaoConfiguration;
+import de.greenrobot.dao.query.QueryBuilder;
 import net.wespot.pim.R;
 import org.celstec.arlearn2.android.listadapter.AbstractGeneralItemsLazyListAdapter;
 import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.GeneralItemLocalObjectDao;
+import org.celstec.dao.gen.ResponseLocalObjectDao;
+import org.codehaus.jettison.json.JSONException;
 
 import java.lang.ref.WeakReference;
 import java.text.Format;
@@ -42,7 +46,6 @@ import java.util.Date;
 public class DataCollectionLazyListAdapter extends AbstractGeneralItemsLazyListAdapter {
 
     private static final String TAG = "DataCollectionLazyListAdapter";
-    private int numberOfResponses;
     private String dateString;
 
 
@@ -57,7 +60,6 @@ public class DataCollectionLazyListAdapter extends AbstractGeneralItemsLazyListA
     public View newView(Context context, GeneralItemLocalObject item, ViewGroup parent) {
         if (item == null) return null;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        numberOfResponses = item.getResponses().size();
 
         Date date = new Date(item.getLastModificationDate());
         Format format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -69,6 +71,7 @@ public class DataCollectionLazyListAdapter extends AbstractGeneralItemsLazyListA
     }
 
     public void bindView(View view, Context context,  GeneralItemLocalObject item) {
+
         TextView firstLineView =(TextView) view.findViewById(R.id.name_entry_data_colletion_list);
         firstLineView.setText(item.getTitle());
 
@@ -76,13 +79,40 @@ public class DataCollectionLazyListAdapter extends AbstractGeneralItemsLazyListA
         secondlineView.setText(dateString);
 
         ImageView icon = (ImageView) view.findViewById(R.id.inquiry_entry_data_collection_icon);
-        icon.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_task_explore));
+
+        try {
+            if (item.isAudio()){
+                icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_task_record));
+            }else if (item.isVideo()){
+                icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_task_video));
+            }else if (item.isPicture()){
+                icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_taks_photo));
+            }else if (item.isText()){
+                icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_task_text));
+            }else if (item.isValue()){
+                icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_task_explore));
+            }else{
+                icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_task_explore));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         TextView notificationTextview = (TextView) view.findViewById(R.id.notificationText);
         notificationTextview.setVisibility(View.VISIBLE);
-        notificationTextview.setText("" + numberOfResponses);
-    }
 
+        QueryBuilder qb = DaoConfiguration.getInstance().getResponseLocalObjectDao().queryBuilder();
+        qb.orderAsc(ResponseLocalObjectDao.Properties.TimeStamp)
+                .where(
+                        qb.and(
+                                ResponseLocalObjectDao.Properties.GeneralItem.eq(item.getId())
+                                ,
+                                ResponseLocalObjectDao.Properties.Revoked.eq(false)
+                        )
+                );
+
+        notificationTextview.setText("" + qb.list().size());
+    }
 
     @Override
     public long getItemId(int i) {

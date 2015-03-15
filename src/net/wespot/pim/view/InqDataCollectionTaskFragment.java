@@ -28,11 +28,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
+import android.widget.Toast;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.ImageDetailActivity;
@@ -58,12 +58,7 @@ import java.io.File;
 public class InqDataCollectionTaskFragment extends BaseFragmentActivity implements ListItemClickInterface<ResponseLocalObject> {
 
     private static final String TAG = "InqDataCollectionTaskFragment";
-    private static final String CURRENT_INQUIRY = "current_inquiry";
-    private static final String FRAGMENT_CONTENT = "fragment_content";
-
-    private static final String RUN_ID = "runId";
     public static final String GENERAL_ITEM = "generalItem";
-    private static final String PREFS_NAME = "sharedPreferences";
     public static final String DATA_COLLECTION_TASK_ID = "dataCollectionTask";
     private long generalItemId;
 
@@ -90,12 +85,6 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     private ImageGridFragment frag;
 
     public InqDataCollectionTaskFragment() {
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        outState.putLong(GENERAL_ITEM, generalItemId);
     }
 
     @Override
@@ -131,7 +120,6 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
         }else{
             Log.i(TAG, "Failed because there is no extra parameter");
         }
-
 
         defineValueInputManager();
         definePictureInputManager();
@@ -176,8 +164,6 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
 
         getActionBar().setTitle(getResources().getString(R.string.actionbar_list_data_collection_task));
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -232,6 +218,61 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
         return super.onOptionsItemSelected(item);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Toast.makeText(this, "Uploading...", Toast.LENGTH_LONG).show();
+
+        switch (requestCode){
+            case DataCollectionManager.PICTURE_RESULT:
+                man_pic.onActivityResult(requestCode, resultCode, data);
+                break;
+            case DataCollectionManager.AUDIO_RESULT:
+                man_aud.onActivityResult(requestCode, resultCode, data);
+                break;
+            case DataCollectionManager.VIDEO_RESULT:
+                man_vid.onActivityResult(requestCode, resultCode, data);
+                break;
+            case DataCollectionManager.TEXT_RESULT:
+                man_tex.onActivityResult(requestCode, resultCode, data);
+                break;
+            case DataCollectionManager.VALUE_RESULT:
+                man_val.onActivityResult(requestCode, resultCode, data);
+                break;
+        }
+
+        INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
+    }
+
+    private void defineAudioInputManager() {
+        man_aud = new AudioInputManager(this);
+        man_aud.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+        man_aud.setGeneralItem(genObject);
+    }
+
+    private void defineTextInputManager() {
+        man_tex = new TextInputManager(this);
+        man_tex.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+        man_tex.setGeneralItem(genObject);
+    }
+
+    private void defineVideoInputManager() {
+        man_vid = new VideoManager(this);
+        man_vid.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+        man_vid.setGeneralItem(genObject);
+    }
+
+    private void defineValueInputManager() {
+        man_val = new ValueInputManager(this);
+        man_val.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+        man_val.setGeneralItem(genObject);
+    }
+
+    private void definePictureInputManager() {
+        man_pic = new PictureManager(this);
+        man_pic.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+        man_pic.setGeneralItem(genObject);
+    }
+
+
     private void chooseCapturingPicture() {
 
 //        DialogFragment newFragment = new CaptureImageDialogFragment(this, man_pic, genObject);
@@ -283,56 +324,4 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
         return false;
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
-            case DataCollectionManager.PICTURE_RESULT:
-                man_pic.onActivityResult(requestCode, resultCode, data);
-                break;
-            case DataCollectionManager.AUDIO_RESULT:
-                man_aud.onActivityResult(requestCode, resultCode, data);
-                break;
-            case DataCollectionManager.VIDEO_RESULT:
-                man_vid.onActivityResult(requestCode, resultCode, data);
-                break;
-            case DataCollectionManager.TEXT_RESULT:
-                man_tex.onActivityResult(requestCode, resultCode, data);
-                break;
-            case DataCollectionManager.VALUE_RESULT:
-                man_val.onActivityResult(requestCode, resultCode, data);
-                break;
-        }
-
-        INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
-    }
-
-    private void defineAudioInputManager() {
-        man_aud = new AudioInputManager(this);
-        man_aud.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
-        man_aud.setGeneralItem(genObject);
-    }
-
-    private void defineTextInputManager() {
-        man_tex = new TextInputManager(this);
-        man_tex.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
-        man_tex.setGeneralItem(genObject);
-    }
-
-    private void defineVideoInputManager() {
-        man_vid = new VideoManager(this);
-        man_vid.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
-        man_vid.setGeneralItem(genObject);
-    }
-
-    private void defineValueInputManager() {
-        man_val = new ValueInputManager(this);
-        Log.e(TAG, man_val.toString()+" ");
-        man_val.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
-        man_val.setGeneralItem(genObject);
-    }
-
-    private void definePictureInputManager() {
-        man_pic = new PictureManager(this);
-        man_pic.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
-        man_pic.setGeneralItem(genObject);
-    }
 }

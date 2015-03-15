@@ -16,12 +16,10 @@
 
 package net.wespot.pim.controller;
 
-import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -29,6 +27,7 @@ import android.view.*;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 import daoBase.DaoConfiguration;
 import net.wespot.pim.BuildConfig;
 import net.wespot.pim.R;
@@ -43,7 +42,6 @@ import org.celstec.arlearn2.android.delegators.ResponseDelegator;
 import org.celstec.arlearn2.android.events.ResponseEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GeneralItemLocalObject;
-import org.celstec.dao.gen.InquiryLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
 import org.celstec.dao.gen.RunLocalObject;
 
@@ -58,7 +56,7 @@ import java.util.List;
  * cache is retained over configuration changes like orientation change so the images are populated
  * quickly if, for example, the user rotates the device.
  */
-public class ImageGridFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener, ListItemClickInterface<ResponseLocalObject> {
+public class ImageGridFragment extends Fragment implements AdapterView.OnItemClickListener, ListItemClickInterface<ResponseLocalObject> {
     private static final String TAG = "ImageGridFragment";
     private static final String IMAGE_CACHE_DIR = "thumbs";
     private static final String GENERAL_ITEM = "generalItemId";
@@ -118,11 +116,18 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         if (savedInstanceState != null){
             INQ.init(this.getActivity());
             INQ.accounts.syncMyAccountDetails();
+
+            INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(
+                    savedInstanceState.getLong(INQUIRY_ID) ));
+
+            INQ.inquiry.getCurrentInquiry().setRunLocalObject(DaoConfiguration.getInstance().getRunLocalObjectDao().load(
+                    savedInstanceState.getLong(RUN_ID) ));
+
             giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(savedInstanceState.getLong(GENERAL_ITEM));
-            InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(savedInstanceState.getLong(RUN_ID));
-//            INQ.inquiry.setCurrentInquiry(inquiryLocalObject);
-            Log.e(TAG, "[onCreate] "+savedInstanceState.getLong(GENERAL_ITEM) + " - General Item ");
-            Log.e(TAG, "[onCreate] "+savedInstanceState.getLong(RUN_ID) + " - Run ");
+
+            Log.e(TAG, "GENERAL ITEM ID: "+savedInstanceState.getLong(GENERAL_ITEM));
+            Log.e(TAG, "RUN ID: "+savedInstanceState.getLong(RUN_ID));
+            Log.e(TAG, "INQUIRY ID: "+savedInstanceState.getLong(INQUIRY_ID));
 
         }else{
             if (extras != null) {
@@ -130,18 +135,10 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
             }
         }
 
-
         mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
         mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
 
         responseLocalObjectList = giLocalObject.getResponses();
-
-        Log.e(TAG, "[onCreate] GI-ID:"+giLocalObject.getId()+
-                " [onCreate] GI-Title:"+giLocalObject.getTitle()+
-                " [onCreate] Number responses:"+responseLocalObjectList.size());
-        for(ResponseLocalObject r : responseLocalObjectList){
-            Log.e(TAG,"[onCreate] RESPONSE ID:"+r.getId());
-        }
 
         Collections.sort(responseLocalObjectList, responseLocalObjectComparator);
 
@@ -152,7 +149,9 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         mImageFetcher = new ImageFetcher(getActivity(), mImageThumbSize);
         mImageFetcher.setLoadingImage(R.drawable.ic_taks_photo);
         mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
+
         mAdapter = new ResponsesLazyListAdapter(getActivity(), mImageFetcher, giLocalObject);
+        mAdapter.setOnListItemClickCallback(this);
     }
 
     @Override
@@ -163,8 +162,6 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         mGridView = (GridView) v.findViewById(R.id.gridView1);
 
         mGridView.setAdapter(mAdapter);
-        mGridView.setOnItemClickListener(this);
-        mGridView.setOnItemLongClickListener(this);
 
         mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -188,7 +185,6 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
         mGridView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @TargetApi(VERSION_CODES.JELLY_BEAN)
                     @Override
                     public void onGlobalLayout() {
                         if (mAdapter.getNumColumns() == 0) {
@@ -250,7 +246,16 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
     }
 
-    @TargetApi(VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.main_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
@@ -270,7 +275,6 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         }
     }
 
-    @TargetApi(VERSION_CODES.JELLY_BEAN)
     @Override
     public void onListItemClick(View v, int position, ResponseLocalObject item) {
         final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
@@ -290,107 +294,81 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
         }
     }
 
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.main_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
-
-//    @Override
-//    public void onListItemClick(View v, int position, ResponseLocalObject object) {
-//        final Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
-//
-//        intent.putExtra(ImageDetailActivity.GENERAL_ITEM_ID, giLocalObject.getId());
-//        intent.putExtra(ImageDetailActivity.RESPONSE_POSITION, (int) position);
-//
-//        if (Utils.hasJellyBean()) {
-//            // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
-//            // show plus the thumbnail image in GridView is cropped. so using
-//            // makeScaleUpAnimation() instead.
-//            ActivityOptions options =
-//                    ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
-//            getActivity().startActivity(intent, options.toBundle());
-//        } else {
-//            startActivity(intent);
-//        }
-//    }
-
     @Override
     public boolean setOnLongClickListener(View v, int position, final ResponseLocalObject object) {
-        // Not used
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
-                        if (object.getIsSynchronized() == false){
-                            DaoConfiguration.getInstance().getResponseLocalObjectDao().delete(object);
+
+                        if (object.getAccountLocalObject().equals(INQ.accounts.getLoggedInAccount())){
+                            Toast.makeText(getActivity(), "Deleting...", Toast.LENGTH_LONG).show();
+
+                            if (object.getIsSynchronized() == false){
+                                DaoConfiguration.getInstance().getResponseLocalObjectDao().delete(object);
+                            }else{
+                                object.setRevoked(true);
+                                object.setNextSynchronisationTime(0l);
+                                object.setIsSynchronized(false);
+                                DaoConfiguration.getInstance().getResponseLocalObjectDao().insertOrReplace(object);
+                                ResponseDelegator.getInstance().syncResponses(object.getRunId());
+                            }
                         }else{
-                            object.setRevoked(true);
-                            object.setNextSynchronisationTime(0l);
-                            object.setIsSynchronized(false);
-                            DaoConfiguration.getInstance().getResponseLocalObjectDao().insertOrReplace(object);
-//                            object.delete();
-                            ResponseDelegator.getInstance().syncResponses(object.getRunId());
+                            Toast.makeText(getActivity(), "You are not the owner, you can not delete", Toast.LENGTH_SHORT).show();
                         }
-
                         break;
-
                     case DialogInterface.BUTTON_NEGATIVE:
                         //Do your No progress
                         break;
                 }
             }
         };
+
         AlertDialog.Builder ab = new AlertDialog.Builder(getActivity());
-        ab.setMessage("Are you sure to delete?").setPositiveButton("Yes", dialogClickListener)
+        ab.setMessage("Do you want to delete it?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
         return false;
     }
 
 
-
-    @TargetApi(VERSION_CODES.JELLY_BEAN)
-    @Override
-    public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long id) {
-
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                ResponseLocalObject responseLocalObject = giLocalObject.getResponses().get(position);
-
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
-                        if (responseLocalObject.getIsSynchronized() == false){
-                            DaoConfiguration.getInstance().getResponseLocalObjectDao().delete(responseLocalObject);
-                        }else{
-                            responseLocalObject.setRevoked(true);
-                            responseLocalObject.setNextSynchronisationTime(0l);
-                            responseLocalObject.setIsSynchronized(false);
-                            DaoConfiguration.getInstance().getResponseLocalObjectDao().insertOrReplace(responseLocalObject);
-                            ResponseDelegator.getInstance().syncResponses(responseLocalObject.getRunId());
-
-                        }
-
-                        break;
-
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        //Do your No progress
-                        break;
-                }
-            }
-        };
-        AlertDialog.Builder ab = new AlertDialog.Builder(getActivity());
-        ab.setMessage("Are you sure to delete?").setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("No", dialogClickListener).show();
-        return false;
-    }
+//
+//    @TargetApi(VERSION_CODES.JELLY_BEAN)
+//    @Override
+//    public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long id) {
+//
+//        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//                ResponseLocalObject responseLocalObject = giLocalObject.getResponses().get(position);
+//
+//                switch (which){
+//                    case DialogInterface.BUTTON_POSITIVE:
+//                        if (responseLocalObject.getIsSynchronized() == false){
+//                            DaoConfiguration.getInstance().getResponseLocalObjectDao().delete(responseLocalObject);
+//                        }else{
+//                            responseLocalObject.setRevoked(true);
+//                            responseLocalObject.setNextSynchronisationTime(0l);
+//                            responseLocalObject.setIsSynchronized(false);
+//                            DaoConfiguration.getInstance().getResponseLocalObjectDao().insertOrReplace(responseLocalObject);
+//                            ResponseDelegator.getInstance().syncResponses(responseLocalObject.getRunId());
+//
+//                        }
+//
+//                        break;
+//
+//                    case DialogInterface.BUTTON_NEGATIVE:
+//                        //Do your No progress
+//                        break;
+//                }
+//            }
+//        };
+//        AlertDialog.Builder ab = new AlertDialog.Builder(getActivity());
+//        ab.setMessage("Are you sure to delete?").setPositiveButton("Yes", dialogClickListener)
+//                .setNegativeButton("No", dialogClickListener).show();
+//        return false;
+//    }
 
 //    public class ImageAdapter extends AbstractResponsesLazyListAdapter {
 //

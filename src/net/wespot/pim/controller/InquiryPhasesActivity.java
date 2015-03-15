@@ -81,9 +81,9 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
                                 savedInstanceState.getLong("currentInquiryRunLocalObject")
                         )
                 );
-                Log.e(TAG, "go through savedInstanceState currentInquiryRunLocalObject" + savedInstanceState + " " + DaoConfiguration.getInstance().getRunLocalObjectDao());
+                Log.e(TAG, "RUN ID: " + INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId()+" "+INQ.inquiry.getCurrentInquiry().getRunLocalObject().getTitle());
             }
-            Log.e(TAG, "go through savedInstanceState currentInquiry" + savedInstanceState + " " + INQ.inquiry.getCurrentInquiry());
+            Log.e(TAG, "INQUIRY ID: " + INQ.inquiry.getCurrentInquiry().getId()+" "+INQ.inquiry.getCurrentInquiry().getTitle());
         }
 
         ////////////////////////////////////
@@ -210,8 +210,6 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
 
     @Override
     public void onListItemClick(View v, int id, View object) {
-        Log.e(TAG, "Access to phase number "+id);
-
         if (id != Constants.ID_FRIENDS){
             if (INQ.inquiry.getCurrentInquiry().getRunLocalObject() != null) {
                 GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();

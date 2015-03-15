@@ -87,16 +87,23 @@ public class ChatAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         MessageLocalObject message = (MessageLocalObject) this.getItem(position);
-        if(INQ.accounts.getLoggedInAccount().getFullId().equals(message.getAuthor())){
+
+        try{
+            if(INQ.accounts.getLoggedInAccount().getFullId().equals(message.getAuthor())){
 //            if (!message.getRead()){
 //                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages_not_sync, parent, false);
 //            }else{
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages, parent, false);
 //            }
-        }else{
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages_others, parent, false);
-            ((TextView) convertView.findViewById(R.id.author_entry_list)).setText(getNameUser(message.getAuthor()));
+            }else{
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages_others, parent, false);
+                ((TextView) convertView.findViewById(R.id.author_entry_list)).setText(getNameUser(message.getAuthor()));
+            }
+        }catch (Exception e){
+            System.out.println("Exception while retrieving the author of the message: " + e);
         }
+
+
 
         TextView messageTextView = (TextView) convertView.findViewById(R.id.message);
         TextView timestampTextView = (TextView) convertView.findViewById(R.id.timeStampMessage);

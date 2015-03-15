@@ -31,7 +31,6 @@
     <ImageView
             android:id="@+id/inquiry_entry_data_collection_icon"
             style="@style/CustomTheme.ListItem.ImageView.Left"
-            android:src="@drawable/ic_task_explore"
             android:contentDescription="@string/icon_list"/>
 
     <TextView android:id="@+id/notificationText"

@@ -26,7 +26,6 @@ import org.celstec.arlearn2.android.events.GeneralItemEvent;
 import org.celstec.arlearn2.android.events.MyAccount;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.InquiryLocalObject;
-import org.celstec.events.BadgeEvent;
 import org.celstec.events.FriendEvent;
 import org.celstec.events.InquiryEvent;
 
@@ -244,13 +243,13 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
         Log.i(TAG, "onEventMainThread. Number of inquiries: " + numberInquiries);
     }
 
-    public void onEventMainThread(BadgeEvent event) {
-        numberBadges = DaoConfiguration.getInstance().getBadgesLocalObjectDao().loadAll().size();
-
-        ((TextView)myBadges.findViewById(R.id.notificationText)).setText(String.valueOf(numberBadges));
-
-        Log.i(TAG, "onEventMainThread. Number of badges: " + numberBadges);
-    }
+//    public void onEventMainThread(BadgeEvent event) {
+//        numberBadges = DaoConfiguration.getInstance().getBadgesLocalObjectDao().loadAll().size();
+//
+//        ((TextView)myBadges.findViewById(R.id.notificationText)).setText(String.valueOf(numberBadges));
+//
+//        Log.i(TAG, "onEventMainThread. Number of badges: " + numberBadges);
+//    }
 
     public void onEventMainThread(FriendEvent event) {
         numberFriends = DaoConfiguration.getInstance().getFriendsLocalObjectDao().loadAll().size();
@@ -262,7 +261,7 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
 
     public void onEventBackgroundThread(MyAccount myAccount){
         INQ.inquiry.syncInquiries();
-        INQ.badges.syncBadges();
+//        INQ.badges.syncBadges();
 
         INQ.friendsDelegator.syncFriends();
     }

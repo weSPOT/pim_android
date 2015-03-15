@@ -86,7 +86,8 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
     @Override
     public void onResume() {
         super.onResume();
-        addContentValidation();
+//        addContentValidation();
+        datAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -98,6 +99,12 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
         text_default = (TextView) rootView.findViewById(R.id.text_default);
         data_collection_tasks_title_list = (TextView) rootView.findViewById(R.id.data_collection_tasks_title_list);
         data_collection_tasks = (ListView) rootView.findViewById(R.id.data_collection_tasks);
+
+        addContentValidation();
+
+        datAdapter =  new DataCollectionLazyListAdapter(this.getActivity(),INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameId());
+        datAdapter.setOnListItemClickCallback(this);
+        data_collection_tasks.setAdapter(datAdapter);
 
         return rootView;
     }
@@ -118,10 +125,6 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
                         generalItemLocalObject.resetResponses();
                     }
 
-                    // Add to the Adapter
-                    datAdapter =  new DataCollectionLazyListAdapter(this.getActivity(),gameLocalObject.getId());
-                    datAdapter.setOnListItemClickCallback(this);
-                    data_collection_tasks.setAdapter(datAdapter);
                 }else{
                     Log.i(TAG, "There are no data collection tasks for this inquiry");
                 }
@@ -166,17 +169,12 @@ public class InqDataCollectionFragment extends Fragment implements ListItemClick
 
                 Toast.makeText(getActivity(), "Updating data collections...", Toast.LENGTH_SHORT).show();
 
-//                DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().deleteAll();
-
-//                INQ.inquiry.syncDataCollectionTasks(INQ.inquiry.getCurrentInquiry());
-//                INQ.responses.syncResponses(INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
-
-
                 GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
                 for (GeneralItemLocalObject generalItemLocalObject : gameLocalObject.getGeneralItems()){
                     generalItemLocalObject.resetResponses();
                 }
-                addContentValidation();
+//                addContentValidation();
+                datAdapter.notifyDataSetChanged();
                 break;
         }
         return super.onOptionsItemSelected(item);

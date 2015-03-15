@@ -44,8 +44,6 @@ public class InquiryPagerAdapter extends FragmentPagerAdapter {
     public static final int THIRD_PAGE = 2;
     public static final int FOURTH_PAGE = 3;
 
-
-
     public static final String INQUIRY_ID = "inquiry_id";
     private final ArrayList<Fragment> mFragments;
     private final ArrayList<Fragment> mBackFragments;

@@ -40,8 +40,8 @@ public class InquiryActivity extends BaseFragmentActivity implements ActionBar.T
     private static final String TAG = "InquiryActivity";
     public static final String PHASE = "num_phase";
 
-    private static final String CURRENT_INQUIRY = "currentInquiry";
-    private static final String CURRENT_INQUIRY_RUN = "currentInquiryRun";
+    public static final String CURRENT_INQUIRY = "currentInquiry";
+    public static final String CURRENT_INQUIRY_RUN = "currentInquiryRun";
 
 
     /**
@@ -70,7 +70,6 @@ public class InquiryActivity extends BaseFragmentActivity implements ActionBar.T
 
         outState.putLong(CURRENT_INQUIRY, INQ.inquiry.getCurrentInquiry().getId());
         outState.putLong(CURRENT_INQUIRY_RUN, INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId());
-
     }
 
     public void onCreate(Bundle savedInstanceState) {
@@ -86,9 +85,8 @@ public class InquiryActivity extends BaseFragmentActivity implements ActionBar.T
             INQ.inquiry.getCurrentInquiry().setRunLocalObject(DaoConfiguration.getInstance().getRunLocalObjectDao().load(
                             savedInstanceState.getLong(CURRENT_INQUIRY_RUN) ));
 
-            Log.e(TAG, "go through savedInstanceState currentInquiryRunLocalObject" + savedInstanceState + " " + DaoConfiguration.getInstance().getRunLocalObjectDao());
-            Log.e(TAG, "go through savedInstanceState currentInquiry" + savedInstanceState + " " + INQ.inquiry.getCurrentInquiry());
-
+            Log.e(TAG, "RUN ID: " + INQ.inquiry.getCurrentInquiry().getRunLocalObject().getId()+" "+INQ.inquiry.getCurrentInquiry().getRunLocalObject().getTitle());
+            Log.e(TAG, "INQUIRY ID: " + INQ.inquiry.getCurrentInquiry().getId()+" "+INQ.inquiry.getCurrentInquiry().getTitle());
         }
 
         if (INQ.inquiry.getCurrentInquiry() == null){
@@ -106,8 +104,6 @@ public class InquiryActivity extends BaseFragmentActivity implements ActionBar.T
             setTitle(R.string.actionbar_inquiry_list);
 
         }else{
-
-            Log.e(TAG, "Show inquiry");
             setContentView(R.layout.activity_inquiry);
 
 
@@ -186,17 +182,17 @@ public class InquiryActivity extends BaseFragmentActivity implements ActionBar.T
 
     @Override
     public void onPageScrolled(int i, float v, int i1) {
-        Log.e(TAG, "");
+//        Log.e(TAG, "");
     }
 
     @Override
     public void onPageSelected(int i) {
-        Log.e(TAG, "");
+//        Log.e(TAG, "");
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
-        Log.e(TAG, "onPageScrollStateChanged");
+//        Log.e(TAG, "onPageScrollStateChanged");
         if (state == ViewPager.SCROLL_STATE_IDLE)
         {
             if (mViewPager.getCurrentItem() == 2)

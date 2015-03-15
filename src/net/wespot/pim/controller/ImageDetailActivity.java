@@ -31,6 +31,7 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
 import daoBase.DaoConfiguration;
+import de.greenrobot.dao.query.QueryBuilder;
 import net.wespot.pim.BuildConfig;
 import net.wespot.pim.R;
 import net.wespot.pim.utils.images.ImageCache;
@@ -40,9 +41,11 @@ import net.wespot.pim.view.InqImageDetailFragment;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
+import org.celstec.dao.gen.ResponseLocalObjectDao;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -68,7 +71,13 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
     private GeneralItemLocalObject giLocalObject;
     private int responsePosition;
 
-    private List<ResponseLocalObject> responseLocalObjectList;
+    private static List<ResponseLocalObject> responseLocalObjectList;
+
+    Comparator<ResponseLocalObject> responseLocalObjectComparator = new Comparator<ResponseLocalObject>() {
+        public int compare(ResponseLocalObject responseLocalObject, ResponseLocalObject responseLocalObject2) {
+            return (int) (responseLocalObject.getTimeStamp() - responseLocalObject2.getTimeStamp());
+        }
+    };
 
     @TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
@@ -96,7 +105,23 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 
         Bundle extras = getIntent().getExtras();
 
+
         giLocalObject = DaoConfiguration.getInstance().getGeneralItemLocalObjectDao().load(extras.getLong(GENERAL_ITEM_ID));
+
+        QueryBuilder qb = DaoConfiguration.getInstance().getResponseLocalObjectDao().queryBuilder();
+        qb.orderAsc(ResponseLocalObjectDao.Properties.TimeStamp)
+                .where(
+                        qb.and(
+                                ResponseLocalObjectDao.Properties.GeneralItem.eq(giLocalObject.getId())
+                                ,
+                                ResponseLocalObjectDao.Properties.Revoked.eq(false)
+                        )
+                );
+
+
+        responseLocalObjectList = qb.list();
+//                giLocalObject.getResponses();
+//        Collections.sort(responseLocalObjectList, responseLocalObjectComparator);
 
         responsePosition = extras.getInt(RESPONSE_POSITION);
 
@@ -123,7 +148,7 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
         mImageFetcher.addImageCache(getSupportFragmentManager(), cacheParams);
         mImageFetcher.setImageFadeIn(false);
 
-        mAdapter = new ImagePagerAdapter(getSupportFragmentManager(), giLocalObject.getResponses().size());
+        mAdapter = new ImagePagerAdapter(getSupportFragmentManager(), responseLocalObjectList.size());
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
@@ -145,12 +170,12 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
 
         // Set the current item based on the extra passed in to this activity
         if (responsePosition != -1) {
-            Date date = new Date(giLocalObject.getResponses().get(responsePosition).getTimeStamp());
+            Date date = new Date(responseLocalObjectList.get(responsePosition).getTimeStamp());
             Format format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
             String author = "-";
-            if (giLocalObject.getResponses().get(responsePosition).getAccountLocalObject() != null){
-                author = giLocalObject.getResponses().get(responsePosition).getAccountLocalObject().getName();
+            if (responseLocalObjectList.get(responsePosition).getAccountLocalObject() != null){
+                author = responseLocalObjectList.get(responsePosition).getAccountLocalObject().getName();
             }
             info_image.setText(format.format(date)+" by "+author);
 
@@ -229,7 +254,6 @@ public class ImageDetailActivity extends FragmentActivity implements OnClickList
         public ImagePagerAdapter(FragmentManager fm, int size) {
             super(fm);
             mSize = size;
-            responseLocalObjectList = giLocalObject.getResponses();
         }
 
         @Override
