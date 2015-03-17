@@ -153,7 +153,7 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         runIdList.clear();
         notications_queue_messages.clear();
 
-        long two_days_ago_long = (System.currentTimeMillis()/1000 - (24 * 60 * 60))*1000;
+        long two_days_ago_long = (System.currentTimeMillis()/1000 - (36 * 60 * 60))*1000;
         long now_long = System.currentTimeMillis();
         Date two_days_ago = new Date(two_days_ago_long * 1000);
         Date now = new Date(now_long);
