@@ -105,8 +105,13 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
 
         setContentView(R.layout.main_main);
 
+        if (savedInstanceState != null) {
+            INQ.init(this);
+            INQ.accounts.syncMyAccountDetails();
+        }
 
         INQ.eventBus.register(this);
+
         timer = new Timer(true);
 
         queueInqDatCol = new LinkedList<InquiryLocalObject>();
@@ -226,9 +231,6 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
     }
 
     public void onEventBackgroundThread(InquiryEvent inquiryEvent){
-
-
-
         InquiryLocalObject inquiryLocalObject = DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(inquiryEvent.getInquiryId());
 
         timer.purge();
