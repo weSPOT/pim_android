@@ -62,8 +62,6 @@ public class ChatAdapter extends BaseAdapter {
         this.messages_views = messages_views;
     }
 
-
-
     public View getViewFromMessage( MessageLocalObject message){
         return messages_views.get(message);
     }
@@ -88,6 +86,8 @@ public class ChatAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         MessageLocalObject message = (MessageLocalObject) this.getItem(position);
 
+        convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages, parent, false);
+
         try{
             if(INQ.accounts.getLoggedInAccount().getFullId().equals(message.getAuthor())){
 //            if (!message.getRead()){
@@ -103,19 +103,22 @@ public class ChatAdapter extends BaseAdapter {
             System.out.println("Exception while retrieving the author of the message: " + e);
         }
 
+        TextView messageTextView;
+        TextView timestampTextView;
 
+        if(convertView != null){
+            messageTextView = (TextView) convertView.findViewById(R.id.message);
+            timestampTextView = (TextView) convertView.findViewById(R.id.timeStampMessage);
 
-        TextView messageTextView = (TextView) convertView.findViewById(R.id.message);
-        TextView timestampTextView = (TextView) convertView.findViewById(R.id.timeStampMessage);
+            convertView.setId((int) (long) message.getTime());
 
-        convertView.setId((int) (long) message.getTime());
+            messageTextView.setText(message.getBody());
 
-        messageTextView.setText(message.getBody());
+            Date date = new Date(message.getTime());
+            Format format = new SimpleDateFormat("HH:mm:ss dd-MMM-y");
 
-        Date date = new Date(message.getTime());
-        Format format = new SimpleDateFormat("HH:mm:ss dd-MMM-y");
-
-        timestampTextView.setText(format.format(date));
+            timestampTextView.setText(format.format(date));
+        }
 
         if (messages_views.get(message) == null){
             messages_views.put(message, convertView);
