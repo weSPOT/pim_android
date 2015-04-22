@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import net.wespot.pim.R;
 import org.celstec.dao.gen.InquiryLocalObject;
-import org.celstec.listadapter.AbstractInquiryLazyListAdapter;
 
 import java.lang.ref.WeakReference;
 

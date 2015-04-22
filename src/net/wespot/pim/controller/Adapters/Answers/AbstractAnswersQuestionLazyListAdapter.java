@@ -62,8 +62,7 @@ public abstract class AbstractAnswersQuestionLazyListAdapter extends LazyListAda
         qb.orderAsc(InquiryQuestionAnswerLocalObjectDao.Properties.Identifier)
                 .where(
                         qb.and(
-                                InquiryQuestionAnswerLocalObjectDao.Properties.InquiryId.eq(inquiryId)
-                                ,
+                                InquiryQuestionAnswerLocalObjectDao.Properties.InquiryId.eq(inquiryId),
                                 InquiryQuestionAnswerLocalObjectDao.Properties.QuestionId.eq(questionId)
                         )
                 );

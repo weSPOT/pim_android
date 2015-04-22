@@ -37,7 +37,15 @@
             android:dividerHeight="4dp"
             android:paddingLeft="16dp"
             android:stackFromBottom="true"
-            android:transcriptMode="alwaysScroll"
+            android:transcriptMode="normal"
             android:paddingRight="16dp">
     </ListView>
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_show_more_messages"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"/>
 </RelativeLayout>

@@ -18,6 +18,23 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".controller.ShareFirstActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".controller.ShareSecondActivity"
+                  android:label="@string/app_name"  android:screenOrientation="portrait" >
+        </activity>
+
         <activity android:name=".LoginActivity"
                   android:label="@string/app_name"  android:screenOrientation="portrait"/>
         <activity android:name=".controller.VideoFullScreenView"

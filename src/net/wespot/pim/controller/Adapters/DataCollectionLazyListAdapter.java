@@ -57,6 +57,8 @@ public class DataCollectionLazyListAdapter extends AbstractGeneralItemsLazyListA
         super(context, gameId, false, GeneralItemLocalObjectDao.Properties.LastModificationDate, false);
     }
 
+
+
     public View newView(Context context, GeneralItemLocalObject item, ViewGroup parent) {
         if (item == null) return null;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

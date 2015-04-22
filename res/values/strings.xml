@@ -139,6 +139,7 @@
     <string name="communication_title">Chat</string>
     <string name="communication_enter_message"></string>
     <string name="communication_enter_message_default">Type a message to start...</string>
+    <string name="communication_showing_more_messages">Showing %1$d more messages</string>
 
     <string name="number_one">1</string>
     <string name="number_two">2</string>
