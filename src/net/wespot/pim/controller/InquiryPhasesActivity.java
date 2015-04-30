@@ -196,16 +196,11 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
     }
 
     public void onEventMainThread(MessageEvent messageEvent){
-//        numberMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-//                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()), MessageLocalObjectDao.Properties.Read.isNull())
-//                .list().size();
-//        ((TextView)chatView.findViewById(R.id.notificationText)).setText(String.valueOf(numberMessages));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        INQ.eventBus.unregister(this);
     }
 
     @Override
