@@ -224,10 +224,10 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
                         startActivity(intent);
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "Add data collection task on IWE", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please wait: data collection  is syncing", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(getApplicationContext(), "Game is not sync yet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Please wait: game is syncing", Toast.LENGTH_SHORT).show();
             }
         }else{
             Toast.makeText(getApplicationContext(), "Not implemented yet", Toast.LENGTH_SHORT).show();

@@ -7,8 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 import net.wespot.pim.R;
 import net.wespot.pim.controller.Adapters.DataCollectionLazyListAdapter;
+import net.wespot.pim.utils.VideoLibManager;
 import net.wespot.pim.utils.layout.BaseFragmentActivity;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.dataCollection.PictureLibManager;
@@ -44,8 +46,11 @@ public class ShareSecondActivity extends BaseFragmentActivity implements ListIte
     private DataCollectionLazyListAdapter datAdapter;
     private ListView data_collection_tasks;
     private PictureLibManager man_pic;
+    private VideoLibManager man_vid;
     private ArrayList<Uri> imageUris;
+    private ArrayList<Uri> videoUris;
     private Uri imageUri;
+    private Uri videoUri;
     private String sharedText;
     private Intent intent;
     private Context context;
@@ -56,8 +61,10 @@ public class ShareSecondActivity extends BaseFragmentActivity implements ListIte
 
         intent = getIntent();
 
-        imageUris = intent.getParcelableArrayListExtra("array");
+        imageUris = intent.getParcelableArrayListExtra("arrayImages");
+        videoUris = intent.getParcelableArrayListExtra("arrayVideos");
         imageUri = intent.getParcelableExtra("image");
+        videoUri = intent.getParcelableExtra("video");
         sharedText =  intent.getStringExtra("string");
 
         setContentView(R.layout.fragment_data_collection);
@@ -82,8 +89,6 @@ public class ShareSecondActivity extends BaseFragmentActivity implements ListIte
         }
 
         if (imageUris != null){
-
-            // Update UI to reflect multiple images being shared
             for (Uri im : imageUris) {
                 Uri image = Uri.parse(String.valueOf(im));
                 man_pic = new PictureLibManager((Activity) context);
@@ -92,6 +97,28 @@ public class ShareSecondActivity extends BaseFragmentActivity implements ListIte
                 man_pic.uploadPicture(image);
             }
         }
+
+        if (videoUri != null){
+            Uri video = Uri.parse(String.valueOf(videoUri));
+            man_vid = new VideoLibManager((Activity) context);
+            man_vid.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+            man_vid.setGeneralItem(generalItemLocalObject);
+            man_vid.uploadPicture(video);
+        }
+
+        if (videoUris != null){
+            for (Uri im : videoUris) {
+                Uri video = Uri.parse(String.valueOf(im));
+                man_vid = new VideoLibManager((Activity) context);
+                man_vid.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
+                man_vid.setGeneralItem(generalItemLocalObject);
+                man_vid.uploadPicture(video);
+            }
+        }
+
+        Toast.makeText(context, "Sharing files...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Sharing files completed.", Toast.LENGTH_LONG).show();
+        finish();
     }
 
     @Override

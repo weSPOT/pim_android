@@ -105,9 +105,11 @@ public class MainActivity extends ActionBarCurrent implements ListItemClickInter
 
         setContentView(R.layout.main_main);
 
+        INQ.init(this);
+        INQ.accounts.syncMyAccountDetails();
+
         if (savedInstanceState != null) {
-            INQ.init(this);
-            INQ.accounts.syncMyAccountDetails();
+
         }
 
         INQ.eventBus.register(this);

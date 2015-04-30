@@ -296,39 +296,40 @@ public class ImageGridFragment extends Fragment implements AdapterView.OnItemCli
 
     @Override
     public boolean setOnLongClickListener(View v, int position, final ResponseLocalObject object) {
+
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
-
-                        if (object.getAccountLocalObject().equals(INQ.accounts.getLoggedInAccount())){
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
                             Toast.makeText(getActivity(), "Deleting...", Toast.LENGTH_LONG).show();
 
-                            if (object.getIsSynchronized() == false){
+                            if (object.getIsSynchronized() == false) {
                                 DaoConfiguration.getInstance().getResponseLocalObjectDao().delete(object);
-                            }else{
+                            } else {
                                 object.setRevoked(true);
                                 object.setNextSynchronisationTime(0l);
                                 object.setIsSynchronized(false);
                                 DaoConfiguration.getInstance().getResponseLocalObjectDao().insertOrReplace(object);
                                 ResponseDelegator.getInstance().syncResponses(object.getRunId());
                             }
-                        }else{
-                            Toast.makeText(getActivity(), "You are not the owner, you can not delete", Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        //Do your No progress
-                        break;
-                }
+                            break;
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //Do your No progress
+                            break;
+                    }
             }
         };
+        if (object.getAccountLocalObject().equals(INQ.accounts.getLoggedInAccount())){
 
-        AlertDialog.Builder ab = new AlertDialog.Builder(getActivity());
-        ab.setMessage("Do you want to delete it?").setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("No", dialogClickListener).show();
-        return false;
+            AlertDialog.Builder ab = new AlertDialog.Builder(getActivity());
+            ab.setMessage("Do you want to delete it?").setPositiveButton("Yes", dialogClickListener)
+                    .setNegativeButton("No", dialogClickListener).show();
+            return false;
+        }else{
+            Toast.makeText(getActivity(), "You are not the owner, you can not delete", Toast.LENGTH_SHORT).show();
+            return true;
+        }
     }
 
 

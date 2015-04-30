@@ -51,7 +51,9 @@ public class ShareFirstActivity extends BaseFragmentActivity implements ListItem
     private InquiryLazyListAdapter adapterInq;
     private File bitmapFile;
     private ArrayList<Uri> imageUris;
+    private ArrayList<Uri> videoUris;
     private Uri imageUri;
+    private Uri videoUri;
     private String sharedText;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +62,6 @@ public class ShareFirstActivity extends BaseFragmentActivity implements ListItem
         INQ.init(this);
         INQ.accounts.syncMyAccountDetails();
         ARL.eventBus.register(this);
-
-        if (savedInstanceState != null) {
-        }
 
         INQ.inquiry.syncInquiries();
         INQ.games.syncMyGames();
@@ -84,42 +83,23 @@ public class ShareFirstActivity extends BaseFragmentActivity implements ListItem
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if ("text/plain".equals(type)) {
-                handleSendText(intent); // Handle text being sent
+                sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
             } else if (type.startsWith("image/")) {
-                handleSendImage(intent); // Handle single image being sent
+                imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            } else if (type.startsWith("video/")) {
+                videoUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
             }
         } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
             if (type.startsWith("image/")) {
-                handleSendMultipleImages(intent); // Handle multiple images being sent
+                imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+            }
+            if (type.startsWith("video/")) {
+                videoUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
             }
         } else {
             // Handle other intents, such as being started from the home screen
         }
 
-    }
-
-    void handleSendText(Intent intent) {
-        sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-        if (sharedText != null) {
-            // Update UI to reflect text being shared
-        }
-    }
-
-    void handleSendImage(Intent intent) {
-        imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        if (imageUri != null) {
-            // Update UI to reflect image being shared
-        }
-    }
-
-    void handleSendMultipleImages(Intent intent) {
-        imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-        if (imageUris != null) {
-            // Update UI to reflect multiple images being shared
-            for (Uri imageUri : imageUris) {
-
-            }
-        }
     }
 
     public void onEventAsync(InquiryEvent inquiryObject){
@@ -139,11 +119,15 @@ public class ShareFirstActivity extends BaseFragmentActivity implements ListItem
 
                 Intent select_dc_task = new Intent(this, ShareSecondActivity.class);
 
-                select_dc_task.putParcelableArrayListExtra("array", imageUris);
+                select_dc_task.putParcelableArrayListExtra("arrayImages", imageUris);
+
+                select_dc_task.putParcelableArrayListExtra("arrayVideos", videoUris);
 
                 select_dc_task.putExtra("string", sharedText);
 
                 select_dc_task.putExtra("image", imageUri);
+
+                select_dc_task.putExtra("video", videoUri);
 
                 startActivity(select_dc_task);
             } else {

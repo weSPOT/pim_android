@@ -86,15 +86,9 @@ public class ChatAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         MessageLocalObject message = (MessageLocalObject) this.getItem(position);
 
-        convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages, parent, false);
-
         try{
             if(INQ.accounts.getLoggedInAccount().getFullId().equals(message.getAuthor())){
-//            if (!message.getRead()){
-//                convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages_not_sync, parent, false);
-//            }else{
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages, parent, false);
-//            }
             }else{
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.entry_messages_others, parent, false);
                 ((TextView) convertView.findViewById(R.id.author_entry_list)).setText(getNameUser(message.getAuthor()));
@@ -144,11 +138,8 @@ public class ChatAdapter extends BaseAdapter {
             }else{
                 return author;
             }
-
-
         }
     }
-
 
     public HashMap<MessageLocalObject, View> getMessages_views() {
         return messages_views;
