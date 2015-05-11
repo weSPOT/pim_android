@@ -122,6 +122,13 @@ public class NoticeDialogFragment extends DialogFragment implements AdapterView.
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         parent.getItemAtPosition(position);
 
+        audio = false;
+        video = false;
+        image = false;
+        text = false;
+        number = false;
+
+
         if (parent.getSelectedItem().equals("Audio")){
             audio = true;
         }
