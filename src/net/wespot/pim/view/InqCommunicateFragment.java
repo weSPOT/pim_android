@@ -167,9 +167,9 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                 .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
                 .list().size();
 
-        limit = 10;
+        limit = 6;
 
-        if (number_messages != 0) {
+        if (number_messages >= 10) {
 
             do {
                 ///////////////////////////////////////////
@@ -184,16 +184,32 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                         .list();
 
                 limit *= 2;
-            } while (messageLocalObjectList.size() == 0);
+            } while (messageLocalObjectList.size() < 30);
 
-            //        lastTimeStamp = messageLocalObjectList.get(messageLocalObjectList.size()-1).getTime();
+        }else if (number_messages < 10){
+            messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
+                    .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
+                    .orderAsc(MessageLocalObjectDao.Properties.Time)
+                    .list();
+        }
 
+        Date previous_date = null;
 
-            for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
-                messages.add(messageLocalObject);
-                messageLocalObject.setRead(true);
-                DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
-            }
+        for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
+
+//            Date date = new Date(messageLocalObject.getTime());
+//            Format f1 = new SimpleDateFormat("yyyyMMdd");
+//
+//            if (previous_date != null){
+//                if (f1.format(date).equals(f1.format(previous_date))){
+//
+//                }
+//            }
+
+            messages.add(messageLocalObject);
+            messages_views.put(messageLocalObject, null);
+            messageLocalObject.setRead(true);
+            DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
         }
 
         chatAdapter = new ChatAdapter(getActivity(), messages, messages_views);
@@ -209,65 +225,65 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
 
         message = (EditText) rootView.findViewById(R.id.communication_enter_message);
         send = (ImageButton) rootView.findViewById(R.id.communication_enter_message_button);
-        show_more_messages = (Button) rootView.findViewById(R.id.button_show_more_messages);
+//        show_more_messages = (Button) rootView.findViewById(R.id.button_show_more_messages);
 
-        show_more_messages.setText("Show more messages");
-        show_more_messages.setVisibility(View.INVISIBLE);
+//        show_more_messages.setText("Show more messages");
+//        show_more_messages.setVisibility(View.INVISIBLE);
 
 
         listViewMessages = (ListView) rootView.findViewById(R.id.list_messages);
         listViewMessages.setAdapter(chatAdapter);
         listViewMessages.setOnScrollListener(this);
 
-        show_more_messages.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                show_more_messages.setVisibility(View.INVISIBLE);
-
-                long last_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
-
-
-                limit *= 2;
-
-                long next_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
-
-
-                messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-                        .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()),
-                                MessageLocalObjectDao.Properties.Time.gt(next_timestamp_message),
-                                MessageLocalObjectDao.Properties.Time.lt(last_timestamp_message))
-                        .orderAsc(MessageLocalObjectDao.Properties.Time)
-                        .list();
-
-                for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
-                    messages.add(0, messageLocalObject);
-//                    chatAdapter.notifyDataSetChanged();
-//                    messageLocalObject.setRead(true);
-//                    DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
-                }
-
-
-
-
-//                chatAdapter.notifyDataSetInvalidated();
-
-//                int position = listViewMessages.getSelectedItemPosition();
-//                listViewMessages.setSelection(position);
-
-                // save index and top position
-//                int index = listViewMessages.getFirstVisiblePosition();
-//                View va = listViewMessages.getChildAt(0);
-//                int top = (va == null) ? 0 : va.getTop();
+//        show_more_messages.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                show_more_messages.setVisibility(View.INVISIBLE);
 //
-//                // notify dataset changed or re-assign adapter here
-                chatAdapter.notifyDataSetChanged();
-//
-//                // restore the position of listview
-//                listViewMessages.setSelectionFromTop(index, top);
+//                long last_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
 //
 //
-            }
-        });
+//                limit *= 2;
+//
+//                long next_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
+//
+//
+//                messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
+//                        .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()),
+//                                MessageLocalObjectDao.Properties.Time.gt(next_timestamp_message),
+//                                MessageLocalObjectDao.Properties.Time.lt(last_timestamp_message))
+//                        .orderAsc(MessageLocalObjectDao.Properties.Time)
+//                        .list();
+//
+//                for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
+//                    messages.add(0, messageLocalObject);
+////                    chatAdapter.notifyDataSetChanged();
+////                    messageLocalObject.setRead(true);
+////                    DaoConfiguration.getInstance().getMessageLocalObject().insertOrReplace(messageLocalObject);
+//                }
+//
+//
+//
+//
+////                chatAdapter.notifyDataSetInvalidated();
+//
+////                int position = listViewMessages.getSelectedItemPosition();
+////                listViewMessages.setSelection(position);
+//
+//                // save index and top position
+////                int index = listViewMessages.getFirstVisiblePosition();
+////                View va = listViewMessages.getChildAt(0);
+////                int top = (va == null) ? 0 : va.getTop();
+////
+////                // notify dataset changed or re-assign adapter here
+//                chatAdapter.notifyDataSetChanged();
+////
+////                // restore the position of listview
+////                listViewMessages.setSelectionFromTop(index, top);
+////
+////
+//            }
+//        });
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -547,7 +563,7 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 //        Log.e(TAG, "first: "+firstVisibleItem+" visibleitemcount:"+visibleItemCount+" total:"+totalItemCount);
 //
-        show_more_messages.setVisibility(View.VISIBLE);
+//        show_more_messages.setVisibility(View.VISIBLE);
 
 
 //        if (firstVisibleItem == 0 && visibleItemCount != 0){

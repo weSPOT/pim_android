@@ -143,9 +143,6 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
 
         inquiry_description_title.setText(INQ.inquiry.getCurrentInquiry().getTitle());
 
-        numberMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-            .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()), MessageLocalObjectDao.Properties.Read.isNull())
-                .list().size();
 
         LinearLayout listPhasesContainer = (LinearLayout) findViewById(R.id.list_phases);
 
@@ -176,13 +173,18 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
                 R.string.inquiry_title_data,
                 R.drawable.ic_data, "", false);
 
+        numberMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
+                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()), MessageLocalObjectDao.Properties.Read.isNull())
+                .list().size();
+
+
         // Messaging button
         chatView = buttonManager.generateButton(listPhasesContainer, zeroLayoutParams,
                 Constants.ID_COMMUNICATE,
                 R.string.inquiry_title_communicate,
-                R.drawable.ic_communicate, "", true);
+                R.drawable.ic_communicate, ""+numberMessages, true);
 
-//        String.valueOf(numberMessages)
+
 
         // Invite friends button_old
 //        buttonManager.generateButton(listPhasesContainer, separatorLayoutParams, Constants.ID_FRIENDS,

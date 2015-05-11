@@ -47,7 +47,6 @@ public class ChatAdapter extends BaseAdapter {
     private static final String TAG = "ChatAdapter";
     private Context mContext;
     private ArrayList<MessageLocalObject> messages;
-
     private HashMap<MessageLocalObject, View> messages_views = new HashMap<MessageLocalObject, View>();
     private HashMap<String, AccountLocalObject> accounts = new HashMap<String, AccountLocalObject>();
 

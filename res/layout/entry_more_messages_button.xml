@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+    <LinearLayout
+            android:background="@drawable/background_more_messages_button_chat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:orientation="vertical" >
+
+        <TextView
+                android:id="@+id/message_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:shadowColor="@color/app.base.white"
+                android:text="Medium Text"
+                android:textAlignment="center"
+                android:textColor="@color/app.base.black"/>
+    </LinearLayout>
+</RelativeLayout>
