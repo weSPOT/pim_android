@@ -25,7 +25,7 @@
                      android:src="@drawable/ic_action_send_now_w" />
     </LinearLayout>
 
-    <ListView
+    <net.wespot.pim.controller.BlockingListView
             android:id="@+id/list_messages"
             android:layout_width="match_parent"
             android:layout_height="0dip"
@@ -39,13 +39,6 @@
             android:stackFromBottom="true"
             android:transcriptMode="normal"
             android:paddingRight="16dp">
-    </ListView>
+    </net.wespot.pim.controller.BlockingListView>
 
-    <!--<Button-->
-            <!--style="?android:attr/buttonStyleSmall"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/button_show_more_messages"-->
-            <!--android:layout_alignParentTop="true"-->
-            <!--android:layout_centerHorizontal="true"/>-->
 </RelativeLayout>
