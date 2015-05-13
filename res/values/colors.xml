@@ -28,6 +28,8 @@
     <color name="app.base.green">#ff00ff0c</color>
     <color name="app.base.green_2">#ff14DDB3</color>
 
+    <color name="chat.button.more_messages">#ffc9dd3d</color>
+
 
     <color name="view_pager.indicator.circle.fill">#FFFFFFFF</color>
     <color name="view_pager.indicator.page">#00000000</color>

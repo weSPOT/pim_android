@@ -69,6 +69,13 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     private static Context mContext;
 
     private static int numMessages = 0;
+    private int number_messages = 0;
+    private int number_remain_messages = 0;
+
+    private long to_timestamp_message = 0;
+    private long from_timestamp_message = 0;
+
+
     private static NotificationCompat.Builder mBuilder;
     private static NotificationManager mNotificationManager;
     private static NotificationCompat.InboxStyle mNotificationStyle;
@@ -153,37 +160,52 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         runIdList.clear();
         notications_queue_messages.clear();
 
-        long twelve_hours = 0;
 
-        int number_messages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
+        number_messages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
                 .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
                 .list().size();
 
+        Log.e(TAG, "number of messages: "+number_messages);
+
+        number_remain_messages = number_messages;
+
         limit = 2;
 
-        if (number_messages >= 10) {
+
+//        long from_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
+//
+        Format format = new SimpleDateFormat("HH:mm:ss dd-MMM-y");
+
+        if (number_messages >= 20) {
 
             do {
                 ///////////////////////////////////////////
                 // Request last messages extending the date
                 ///////////////////////////////////////////
-                twelve_hours = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
+                to_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
+
+                Log.e(TAG, "From now");
+                Date date = new Date(to_timestamp_message);
+                Log.e(TAG, "To: "+format.format(date));
 
                 messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
                         .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()),
-                                MessageLocalObjectDao.Properties.Time.gt(twelve_hours))
+                                MessageLocalObjectDao.Properties.Time.gt(to_timestamp_message))
                         .orderAsc(MessageLocalObjectDao.Properties.Time)
                         .list();
 
-                limit += 2;
-            } while (messageLocalObjectList.size() < 30);
+                limit += 72;
+            } while (messageLocalObjectList.size() < 20);
 
-        }else if (number_messages < 10){
+        }else if (number_messages < 20){
             messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
                     .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
                     .orderAsc(MessageLocalObjectDao.Properties.Time)
                     .list();
         }
+
+        number_remain_messages -= messageLocalObjectList.size();
+        Log.e(TAG, "remain messages: "+number_remain_messages);
 
         for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
 
@@ -209,7 +231,7 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
 
         listViewMessages = (BlockingListView) rootView.findViewById(R.id.list_messages);
 
-        View more_messages_button = View.inflate(mContext, R.layout.entry_more_messages_button, null);
+        final View more_messages_button = View.inflate(mContext, R.layout.entry_more_messages_button, null);
 
         final Button a = (Button) more_messages_button.findViewById(R.id.message_button);
 
@@ -217,41 +239,27 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
             @Override
             public void onClick(View v) {
 
-
-
-                long from_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
+//                long from_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
+                from_timestamp_message = to_timestamp_message;
 
                 Date date = new Date(from_timestamp_message);
                 Format format = new SimpleDateFormat("HH:mm:ss dd-MMM-y");
 
                 Log.e(TAG, "From: "+format.format(date));
+//                limit += 36;
+//
+//                long to_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
+//
+//                date = new Date(to_timestamp_message);
 
-                limit += 36;
-
-                long to_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
-
-                date = new Date(to_timestamp_message);
-
-                Log.e(TAG, "To: "+format.format(date));
-
-
-                messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-                        .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()),
-                                MessageLocalObjectDao.Properties.Time.gt(to_timestamp_message),
-                                MessageLocalObjectDao.Properties.Time.lt(from_timestamp_message))
-                        .orderDesc(MessageLocalObjectDao.Properties.Time)
-                        .list();
-
-                if (messageLocalObjectList.size() <= 20){
+                if(number_remain_messages >= 20){
                     do{
-
-                        limit += 36;
 
                         to_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
 
                         date = new Date(to_timestamp_message);
 
-                        Log.e(TAG, "To: "+format.format(date));
+
 
                         messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
                                 .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()),
@@ -260,10 +268,61 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                                 .orderDesc(MessageLocalObjectDao.Properties.Time)
                                 .list();
 
+                        Log.e(TAG, "To: "+format.format(date));
+                        Log.e(TAG, "Num. messages: "+messageLocalObjectList.size());
+
+                        limit += 36;
+
                     } while (messageLocalObjectList.size() < 20);
+                }else{
+                    messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
+                            .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()),
+                                    MessageLocalObjectDao.Properties.Time.lt(from_timestamp_message))
+                            .orderDesc(MessageLocalObjectDao.Properties.Time)
+                            .list();
+                    listViewMessages.removeHeaderView(more_messages_button);
                 }
 
-                Toast.makeText(mContext, "Loaded "+messageLocalObjectList.size()+" messages..", LENGTH_SHORT).show();
+
+                // Hide more messages button to avoid a infinite loop if there are no more messages to show
+                Toast.makeText(mContext, messageLocalObjectList.size()+" messages loaded", LENGTH_SHORT).show();
+                number_remain_messages -= messageLocalObjectList.size();
+                if (number_remain_messages == 0) {
+                    listViewMessages.removeHeaderView(more_messages_button);
+                }
+
+                Log.e(TAG, "remain messages: "+number_remain_messages);
+
+
+//                messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
+//                        .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()),
+//                                MessageLocalObjectDao.Properties.Time.gt(to_timestamp_message),
+//                                MessageLocalObjectDao.Properties.Time.lt(from_timestamp_message))
+//                        .orderDesc(MessageLocalObjectDao.Properties.Time)
+//                        .list();
+//
+//                if (messageLocalObjectList.size() >= 20){
+//                    do{
+//
+//                        limit += 36;
+//
+//                        to_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
+//
+//                        date = new Date(to_timestamp_message);
+//
+//                        Log.e(TAG, "To: "+format.format(date));
+//
+//                        messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
+//                                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()),
+//                                        MessageLocalObjectDao.Properties.Time.gt(to_timestamp_message),
+//                                        MessageLocalObjectDao.Properties.Time.lt(from_timestamp_message))
+//                                .orderDesc(MessageLocalObjectDao.Properties.Time)
+//                                .list();
+//
+//                    } while (messageLocalObjectList.size() < 20);
+//                }
+
+
 
                 for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
                     messages.add(0, messageLocalObject);
@@ -290,8 +349,9 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
             }
         });
 
-        listViewMessages.addHeaderView(more_messages_button);
-
+        if (number_messages > 5 && number_remain_messages !=0 ){
+            listViewMessages.addHeaderView(more_messages_button);
+        }
 
         listViewMessages.setAdapter(chatAdapter);
 
