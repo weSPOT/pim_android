@@ -55,6 +55,8 @@ import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.InquiryLocalObject;
 import org.celstec.events.InquiryEvent;
 
+import java.util.ArrayList;
+
 /**
  * A fragment that launches other parts of the demo application.
  */
@@ -86,7 +88,21 @@ public class PimInquiriesFragment extends BaseFragmentActivity implements ListIt
         ListView inquiries = (ListView) findViewById(R.id.list_inquiries);
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.inquiries_new_inquiry);
 
-        adapterInq =  new InquiryLazyListAdapter(this);
+        ////////////////////////////////////
+        // When coming from notification bar
+        ////////////////////////////////////
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            ArrayList<String> list_id =  extras.getStringArrayList(InqCommunicateFragment.INQUIRIES_ID);
+
+
+            adapterInq =  new InquiryLazyListAdapter(this, list_id);
+        }else{
+
+            adapterInq =  new InquiryLazyListAdapter(this);
+        }
+
+
         inquiries.setAdapter(adapterInq);
         adapterInq.setOnListItemClickCallback(this);
 

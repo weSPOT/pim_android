@@ -14,6 +14,8 @@ import net.wespot.pim.R;
 import org.celstec.dao.gen.InquiryLocalObject;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ****************************************************************************
@@ -37,8 +39,18 @@ import java.lang.ref.WeakReference;
  */
 public class InquiryLazyListAdapter extends AbstractInquiryLazyListAdapter {
 
+    private static List<Long> runIdList = new ArrayList<Long>();
+
     public InquiryLazyListAdapter(Context context) {
         super(context);
+    }
+
+    public InquiryLazyListAdapter(Context context, ArrayList<String> list_runs) {
+        super(context);
+
+        for(String a : list_runs){
+            runIdList.add(Long.valueOf(a).longValue());
+        }
     }
 
     @Override
@@ -51,7 +63,15 @@ public class InquiryLazyListAdapter extends AbstractInquiryLazyListAdapter {
         if (item == null) return null;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View view =  inflater.inflate(R.layout.entry_inquiry_list, parent, false);
+        View view;
+
+        if (runIdList.contains(item.getRunId())){
+            view =  inflater.inflate(R.layout.entry_inquiry_list_notif, parent, false);
+
+        }else{
+           view =  inflater.inflate(R.layout.entry_inquiry_list, parent, false);
+
+        }
 
         return view;
     }

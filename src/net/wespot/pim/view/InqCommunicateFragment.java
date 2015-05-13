@@ -59,9 +59,9 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
     private static final String TAG = "InqCommunicateFragment";
     private static final String NUMBER = "0123";
     public static final String INQUIRY_ID = "runId";
+    public static final String INQUIRIES_ID = "runsId";
     private EditText message;
     private ImageButton send;
-    private Button show_more_messages;
     private View rootView;
 
     private static BlockingListView listViewMessages;
@@ -90,12 +90,10 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
 
     private List<MessageLocalObject> messageLocalObjectList;
     private static List<Long> runIdList = new ArrayList<Long>();
+    private static List<String> runIdList_str = new ArrayList<String>();
 
-
-    private static final int LIMIT_INQUIRIES = 10;
     private static final String CURRENT_INQUIRY = "currentInquiry";
     private static final String CURRENT_INQUIRY_RUN = "currentInquiryRun";
-    private static final String CURRENT_MESSAGES = "currentMessages";
 
     public InqCommunicateFragment() {
     }
@@ -140,7 +138,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         if (savedInstanceState != null) {
             INQ.init(mContext);
             ARL.eventBus.register(this);
-            INQ.accounts.syncMyAccountDetails();
 
             INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(
                     savedInstanceState.getLong(CURRENT_INQUIRY)));
@@ -151,6 +148,8 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
             Log.e(TAG, "recovery from InqCommunicateFragment");
         }
 
+        INQ.accounts.syncMyAccountDetails();
+
         INQ.messages.syncMessagesForDefaultThread(INQ.inquiry.getCurrentInquiry().getRunId());
 
         numMessages = 0;
@@ -158,8 +157,8 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         mNotificationStyle = null;
         mNotificationManager = null;
         runIdList.clear();
+        runIdList_str.clear();
         notications_queue_messages.clear();
-
 
         number_messages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
                 .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()))
@@ -171,9 +170,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
 
         limit = 2;
 
-
-//        long from_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
-//
         Format format = new SimpleDateFormat("HH:mm:ss dd-MMM-y");
 
         if (number_messages >= 20) {
@@ -218,8 +214,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         chatAdapter = new ChatAdapter(getActivity(), messages, messages_views);
     }
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -238,19 +232,12 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         a.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//                long from_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
                 from_timestamp_message = to_timestamp_message;
 
                 Date date = new Date(from_timestamp_message);
                 Format format = new SimpleDateFormat("HH:mm:ss dd-MMM-y");
 
                 Log.e(TAG, "From: "+format.format(date));
-//                limit += 36;
-//
-//                long to_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
-//
-//                date = new Date(to_timestamp_message);
 
                 if(number_remain_messages >= 20){
                     do{
@@ -258,8 +245,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                         to_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
 
                         date = new Date(to_timestamp_message);
-
-
 
                         messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
                                 .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()),
@@ -283,7 +268,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                     listViewMessages.removeHeaderView(more_messages_button);
                 }
 
-
                 // Hide more messages button to avoid a infinite loop if there are no more messages to show
                 Toast.makeText(mContext, messageLocalObjectList.size()+" messages loaded", LENGTH_SHORT).show();
                 number_remain_messages -= messageLocalObjectList.size();
@@ -292,37 +276,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                 }
 
                 Log.e(TAG, "remain messages: "+number_remain_messages);
-
-
-//                messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-//                        .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()),
-//                                MessageLocalObjectDao.Properties.Time.gt(to_timestamp_message),
-//                                MessageLocalObjectDao.Properties.Time.lt(from_timestamp_message))
-//                        .orderDesc(MessageLocalObjectDao.Properties.Time)
-//                        .list();
-//
-//                if (messageLocalObjectList.size() >= 20){
-//                    do{
-//
-//                        limit += 36;
-//
-//                        to_timestamp_message = (System.currentTimeMillis() / 1000 - (limit * 60 * 60)) * 1000;
-//
-//                        date = new Date(to_timestamp_message);
-//
-//                        Log.e(TAG, "To: "+format.format(date));
-//
-//                        messageLocalObjectList = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-//                                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()),
-//                                        MessageLocalObjectDao.Properties.Time.gt(to_timestamp_message),
-//                                        MessageLocalObjectDao.Properties.Time.lt(from_timestamp_message))
-//                                .orderDesc(MessageLocalObjectDao.Properties.Time)
-//                                .list();
-//
-//                    } while (messageLocalObjectList.size() < 20);
-//                }
-
-
 
                 for (MessageLocalObject messageLocalObject : messageLocalObjectList) {
                     messages.add(0, messageLocalObject);
@@ -380,7 +333,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         });
         return rootView;
     }
-
 
     @Override
     public boolean acceptNotificationType(String notificationType) {
@@ -449,10 +401,13 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                     // For those messages that are not shown process them
                     /////////////////////////////////////////////////////
                     if (messageLocalObject.getRead() == null) {
+
                         // No notification but we need to update the view
                         ///////////////////////////////////////////////////////////////////////
+
                         // We are inside the inquiry but maybe we need an internal notification
                         ///////////////////////////////////////////////////////////////////////
+
                         if (!messages_views.containsKey(messageLocalObject)) {
                             if (messages != null) {
                                 messages.add(messageLocalObject);
@@ -499,6 +454,7 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
 
         if (!runIdList.contains(runId)){
             runIdList.add(runId);
+            runIdList_str.add(runId.toString());
         }
 
         numMessages = 0;
@@ -518,23 +474,38 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
                 InquiryLocalObjectDao.Properties.RunId.eq(runId)
         ).list().get(0);
 
-
-        Intent resultIntent = new Intent(ARL.getContext(), InquiryPhasesActivity.class);
-        resultIntent.putExtra(INQUIRY_ID, inquiryLocalObject.getId());
-
-        Intent parent = new Intent(ARL.getContext(), PimInquiriesFragment.class);
-        Intent parent1 = new Intent(ARL.getContext(), MainActivity.class);
-        Intent parent2 = new Intent(ARL.getContext(), SplashActivity.class);
-
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
         // This ensures that navigating backward from the Activity leads out of
         // your application to the Home screen.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(ARL.getContext());
-        // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addNextIntentWithParentStack(parent2);
-        stackBuilder.addNextIntentWithParentStack(parent1);
-        stackBuilder.addNextIntentWithParentStack(parent);
+
+        Intent resultIntent;
+
+        if (runIdList.size() > 1){
+            resultIntent = new Intent(ARL.getContext(), PimInquiriesFragment.class);
+            resultIntent.putStringArrayListExtra(INQUIRIES_ID, (ArrayList<String>) runIdList_str);
+
+            Intent parent = new Intent(ARL.getContext(), MainActivity.class);
+            Intent parent1 = new Intent(ARL.getContext(), SplashActivity.class);
+
+            // Adds the back stack for the Intent (but not the Intent itself)
+            stackBuilder.addNextIntentWithParentStack(parent1);
+            stackBuilder.addNextIntentWithParentStack(parent);
+
+        }else{
+            resultIntent = new Intent(ARL.getContext(), InquiryPhasesActivity.class);
+            resultIntent.putExtra(INQUIRY_ID, inquiryLocalObject.getId());
+
+            Intent parent = new Intent(ARL.getContext(), PimInquiriesFragment.class);
+            Intent parent1 = new Intent(ARL.getContext(), MainActivity.class);
+            Intent parent2 = new Intent(ARL.getContext(), SplashActivity.class);
+
+            // Adds the back stack for the Intent (but not the Intent itself)
+            stackBuilder.addNextIntentWithParentStack(parent2);
+            stackBuilder.addNextIntentWithParentStack(parent1);
+            stackBuilder.addNextIntentWithParentStack(parent);
+        }
 
         // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(resultIntent);
@@ -577,7 +548,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         mNotificationManager.notify(Integer.parseInt(NUMBER), mBuilder.build());
     }
 
-
     public boolean isPimRunning(){
         ActivityManager activityManager = (ActivityManager) ARL.getContext().getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> services = activityManager
@@ -592,8 +562,6 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
             return false;
         }
     }
-
-
 
     public String getNameUser(String author) {
         if (accounts.containsKey(author)){
@@ -624,6 +592,3 @@ public class InqCommunicateFragment extends Fragment implements NotificationList
         super.onDestroy();
     }
 }
-
-
-

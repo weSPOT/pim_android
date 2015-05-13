@@ -44,7 +44,6 @@ import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.events.MessageEvent;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
 import org.celstec.dao.gen.GameLocalObject;
-import org.celstec.dao.gen.MessageLocalObjectDao;
 
 public class InquiryPhasesActivity extends BaseFragmentActivity implements ListItemClickInterface<View> {
 
@@ -94,29 +93,6 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
             Long inquiry_id = extras.getLong(InqCommunicateFragment.INQUIRY_ID);
 
             INQ.inquiry.setCurrentInquiry(DaoConfiguration.getInstance().getInquiryLocalObjectDao().load(inquiry_id));
-
-//            if (INQ.inquiry.getCurrentInquiry().getRunLocalObject() != null) {
-//                GameLocalObject gameLocalObject = INQ.inquiry.getCurrentInquiry().getRunLocalObject().getGameLocalObject();
-//                if (gameLocalObject != null) {
-//                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-//                        Intent intent = new Intent(getApplicationContext(), InquiryActivityBack.class);
-//                        intent.putExtra(InquiryActivity.PHASE, Constants.ID_COMMUNICATE);
-//                        startActivity(intent);
-//                    } else {
-//                        Intent intent = new Intent(getApplicationContext(), InquiryActivity.class);
-//                        intent.putExtra(InquiryActivity.PHASE, Constants.ID_COMMUNICATE);
-//                        startActivity(intent);
-//                    }
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "Add data collection task on IWE", Toast.LENGTH_SHORT).show();
-//                }
-//            } else {
-//                Toast.makeText(getApplicationContext(), "Game is not sync yet", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            extras = null;
-//
-//            return;
         }
 
         INQ.inquiry.syncDataCollectionTasks(INQ.inquiry.getCurrentInquiry());
@@ -173,16 +149,16 @@ public class InquiryPhasesActivity extends BaseFragmentActivity implements ListI
                 R.string.inquiry_title_data,
                 R.drawable.ic_data, "", false);
 
-        numberMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
-                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()), MessageLocalObjectDao.Properties.Read.isNull())
-                .list().size();
+//        numberMessages = DaoConfiguration.getInstance().getMessageLocalObject().queryBuilder()
+//                .where(MessageLocalObjectDao.Properties.RunId.eq(INQ.inquiry.getCurrentInquiry().getRunId()), MessageLocalObjectDao.Properties.Read.isNull())
+//                .list().size();
 
 
         // Messaging button
         chatView = buttonManager.generateButton(listPhasesContainer, zeroLayoutParams,
                 Constants.ID_COMMUNICATE,
                 R.string.inquiry_title_communicate,
-                R.drawable.ic_communicate, ""+numberMessages, true);
+                R.drawable.ic_communicate, "", true);
 
 
 
