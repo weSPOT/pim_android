@@ -22,15 +22,15 @@ package net.wespot.pim.view;
  */
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import daoBase.DaoConfiguration;
@@ -44,7 +44,6 @@ import net.wespot.pim.view.impl.ValueInputCollectionActivityImpl;
 import org.celstec.arlearn.delegators.INQ;
 import org.celstec.arlearn2.android.dataCollection.*;
 import org.celstec.arlearn2.android.listadapter.ListItemClickInterface;
-import org.celstec.arlearn2.android.util.MediaFolders;
 import org.celstec.dao.gen.GeneralItemLocalObject;
 import org.celstec.dao.gen.ResponseLocalObject;
 import org.codehaus.jettison.json.JSONException;
@@ -193,7 +192,6 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_data_collection_image:
-//                chooseCapturingPicture();
                 definePictureInputManager();
                 man_pic.takeDataSample(null);
                 break;
@@ -219,23 +217,32 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Toast.makeText(this, "Uploading...", Toast.LENGTH_LONG).show();
 
         switch (requestCode){
             case DataCollectionManager.PICTURE_RESULT:
                 man_pic.onActivityResult(requestCode, resultCode, data);
+                Toast.makeText(this, "Uploading picture...", Toast.LENGTH_LONG).show();
+
                 break;
             case DataCollectionManager.AUDIO_RESULT:
                 man_aud.onActivityResult(requestCode, resultCode, data);
+                Toast.makeText(this, "Uploading audio...", Toast.LENGTH_LONG).show();
+
                 break;
             case DataCollectionManager.VIDEO_RESULT:
                 man_vid.onActivityResult(requestCode, resultCode, data);
+                Toast.makeText(this, "Uploading video...", Toast.LENGTH_LONG).show();
+
                 break;
             case DataCollectionManager.TEXT_RESULT:
                 man_tex.onActivityResult(requestCode, resultCode, data);
+                Toast.makeText(this, "Uploading text...", Toast.LENGTH_LONG).show();
+
                 break;
             case DataCollectionManager.VALUE_RESULT:
                 man_val.onActivityResult(requestCode, resultCode, data);
+                Toast.makeText(this, "Uploading value...", Toast.LENGTH_LONG).show();
+
                 break;
         }
 
@@ -270,41 +277,6 @@ public class InqDataCollectionTaskFragment extends BaseFragmentActivity implemen
         man_pic = new PictureManager(this);
         man_pic.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
         man_pic.setGeneralItem(genObject);
-    }
-
-
-    private void chooseCapturingPicture() {
-
-//        DialogFragment newFragment = new CaptureImageDialogFragment(this, man_pic, genObject);
-//        newFragment.show(getSupportFragmentManager(), "missiles");
-
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // Get the layout inflater
-        LayoutInflater inflater = this.getLayoutInflater();
-
-        builder.setTitle(R.string.data_collection_dialog_choose_action)
-                .setItems(R.array.capturing_picture, new DialogInterface.OnClickListener() {
-
-
-
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-                                man_pic.setRunId(INQ.inquiry.getCurrentInquiry().getRunId());
-                                man_pic.setGeneralItem(genObject);
-                                man_pic.takeDataSample(null);
-                                break;
-                            case 1:
-                                Intent cameraIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                                bitmapFile = MediaFolders.createOutgoingJpgFile();
-                                cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(bitmapFile));
-                                startActivityForResult(cameraIntent, (Integer) PICTURE_RESULT);
-                                break;
-                        }
-                    }
-                });
-        builder.create();
     }
 
     // Not used

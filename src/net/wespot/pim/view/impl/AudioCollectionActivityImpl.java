@@ -26,7 +26,7 @@ import org.celstec.arlearn2.android.dataCollection.activities.AudioCollectionAct
  * Contributors: Stefaan Ternier
  * ****************************************************************************
  */
-public class AudioCollectionActivityImpl extends AudioCollectionActivity{
+public class AudioCollectionActivityImpl extends AudioTest{
 
     private ActionBar mActionBar;
 

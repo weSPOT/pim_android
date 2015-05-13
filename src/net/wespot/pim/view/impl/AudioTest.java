@@ -149,9 +149,9 @@ public abstract class AudioTest extends Activity implements SeekBar.OnSeekBarCha
         if (mRecorder == null) {
 
             mRecorder = new MediaRecorder();
-            mRecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
-            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             recording = MediaFolders.createOutgoingAmrFile();
             mRecorder.setOutputFile(recording.toString());
             try {
@@ -235,6 +235,7 @@ public abstract class AudioTest extends Activity implements SeekBar.OnSeekBarCha
             System.out.println(recording.toString());
             Bundle conData = new Bundle();
             conData.putString("filePath", recording.getAbsolutePath());
+            conData.putString("mimetype", "audio/ogg");
             Intent intent = new Intent();
             intent.putExtras(conData);
             setResult(Activity.RESULT_OK, intent);
